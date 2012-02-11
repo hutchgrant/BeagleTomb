@@ -1,0 +1,31 @@
+﻿
+Beagletomb ubuntu install instructions
+If USING ON A LOCAL NETWORK:
+MAKE YOUR SERVER A STATIC LOCAL IP FIRST **not included
+beagletomb install
+
+
+$ sudo apt-get install tasksel mediatom
+$ sudo tasksel install lamp-server
+
+WRITE DOWN PASS
+on the client machine:
+$ sudo apt-get install mplayer qt4make qt4-dev-tools sqlite3 libmysqlclient-dev libsqlite3-dev
+
+run mediatomb once: 
+$ mediatomb
+////////////////////
+a  /.mediatomb folder should have been created with an xml file within your user directory
+now run the installer included in the docs folder followed by the configure:
+$ sudo su
+$ ~/beagle/install.sh  run the second option then third.  Ignore and exit the tasksel graphical installer, if you completed the steps above properly. Otherwise if you want to do it manually read the mediatomb mysql instructions on mediatomb's website.
+/////////////////////////////////////
+
+download beagletomb.zip  
+assuming in Downloads directory within your user home folder.
+ $ tar -xf ./Downloads/beagletomb*.tar.gz
+$ cd ./beagle
+$ qmake
+$ make
+Finally run the binary with: 
+$ ./beagle
