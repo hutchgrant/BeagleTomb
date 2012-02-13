@@ -27,6 +27,7 @@
 #include <iostream>
 #include <cstring>
 #include <QMainWindow>
+#include <QDir>
 #define TEMPPREF "/.BeagleTomb/cache/tempPref.txt"
 #define TEMPCACHE "/.BeagleTomb/cache/dbcache.txt"
 #include <stdio.h>
@@ -50,7 +51,7 @@ public:
     void deleteDB(const char *dbLocation);
     void createDB(const char *dbLocation, const char *createSQLocation);
     void sendToShell();
-
+    void createCache();
     /// get initial db file from text cache
     bool initDB();
     /// set initial db file in text cache

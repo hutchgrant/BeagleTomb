@@ -57,12 +57,15 @@ void BeagleMain::Sync(int type){
         if(pref.initDB() == false){
             prefDg.show();
             if (prefDg.exec()==QDialog::Accepted) {
+
+                pref.createCache();
                 pref = prefDg.getPref();
                 //create custom sql db
                 pref.createDB(pref.getSQL().c_str(), createSQL);
                 /// write preferences to sql db
                 pref.writeDB();
                 pref.setInitDB();
+                //create cache directory
             }
         }
 

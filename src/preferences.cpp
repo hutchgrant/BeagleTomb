@@ -189,6 +189,25 @@ void preferences::sendToShell() {
     system(FinalLink);
 }
 
+void preferences::createCache(){
+    string main = "/.BeagleTomb";
+    string cache = "/cache";
+    string playlist = "/playlist";
+    string u_home = getenv("HOME");
+    string finMain = u_home + main;
+    string finCache = u_home + main + cache;
+    string finPL = u_home + main + playlist;
+    QString q_main = finMain.c_str();
+    QString q_cache = finCache.c_str();
+    QString q_playlist = finPL.c_str();
+    QDir(q_main).mkdir(q_main);
+    QDir(q_main).mkdir(q_cache);
+    QDir(q_main).mkdir(q_playlist);
+
+
+
+}
+
 preferences& preferences::operator=(const preferences& src){
     
     
