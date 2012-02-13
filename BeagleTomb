@@ -1,0 +1,14 @@
+Name=BeagleTomb
+Version=1.0
+Exec=BeagleTomb
+Comment=
+Icon=/usr/share/BeagleTomb/images/beagletomb_icon.png
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=
+
+[Desktop Entry]
+Icon[en_CA]=/home/skynet/beagle/beagletomb_icon.png
+Name[en_CA]=BeagleTomb

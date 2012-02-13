@@ -23,7 +23,7 @@ This process is not configured automatically on startup. I recommend setting tha
 
 beagletomb client install
 
-$  sudo apt-get install mplayer qt4-qmake qt4-dev-tools sqlite3 libmysqlclient-dev libsqlite3-dev 
+$  sudo apt-get install mplayer qt4-qmake g++ libmysqlcppconn-dev libsqlite3-dev sqlite3 libqt4-network libqt4-opengl-dev libqt4-opengl libqtgui4 libqtcore4
 download beagletomb.v.0.1.5.tar.gz assuming in Downloads directory within your user home folder.
 
 $ tar -xzvf ./Downloads/beagletomb*.tar.gz
