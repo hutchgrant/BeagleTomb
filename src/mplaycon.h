@@ -27,19 +27,28 @@
 #include <stdlib.h>
 #include <QtCore>
 #include <QtGui>
+#include "qmpwidget.h"
+#include "preferences.h"
+#include "playlistobj.h"
 class mplayCon : public QThread
 {
  //   Q_OBJECT
 public:
-    char *strBuffer;
     mplayCon(QObject *parent);
-    void set(int id);
-    virtual ~mplayCon();
-    void Exec(char *str);
-    void Pause();
 
-protected:
-   void run();
+
+    QMPwidget widget2;
+    playlistobj pl;
+    preferences pref;
+    int pl_selected;
+
+    mplayCon();
+    void set(playlistobj &plobj, preferences prefs, int plselected);
+    void startSong(char *FinSong, int selID);
+
+    virtual ~mplayCon();
+
+    void run();
 };
 
 #endif // MPLAYCON_H

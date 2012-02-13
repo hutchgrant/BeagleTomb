@@ -60,7 +60,7 @@ public:
     newplaylist newPL;
     openplaylist openPL;
     QMPwidget widget;
-    //mplayCon *mplay;
+    mplayCon mplay;
     songObj* Artist, *Song, *Album, *VidDir, *Video;
  //   songObj* playlist_obj;
     int artSize, albSize, songSize, vidSize, vidDirSize;
@@ -82,8 +82,9 @@ public:
 
     void setMainPref(preferences pref);
     void RefillMainPL();
+    void RefillPLFolder();
     void startSong(char *FinSong, int selID);
-    void PlaylistPlay(int selID);
+    bool PlaylistPlay(int selID);
     void closeEvent(QCloseEvent *event);
 
 private slots:
@@ -134,6 +135,12 @@ private slots:
 
     void on_PlayList_clicked(QModelIndex index);
 
+
+    void on_but_RadStart_clicked();
+
+    void on_actionDonate_2_triggered();
+
+    void on_ADMIN_but_clicked();
 
 private:
     Ui::BeagleMain *ui;

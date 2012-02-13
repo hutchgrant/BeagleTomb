@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>382</width>
-    <height>270</height>
+    <height>234</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,20 +26,20 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Open</set>
    </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>90</y>
-     <width>231</width>
+     <x>80</x>
+     <y>60</y>
+     <width>241</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>Which file do you want to open?</string>
+    <string>Which folder do you want to open?</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="OPENPL_entry">
@@ -53,6 +53,19 @@
    </property>
    <property name="text">
     <string>/BeagleTomb/playlist/newplaylist.pl</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>16</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>~</string>
    </property>
   </widget>
  </widget>

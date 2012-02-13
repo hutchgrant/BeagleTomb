@@ -25,7 +25,7 @@ playlistobj::playlistobj()
     initPL();
     /// set temp defaults later sync from db
     setFileName("newplaylist.pl");
-    setFileLocation("./playlist/");
+    setFileLocation("/.BeagleTomb/playlist/");
     playlistOpen = false;
     playlistCount = 0;
     pl_obj_count = 0;
@@ -33,7 +33,6 @@ playlistobj::playlistobj()
 
 playlistobj::~playlistobj(){
 
-    //delete [] fp;
     delete [] playlist_obj;
 
 }
@@ -76,8 +75,8 @@ void playlistobj::readPLfile(string location){
     int TrackID;
     int TrackCount=0;
     int myExit = 0;
-    fullLocation = getenv("HOME")+location;
-        fp = fopen(fullLocation.c_str(), "r");
+    fullLocation = location;
+    fp = fopen(fullLocation.c_str(), "r");
     rewind(fp);
 
     while(!feof(fp) && !myExit){
@@ -88,10 +87,12 @@ void playlistobj::readPLfile(string location){
            myExit = 1;
            pl_obj_count = TrackCount;
          }
+        else{
          replace(&Track[0], &Track[strlen(Track)], '_', ' ');
         setTrackName(TrackCount, Track);
         setTrackID(TrackID, TrackCount);
         TrackCount++;
+        }
         delete [] Track;
     }
     close();
@@ -159,25 +160,16 @@ QStringList playlistobj::RefillPlaylist(){
 
     return curSong;
 }
-/*
-FILE* playlistobj::open(const char filename[]){
-       FILE* fp = NULL;
-        if(filename){
-                       fp = fopen(filename, "r");
-                        return fp;
-        }
-        else{
-                return 0;
-        }
-} */
 playlistobj::playlistobj(const playlistobj& src){
     fileName = src.fileName;
     fileLocation = src.fileLocation;
     fullLocation = src.fullLocation;
     playlist_obj = src.playlist_obj;
-    //fp = src.fp;
     pl_obj_count = src.pl_obj_count;
     playlistCount = src.playlistCount;
+    playlistOpen = src.playlistOpen;
+    pl_folder = src.pl_folder;
+    folder_count = src.folder_count;
     playlistOpen = src.playlistOpen;
 }
 playlistobj& playlistobj::operator=(const playlistobj& src)
@@ -188,9 +180,11 @@ playlistobj& playlistobj::operator=(const playlistobj& src)
         fileLocation = src.fileLocation;
         fullLocation = src.fullLocation;
         playlist_obj = src.playlist_obj;
-    //    fp = src.fp;
         pl_obj_count = src.pl_obj_count;
         playlistCount = src.playlistCount;
+        playlistOpen = src.playlistOpen;
+        pl_folder = src.pl_folder;
+        folder_count = src.folder_count;
         playlistOpen = src.playlistOpen;
     }
     return *this;
@@ -227,3 +221,32 @@ void playlistobj::Move(int mode, int selected){
 
 
 }
+
+QStringList playlistobj::listDirectories(const char *location){
+    QStringList QPLFolder;
+    QString qFold = QString(location);
+    QDir myDir(qFold);
+    int itemCount = 0;
+       folder_count = 0;
+
+    foreach(QFileInfo aItem, myDir.entryInfoList()){
+        itemCount++;
+        if(itemCount>2){
+            QPLFolder << aItem.fileName();
+        }
+    }
+    pl_folder = new string[QPLFolder.size()];
+    itemCount = 0;
+    foreach(QFileInfo aItem, myDir.entryInfoList()){
+        itemCount++;
+        if(itemCount>2){
+         pl_folder[folder_count] = aItem.fileName().toStdString();
+         folder_count++;
+        }
+    }
+
+///    QStringList plFolder = myDir.entryList("*.pl");
+    return QPLFolder;
+
+}
+

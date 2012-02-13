@@ -32,11 +32,10 @@
 #include <iostream>
 #include <fstream>
 #include "songObj.h"
-#define TEMPPREF "./cache/tempcache.txt"
-
+#define TEMPSYNCPREF "/.BeagleTomb/cache/tempcache.txt"
+#define createSQL "./src/createSQL.sql"
 #include "songObj.h"
 #include "mysqlconn.h"
-#define createSQL "./src/createSQL.sql"
 
 
 using namespace std;

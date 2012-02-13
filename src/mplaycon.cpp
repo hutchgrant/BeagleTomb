@@ -23,29 +23,68 @@
 #include <QApplication>
 mplayCon::mplayCon(QObject *parent)
     : QThread(parent)
+
 {
+}
+
+mplayCon::mplayCon(){
+
 }
 
 void mplayCon::run(){
 
-    system(strBuffer);
+
+ //   while(widget2.state() != 2 || widget2.state() != -1){
+
+        int selID = 0;
+
+
+        char* FinSong;
+     /*    for(int i = 0; i<= pl.getCount(); i++){
+            if(pl.getTrackID(i) == selID){
+                FinSong = new char[strlen(pl.getTrackName(i).c_str())];
+                strcpy(FinSong,pl.getTrackName(i).c_str());
+            }
+        }*/
+
+        selID = pl.getTrackID(pl_selected);
+
+        if(widget2.state() == -1) {   // if loaded but doing nothing
+            startSong(FinSong, selID);
+       }
+        if(widget2.state() == 0){
+             pl_selected++;
+             startSong(FinSong, selID);
+        }
+  // }
+
 }
-void mplayCon::set(int id){
+void mplayCon::set(playlistobj &plobj, preferences prefs, int plselected){
+
+
+    pl = plobj;
+
+    pref = prefs;
+
+    if(pl_selected >=0){
+    pl_selected = plselected;
+    }
+    else{
+        pl_selected =0;
+    }
+
+}
+
+void mplayCon::startSong(char *FinSong, int selID){
+
+    char * strBuffer;
     strBuffer= new char[100];
-    sprintf(strBuffer, "mplayer -slave -quiet http://192.168.1.116:49154/content/media/object_id/%d/res_id/0", id);
-
+    sprintf(strBuffer, "http://%s:%s/content/media/object_id/%d/res_id/0", pref.getServ().c_str(), pref.getPort().c_str(), selID);
+    cout << strBuffer << endl;
+    //ui->SONG_lbl->setText((QString)FinSong);
+  //  widget2.show();
+    widget2.start(QStringList(strBuffer));
 }
 
-void mplayCon::Pause(){
-    strBuffer= new char[100];
-    strcpy(strBuffer, "mplayer pause");
-    system(strBuffer);
-}
-
-void mplayCon::Exec(char *str){
-    system(str);
-
-}
 mplayCon::~mplayCon(){
-    delete [] strBuffer;
 }

@@ -35,6 +35,10 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <QDir>
+#include <QFileInfo>
+#include <QString>
+#include <QDebug>
 #include "songObj.h"
 using namespace std;
 
@@ -47,6 +51,8 @@ public:
     string fullLocation;
     string fileLocation;
     string fileName;
+    string * pl_folder;
+    int folder_count;
     int playlistCount;
     int pl_obj_count;
 
@@ -89,9 +95,8 @@ public:
     }
     void setFullLocation(string name, string location){
         stringstream strLocate;
-        strLocate << getenv("HOME") << location << "/" << name;
+        strLocate << location << "/" << name;
         fullLocation = strLocate.str();
-
     }
 
     string getFullLocation(){
@@ -114,10 +119,15 @@ public:
     string getFileLocation(){
         return fileLocation;
     }
+    string getPLFolder(int pos){
+        return pl_folder[pos];
+    }
+
 QStringList RefillPlaylist();
 FILE* open(const char filename[]);
 int close();
 void Move(int mode, int selected);
+QStringList listDirectories(const char * location);
 playlistobj(const playlistobj& src);
 playlistobj& operator=(const playlistobj& src);
 

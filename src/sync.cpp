@@ -107,7 +107,7 @@ int syncMe::control(const char *server, const char *user, const char *pass,
 }
 void syncMe::RemoveTMP(){
     char Final[100];
-    sprintf("rm %s", TEMPPREF);
+    sprintf("rm %s", TEMPSYNCPREF);
     system(Final);
 }
 void syncMe::artistWrite(songObj* Artist, int artSize){
@@ -334,7 +334,9 @@ void syncMe::videoWrite(songObj* Video, int vidSize){
 void syncMe::writeMe(string qry){
 
     ofstream outputFile;
-    outputFile.open(TEMPPREF);
+    string temp_pref = TEMPSYNCPREF;
+    string final = getenv("HOME") + temp_pref;
+    outputFile.open(final.c_str());
 
     outputFile << qry;
 
@@ -361,7 +363,9 @@ int syncMe::getMaxPos(int count) {
 
 void syncMe::sendToShell() {
     char FinalLink[150];
-    sprintf(FinalLink, "sqlite3 %s < %s", DBLocation.c_str(), TEMPPREF);
+    string temp_pref = TEMPSYNCPREF;
+    string final = getenv("HOME") + temp_pref;
+    sprintf(FinalLink, "sqlite3 %s < %s", DBLocation.c_str(), final.c_str());
     system(FinalLink);
 }
 

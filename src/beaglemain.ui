@@ -7,11 +7,17 @@
     <x>0</x>
     <y>0</y>
     <width>720</width>
-    <height>420</height>
+    <height>440</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>720</width>
+    <height>440</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Beagle Tomb v.0.1.4</string>
+   <string>Beagle Tomb v.0.1.5</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QListView" name="MenuList">
@@ -65,7 +71,7 @@
      <string>Sync Menu!</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="Playlist_tab">
      <attribute name="title">
@@ -256,6 +262,52 @@
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Radio</string>
+     </attribute>
+     <widget class="QPushButton" name="but_RadStart">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>85</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>85</width>
+        <height>27</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>1</y>
+        <width>161</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Enter URL:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="entry_radURL"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
     <widget class="QWidget" name="Sync_tab">
      <attribute name="title">
       <string>Sync</string>
@@ -276,74 +328,33 @@
        <string>Sync</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="ADMIN_but">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>130</y>
+        <width>91</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Admin</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>270</y>
-      <width>711</width>
+      <x>10</x>
+      <y>284</y>
+      <width>701</width>
       <height>91</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QComboBox" name="MODE_combo">
-       <property name="minimumSize">
-        <size>
-         <width>121</width>
-         <height>29</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>121</width>
-         <height>29</height>
-        </size>
-       </property>
-       <item>
-        <property name="text">
-         <string>Mode:</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Artists</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Albums</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Songs</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Videos</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>80</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QLabel" name="SONG_lbl">
          <property name="minimumSize">
@@ -357,17 +368,46 @@
          </property>
         </widget>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QRadioButton" name="rad_loopSong">
+             <property name="text">
+              <string>Loop(song)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="rad_loop">
+             <property name="text">
+              <string>Loop(all)</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rad_shuffle">
+           <property name="text">
+            <string>Shuffle</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
+      <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>13</width>
-         <height>17</height>
+         <width>80</width>
+         <height>20</height>
         </size>
        </property>
       </spacer>
@@ -551,50 +591,91 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDial" name="VOL_dial">
-       <property name="minimumSize">
-        <size>
-         <width>50</width>
-         <height>64</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>50</width>
-         <height>64</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Volume</string>
-       </property>
-       <property name="value">
-        <number>50</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QComboBox" name="MODE_combo">
          <property name="minimumSize">
           <size>
-           <width>67</width>
-           <height>17</height>
+           <width>121</width>
+           <height>29</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>67</width>
-           <height>17</height>
+           <width>121</width>
+           <height>29</height>
           </size>
          </property>
-         <property name="text">
-          <string>Volume</string>
-         </property>
+         <item>
+          <property name="text">
+           <string>Mode:</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Artists</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Albums</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Songs</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Videos</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QDial" name="VOL_dial">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Volume</string>
+           </property>
+           <property name="value">
+            <number>50</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="minimumSize">
+            <size>
+             <width>67</width>
+             <height>17</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>67</width>
+             <height>17</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Volume</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QLabel" name="VOL_lbl">
            <property name="text">
@@ -637,6 +718,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionDonate_2"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -688,6 +770,11 @@
   <action name="actionSync">
    <property name="text">
     <string>Sync</string>
+   </property>
+  </action>
+  <action name="actionDonate_2">
+   <property name="text">
+    <string>Donate</string>
    </property>
   </action>
  </widget>

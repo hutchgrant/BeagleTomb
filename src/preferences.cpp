@@ -28,8 +28,10 @@ preferences::preferences(){
     SERVER = "192.168.1.116";
     TABLE = "mediatomb";
     PORT = "49154";
-    DBlocation = "BTmedia.db";
-    PLAYLISTDIR = "/BeagleTomb/playlist/";
+    string DB = "/.BeagleTomb/BTmedia.db";
+    string PL = "/.BeagleTomb/playlist/";
+    DBlocation = getenv("HOME") + DB;
+    PLAYLISTDIR = getenv("HOME") + PL;
 }
 preferences::preferences(const preferences& src){
     USER = src.USER;
@@ -59,7 +61,9 @@ bool preferences::initDB(){
     bool found = false;
     char PrefIn[100];
     FILE* fp;
-    fp = fopen("dbcache.txt", "r");   /// open cached db location
+    string tempcache = TEMPCACHE;
+    string Cache = getenv("HOME") + tempcache;
+            fp = fopen(Cache.c_str(), "r");   /// open cached db location
 
     if(fp != NULL){
         rewind(fp);
@@ -90,7 +94,9 @@ bool preferences::initDB(){
 void preferences::setInitDB(){
 
     ofstream myfile;
-    myfile.open ("dbcache.txt");
+    string tempcache = TEMPCACHE;
+    string cache = getenv("HOME") + tempcache;
+    myfile.open (cache.c_str());
     myfile << DBlocation.c_str();
     myfile.close();
 
@@ -165,7 +171,9 @@ void preferences::writeDB(){
 void preferences::writeMe(string qry){
 
     ofstream outputFile;
-    outputFile.open(TEMPPREF);
+    string temp_pref = TEMPPREF;
+    string final = getenv("HOME") + temp_pref;
+    outputFile.open(final.c_str());
 
     outputFile << qry;
 
@@ -175,7 +183,9 @@ void preferences::writeMe(string qry){
 /// pipe temp output fil to sqlite
 void preferences::sendToShell() {
     char FinalLink[150];
-    sprintf(FinalLink, "sqlite3 %s < %s", DBlocation.c_str(), TEMPPREF);
+    string temp_pref = TEMPPREF;
+    string full_pref_location = getenv("HOME") + temp_pref;
+    sprintf(FinalLink, "sqlite3 %s < %s", DBlocation.c_str(), full_pref_location.c_str());
     system(FinalLink);
 }
 

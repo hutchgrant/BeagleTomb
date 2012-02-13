@@ -238,18 +238,21 @@ void BeagleMain::RefillMainPL(){
     ui->PlayList->setModel(t_Model);
 }
 
-void BeagleMain::PlaylistPlay(int selID){
-    char* FinSong;
-    for(int i = 0; i<= pl.getCount(); i++){
-        if(pl.getTrackID(i) == selID){
-            FinSong = new char[strlen(pl.getTrackName(i).c_str())];
-            strcpy(FinSong,pl.getTrackName(i).c_str());
-        }
-    }
-    // start song
-    startSong(FinSong, selID);
+/*
+  * refill playlist list with playlist model from playlist user Folder
+  */
+void BeagleMain::RefillPLFolder(){
+    QStringList updatedList;
+   t_Model = new QStringListModel(this);
+    updatedList = pl.listDirectories(pl.getFullLocation().c_str());
+    t_Model->setStringList(updatedList);
+    ui->PlayList->setModel(t_Model);
 }
 
+bool BeagleMain::PlaylistPlay(int selID){
+
+    // start song
+}
 /*
   * MEM CLEANUP
   */
@@ -472,12 +475,23 @@ void BeagleMain::on_ADD_but_clicked()
   */
 void BeagleMain::on_PlayList_doubleClicked(QModelIndex index)
 {
-    int selID = 0;
-    pl_selected = 0;
-     char *FinSong;
-    pl_selected = ui->PlayList->currentIndex().row();
-     selID = pl.getTrackID(pl_selected);
-    PlaylistPlay(selID);
+
+
+    int selected;
+    selected = ui->PlayList->currentIndex().row();
+
+    if(plMode == 1){
+        pl.readPLfile((pref.getPlaylistDir() + pl.getPLFolder(selected)).c_str());   /// edit with selected playlist currently defaulting
+         RefillMainPL();
+         playlistOpen = true;
+         plMode = 2;
+    }
+    else{
+        pl_selected = 0;
+        pl_selected = ui->PlayList->currentIndex().row();
+        mplay.set(pl, pref, pl_selected);
+        mplay.run();
+    }
 }
 
 /*
@@ -510,34 +524,25 @@ void BeagleMain::on_SAVE_but_clicked()
 
 void BeagleMain::on_OPEN_but_clicked()
 {
+    plMode = 0;
     string fileName, fileLocate;
     fileName = "";
     fileLocate = "";
-    openPL.show();
-    if(openPL.exec()==QDialog::Accepted){
-       if(openPL.plExists()){
-           fileName = openPL.getFile();
-           cout << fileName << endl;
-           fileLocate = openPL.getLocate();
-            cout << fileLocate << endl;
-             pl.setFullLocation(fileName, fileLocate);
-       }
-    }
-  //  cout << getenv("HOME")+fileLocate+fileName;
-    if(plMode == 0){
-        cout << pref.getPlaylistDir()+fileName << endl;
-        pl.readPLfile(pref.getPlaylistDir()+fileName);   /// edit with selected playlist currently defaulting
-         RefillMainPL();
-         playlistOpen = true;
-    }
 
-    /* Future mode to list all playlists in playlist folder */
-    if(plMode == 0){
-         cout << "prefered playlist dir " << pref.getPlaylistDir() << endl;
+        openPL.show();
+        if(openPL.exec()==QDialog::Accepted){
+           if(openPL.plExists()){
+               fileName = openPL.getFile();
+               cout << fileName << endl;
+               fileLocate = openPL.getLocate();
+                cout << fileLocate << endl;
+                 pl.setFullLocation(fileName, fileLocate);
+           }
+        }
+
          /// list .pl files in preferreed directory
-
-
-    }
+        RefillPLFolder();
+        plMode = 1;
 
 }
 
@@ -583,3 +588,25 @@ void BeagleMain::on_PlayList_clicked(QModelIndex index)
 
      //pl.close();
  }
+
+void BeagleMain::on_but_RadStart_clicked()
+{
+    QString QradURL;
+    string radURL;
+    QradURL = ui->entry_radURL->text();
+    radURL = QradURL.toStdString();
+
+    widget.start(QStringList(radURL.c_str()));
+}
+
+void BeagleMain::on_actionDonate_2_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://flattr.com/profile/hutchgrant", QUrl::TolerantMode));
+}
+
+void BeagleMain::on_ADMIN_but_clicked()
+{
+    char mediatombAdd[100];
+    sprintf(mediatombAdd, "http://%s:%s", pref.getServ().c_str(), pref.getPort().c_str());
+    QDesktopServices::openUrl(QUrl(mediatombAdd, QUrl::TolerantMode));
+}

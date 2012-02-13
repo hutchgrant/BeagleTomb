@@ -27,8 +27,8 @@
 #include <iostream>
 #include <cstring>
 #include <QMainWindow>
-#define TEMPPREF "./cache/tempcache.txt"
-
+#define TEMPPREF "/.BeagleTomb/cache/tempPref.txt"
+#define TEMPCACHE "/.BeagleTomb/cache/dbcache.txt"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -108,6 +108,10 @@ public:
     QString getQSQL(){
         QString q_SQL = DBlocation.c_str();
         return q_SQL;
+    }
+    QString getQPLDir(){
+        QString q_PL = PLAYLISTDIR.c_str();
+        return q_PL;
     }
 
     string getUser(){

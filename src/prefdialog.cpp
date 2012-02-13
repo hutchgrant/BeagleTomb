@@ -37,7 +37,7 @@ PrefDialog::PrefDialog(QWidget *parent) :
     ui->entry_port->setText(pref.getQPort());
     ui->entry_table->setText(pref.getQTable());
     ui->entry_sql->setText(pref.getQSQL());
-    ui->entry_playlist->setText(pref.getPlaylistDir().c_str());
+    ui->entry_playlist->setText(pref.getQPLDir());
 }
 
 PrefDialog::~PrefDialog()
