@@ -33,7 +33,7 @@
 #include <fstream>
 #include "songObj.h"
 #define TEMPSYNCPREF "/.BeagleTomb/cache/tempcache.txt"
-#define createSQL "./src/createSQL.sql"
+#define createSQL "/.BeagleTomb/cache/createSQL.sql"
 #include "songObj.h"
 #include "mysqlconn.h"
 

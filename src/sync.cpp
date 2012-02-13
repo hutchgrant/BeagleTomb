@@ -57,7 +57,9 @@ void syncMe::deleteDB(const char *dbLocation) {
 
 void syncMe::createDB(const char *dbLocation) {
     char FinalLink[150];
-    sprintf(FinalLink, "sqlite3 %s < %s ", dbLocation, createSQL );
+    string create_sql = createSQL;
+    string final = getenv("HOME") + create_sql;
+    sprintf(FinalLink, "sqlite3 %s < %s ", dbLocation, create_sql.c_str() );
     system(FinalLink);
 }
 
