@@ -84,7 +84,7 @@ public:
     void RefillMainPL();
     void RefillPLFolder();
     void startSong(char *FinSong, int selID);
-    bool PlaylistPlay(int selID);
+    void PlaylistPlay(int selID);
     void closeEvent(QCloseEvent *event);
 
 private slots:

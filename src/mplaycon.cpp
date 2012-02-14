@@ -80,7 +80,7 @@ void mplayCon::startSong(char *FinSong, int selID){
     char * strBuffer;
     strBuffer= new char[100];
     sprintf(strBuffer, "http://%s:%s/content/media/object_id/%d/res_id/0", pref.getServ().c_str(), pref.getPort().c_str(), selID);
-    cout << strBuffer << endl;
+    //cout << strBuffer << endl;
     //ui->SONG_lbl->setText((QString)FinSong);
   //  widget2.show();
     widget2.start(QStringList(strBuffer));

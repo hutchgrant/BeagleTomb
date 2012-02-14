@@ -58,6 +58,7 @@ void BeagleMain::Sync(int type){
             prefDg.show();
             if (prefDg.exec()==QDialog::Accepted) {
 
+                //create cache directory
                 pref.createCache();
                 pref = prefDg.getPref();
                 //create custom sql db
@@ -65,7 +66,6 @@ void BeagleMain::Sync(int type){
                 /// write preferences to sql db
                 pref.writeDB();
                 pref.setInitDB();
-                //create cache directory
             }
         }
 
@@ -252,10 +252,17 @@ void BeagleMain::RefillPLFolder(){
     ui->PlayList->setModel(t_Model);
 }
 
-bool BeagleMain::PlaylistPlay(int selID){
-
-    // start song
-}
+void BeagleMain::PlaylistPlay(int selID){
+        char* FinSong;
+        for(int i = 0; i<= pl.getCount(); i++){
+            if(pl.getTrackID(i) == selID){
+                FinSong = new char[strlen(pl.getTrackName(i).c_str())];
+                strcpy(FinSong,pl.getTrackName(i).c_str());
+            }
+        }
+        // start song
+        startSong(FinSong, selID);
+    }
 /*
   * MEM CLEANUP
   */
@@ -482,19 +489,46 @@ void BeagleMain::on_PlayList_doubleClicked(QModelIndex index)
 
     int selected;
     selected = ui->PlayList->currentIndex().row();
+    int selID = 0;
+    char *FinSong;
 
+       if(plMode == 1){
+           pl.readPLfile((pref.getPlaylistDir() + pl.getPLFolder(selected)).c_str());   /// edit with selected playlist currently defaulting
+            RefillMainPL();
+            playlistOpen = true;
+            plMode = 2;
+       }
+       else{
+           pl_selected = 0;
+           pl_selected = ui->PlayList->currentIndex().row();
+           selID = pl.getTrackID(pl_selected);
+           PlaylistPlay(selID);
+       }
+
+    /// thread adding future
+    /*
     if(plMode == 1){
         pl.readPLfile((pref.getPlaylistDir() + pl.getPLFolder(selected)).c_str());   /// edit with selected playlist currently defaulting
          RefillMainPL();
          playlistOpen = true;
          plMode = 2;
     }
-    else{
+    else  if(plMode == 2){
+
         pl_selected = 0;
         pl_selected = ui->PlayList->currentIndex().row();
         mplay.set(pl, pref, pl_selected);
         mplay.run();
+        plMode = 3;
     }
+    else if(plMode == 3){
+
+         pl_selected = 0;
+         pl_selected = ui->PlayList->currentIndex().row();
+         mplay.set(pl, pref, pl_selected);
+         mplay.run();
+         plMode = 2;
+     }*/
 }
 
 /*

@@ -15,6 +15,7 @@ a /.mediatomb folder should have been created with an xml file within your user 
 
 $  sudo su 
 $ /usr/share/BeagleTomb/docs/install.sh 
+
 run the second option then third. Ignore and exit the tasksel graphical installer, if you completed the steps above properly. Otherwise if you want to do it manually read the mediatomb mysql instructions on mediatomb's website. Once complete, simply end and restart the mediatomb server.
 
 $  pkill mediatomb 
