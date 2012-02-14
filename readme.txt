@@ -37,10 +37,7 @@ $ cd /usr/share/BeagleTomb
 $ qmake 
 $ make 
 ln -s /usr/share/BeagleTomb/BeagleTomb /usr/bin/BeagleTomb
-make your cache directory in your home folder called ".BeagleTomb?"
 
-mkdir -p ~/.BeagleTomb/cache
-mkdir -p ~/.BeagleTomb/playlist
 Finally run the binary with: $ BeagleTomb? On first open you will be asked to enter your server credentials. Make sure the mediatomb server initialized port and server bound ip matches the address you enter into the beagletomb preference window.
 
 The defaults are:
