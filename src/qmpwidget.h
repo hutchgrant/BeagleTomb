@@ -121,7 +121,7 @@ class QMPwidget : public QWidget
 		void stop();
 		bool seek(int offset, int whence = AbsoluteSeek);
 		bool seek(double offset, int whence = AbsoluteSeek);
-                void setVolume(int volume); // Grant Hutchinson
+
 		void toggleFullScreen();
 
 		void writeCommand(const QString &command);
@@ -132,10 +132,10 @@ class QMPwidget : public QWidget
 		virtual void resizeEvent(QResizeEvent *event);
 
 	private:
-                void updateWidgetSize();
+		void updateWidgetSize();
 
 	private slots:
-                  //            void setVolume(int volume);  // Grant Hutchinson
+		void setVolume(int volume);
 
 		void mpStateChanged(int state);
 		void mpStreamPositionChanged(double position);

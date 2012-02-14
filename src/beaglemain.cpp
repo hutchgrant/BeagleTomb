@@ -31,7 +31,6 @@ BeagleMain::BeagleMain(QWidget *parent) :
     ui->MenuList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->TitleList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->PlayList->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    widget.setVolume(50);
     widget.setSeekSlider(ui->SEEK_slider);
     widget.setVolumeSlider(ui->VOL_dial);
 
@@ -623,7 +622,7 @@ void BeagleMain::on_PlayList_clicked(QModelIndex index)
 
  void BeagleMain::closeEvent(QCloseEvent *event){
 
-     //pl.close();
+     widget.close();
  }
 
 void BeagleMain::on_but_RadStart_clicked()
