@@ -30,7 +30,7 @@ This process is not configured automatically on startup. It is recommended that 
 You will need mediatomb running or beagletomb will not work.
  
 You can add files to mediatomb by browsing to your servers ip and port e.g. http://192.168.1.101:49152 then simply add your media.
-**new in 0.1.5 a user can click the admin button within Beagle Tomb's sun **
+**new in 0.1.5 a user can click the admin button within Beagle Tomb's sync menu **
 
 ------------------------
 Beagle Tomb Client Install
