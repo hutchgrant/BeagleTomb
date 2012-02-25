@@ -96,7 +96,6 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     newVideo = ms.connectVideo(newVidDir, &vidDirSize, Video, &vidSize);
 
     ///  sync artist,album,song objects to the local sql database
-    ///  syncWrite sw (Artist, Album, Song, VidDir, Video, artSize, albSize, songSize, vidDirSize, vidSize, dbLocation);
 
     artistWrite(newArtist, artSize);
     albumWrite(newAlbum, albSize);

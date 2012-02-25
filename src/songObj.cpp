@@ -120,7 +120,7 @@ char* checkSongObjByID(int id, songObj *src, int ObjSize){
         for(int i = 0; i<= ObjSize; i++){
             if(src[i].getFileID() == id){
 
-                FinSong = new char[strlen(src[i].getFile())];
+                FinSong = new char[strlen(src[i].getFile())+1];
                 strcpy(FinSong,src[i].getFile());
             }
         }

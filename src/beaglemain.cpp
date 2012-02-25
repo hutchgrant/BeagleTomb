@@ -255,7 +255,7 @@ void BeagleMain::PlaylistPlay(int selID){
         char* FinSong;
         for(int i = 0; i<= pl.getCount(); i++){
             if(pl.getTrackID(i) == selID){
-                FinSong = new char[strlen(pl.getTrackName(i).c_str())];
+                FinSong = new char[strlen(pl.getTrackName(i).c_str())+1];
                 strcpy(FinSong,pl.getTrackName(i).c_str());
             }
         }

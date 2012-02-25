@@ -187,9 +187,7 @@ songObj* mysqlconn::connectSong(songObj* Album, int *albSize, songObj* Song, int
             Myexit = true;
         }
 
-        /* clean up the database result set */
         mysql_free_result(res);
-        /* clean up the database link */
         mysql_close(conn);
     }
     return Song;
@@ -235,9 +233,7 @@ songObj* mysqlconn::connectArtist(songObj* Artist, int artMenu, int *mySize){
     }
 
     *mySize = artCount;
-    /* clean up the database result set */
     mysql_free_result(res);
-    /* clean up the database link */
     mysql_close(conn);
 
     return Artist;
@@ -299,9 +295,7 @@ songObj* mysqlconn::connectVideo(songObj* VidDir, int *vidDirSize, songObj* Vide
             Myexit = true;
         }
 
-        /* clean up the database result set */
         mysql_free_result(res);
-        /* clean up the database link */
         mysql_close(conn);
     }
     return Video;
@@ -393,21 +387,15 @@ int mysqlconn::connectVidMenu(){
 
         //	cout << myQry << endl;
         res = mysql_perform_query(conn, myQry);
-
-        //To traverse the results we use a while loop in C++ and use the mysql_fetch_row function from within the mysql library set
-        //where a row is a type of MYSQL_ROW.
         rowCount = 0;
         while ((row = mysql_fetch_row(res)) != NULL) {
 
             if (atoi(row[2]) == 0 && rowCount == 3){
                 vidMenuID = atoi(row[0]);
-                //             cout << "video menu ID " << vidMenuID << endl;
             }
 
             if(atoi(row[2]) == vidMenuID && rowCount == 1){
-                //       cout << atoi(row[0]) << endl;
                 vidDirMenuID = atoi(row[0]);
-                //            cout << "vid dir ID " << vidDirMenuID << endl;
             }
             rowCount++;
 
@@ -456,11 +444,7 @@ int mysqlconn::connectArtMenu() {
             sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
                     audMenuID);
         }
-        //	cout << myQry << endl;
         res = mysql_perform_query(conn, myQry);
-
-        //To traverse the results we use a while loop in C++ and use the mysql_fetch_row function from within the mysql library set
-        //where a row is a type of MYSQL_ROW.
 
         while ((row = mysql_fetch_row(res)) != NULL) {
 
@@ -479,7 +463,6 @@ int mysqlconn::connectArtMenu() {
                 //set ID of artist sub Menu
                 if (artMenu == 4) {
                     artMenuID = atoi(row[0]);
-                    //	cout << artMenuID << endl;
                 }
             }
 
@@ -488,9 +471,7 @@ int mysqlconn::connectArtMenu() {
         if (QryCount > 3) { // + albCount
             Myexit = true;
         }
-        /* clean up the database result set */
         mysql_free_result(res);
-        /* clean up the database link */
         mysql_close(conn);
     }
     return artMenuID;

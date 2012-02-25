@@ -349,7 +349,7 @@
       <x>10</x>
       <y>284</y>
       <width>701</width>
-      <height>91</height>
+      <height>105</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -359,7 +359,7 @@
         <widget class="QLabel" name="SONG_lbl">
          <property name="minimumSize">
           <size>
-           <width>209</width>
+           <width>300</width>
            <height>17</height>
           </size>
          </property>
@@ -403,6 +403,9 @@
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

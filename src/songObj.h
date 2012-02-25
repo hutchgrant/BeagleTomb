@@ -30,7 +30,7 @@
 #define songObj_H_
 
 
-#define MAXSTR 60
+#define MAXSTR 100
 using namespace std;
 class songObj {
 

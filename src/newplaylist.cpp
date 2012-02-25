@@ -27,7 +27,7 @@ newplaylist::newplaylist(QWidget *parent) :
 {
 
     ui->setupUi(this);
-     pref.readDB();
+    pref.readDB();
     ui->PLNAME_entry->setText(pref.getPlaylistDir().c_str());
 }
 
@@ -53,19 +53,19 @@ bool newplaylist::plExists(){
     string fullLocate;
     fullLocate = ui->PLNAME_entry->text().toStdString();
     /// strip playlist for location and file name
-   lastSlash = fullLocate.find_last_of("/\\");
-   p_locate = fullLocate.substr(0, lastSlash);
-   p_file = fullLocate.substr(lastSlash+1);
-  if(locationExists(p_locate)){
+    lastSlash = fullLocate.find_last_of("/\\");
+    p_locate = fullLocate.substr(0, lastSlash);
+    p_file = fullLocate.substr(lastSlash+1);
+    if(locationExists(p_locate)){
 
-    PL_LOCATE = p_locate;
-    //  if(!fileExists(p_file, p_locate)){
-          PL_FILE = p_file;
+        PL_LOCATE = p_locate;
+        //  if(!fileExists(p_file, p_locate)){
+        PL_FILE = p_file;
 
         return true;
- //      }
-  }
-  return false;
+        //      }
+    }
+    return false;
 }
 
 bool newplaylist::locationExists(string p_locate){
@@ -77,17 +77,15 @@ bool newplaylist::locationExists(string p_locate){
 }
 
 bool newplaylist::fileExists(string file, string location){
-FILE* fp;
-fp = NULL;
-char *FinalFile;
-FinalFile = new char[200];
-sprintf(FinalFile,"%c%c", location.c_str(),file.c_str());
-fp = fopen(FinalFile, "r");
-if(fp){
-    fclose(fp);
-    return true;
-}
-return false;
-
-
+    FILE* fp;
+    fp = NULL;
+    char *FinalFile;
+    FinalFile = new char[200];
+    sprintf(FinalFile,"%c%c", location.c_str(),file.c_str());
+    fp = fopen(FinalFile, "r");
+    if(fp){
+        fclose(fp);
+        return true;
+    }
+    return false;
 }
