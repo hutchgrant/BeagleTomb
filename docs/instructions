@@ -21,7 +21,7 @@ $  sudo mediatomb --port 49152    or any port you want to bind to
 This process is not configured automatically on startup. I recommend setting that in your startup menu. You will need mediatomb running or beagletomb will not work. You can add files to mediatomb by browsing to your servers ip and port e.g. http://192.168.1.101:49152 then simply add your media.
 
 beagletomb client install
-$  sudo apt-get install mplayer qt4-qmake qt4-dev-tools sqlite3 libmysqlclient-dev libsqlite3-dev 
+$  sudo apt-get install mplayer qt4-qmake qt4-dev-tools sqlite3 libmysqlclient-dev libsqlite3-dev libmysqlcppconn-dev
 
 download beagletomb.v.0.1.3.tar.gz assuming in Downloads directory within your user home folder.
  $ cd ~/Downloads
@@ -36,7 +36,7 @@ compile and run
  $ make
 
  link it with:
- $ ln -fs /opt/extras.ubuntu.com/beagletomb/beagletomb
+ $ ln -fs /opt/extras.ubuntu.com/beagletomb/beagletomb /usr/bin/beagletomb
  
  Finally run the binary with: 
  $ beagletomb 
