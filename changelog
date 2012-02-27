@@ -1,0 +1,5 @@
+beagletomb (0.1.5-0ubuntu1) natty; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Grant Hutchinson <h.g.utchinson@gmail.com>  Wed, 22 Feb 2012 18:59:22 -0500
