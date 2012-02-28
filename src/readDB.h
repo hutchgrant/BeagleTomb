@@ -26,6 +26,7 @@
 #define READDB_H_
 #define MAX 10000
 #include "songObj.h"
+#include "radioObj.h"
 #include "Database.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,6 +36,7 @@ using namespace std;
 class readDB {
 
         songObj *Artist, *Album, *Song, *Video, *VidDir;
+        radioObj play_list;
 	char *DBlocation2;
 public:
         readDB(const char *dbLocation);
@@ -43,6 +45,7 @@ public:
 	songObj* ArtistFill(int *artSize);
         songObj* VidDirFill(int *vidDirSize);
         songObj* VideoFill(int *vidSize);
+       radioObj RadioFill( int *radSize);
 	void display(int artSize, int albSize, int songSize);
 	virtual ~readDB();
 };

@@ -36,6 +36,7 @@
 #include "playlistobj.h"
 #include "newplaylist.h"
 #include "openplaylist.h"
+#include "radioObj.h"
 namespace Ui {
 class BeagleMain;
 }
@@ -47,8 +48,8 @@ class BeagleMain : public QMainWindow
 public:
 
     int MenuMode, TitleMode;
-    int albCount, songCount, vidCount, vidDirCount;   /// number of current albums in list
-    int *curAlbID, *curSongID, *curVidID, *curVidDirID;
+    int albCount, songCount, vidCount, vidDirCount, radCount; ///  count of each item in the list
+    int *curAlbID, *curSongID, *curVidID, *curVidDirID;       ///  unique identifier for current file
     int plMode;        /// playlist mode : 1 playlist browsing and 2: browsing tracks within playlist
     int pl_selected;  /// global playlist selection
      int title_selected;  /// global title selection
@@ -62,10 +63,13 @@ public:
     QMPwidget widget;
     mplayCon mplay;
     songObj* Artist, *Song, *Album, *VidDir, *Video;
- //   songObj* playlist_obj;
-    int artSize, albSize, songSize, vidSize, vidDirSize;
+    radioObj Radio;
+    int artSize, albSize, songSize, vidSize, vidDirSize, radSize;
 
     bool playlistOpen;
+
+    void RefillRadioPL();
+    QStringList RefillRadList();
 
     explicit BeagleMain(QWidget *parent = 0);
    ~BeagleMain();
@@ -135,17 +139,23 @@ private slots:
 
     void on_PlayList_clicked(QModelIndex index);
 
-
-    void on_but_RadStart_clicked();
-
     void on_actionDonate_2_triggered();
 
     void on_ADMIN_but_clicked();
+
+    void on_but_RadAdd_clicked();
+
+    void on_but_RemRad_clicked();
+
+    void on_list_radio_clicked(QModelIndex index);
+
+    void on_list_radio_doubleClicked(QModelIndex index);
 
 private:
     Ui::BeagleMain *ui;
     QStringListModel *t_Model;
     QStringListModel *m_Model;
+    QStringListModel *r_Model;
 };
 
 #endif // BEAGLEMAIN_H

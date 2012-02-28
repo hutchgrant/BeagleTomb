@@ -22,7 +22,6 @@
 #ifndef SYNCMe_H_
 #define SYNCMe_H_
 #include <iostream>
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -32,21 +31,20 @@
 #include <iostream>
 #include <fstream>
 #include "songObj.h"
-#define TEMPSYNCPREF "/.BeagleTomb/cache/tempcache.txt"
-#define createSQL "/opt/extras.ubuntu.com/beagletomb/src/createSQL.sql"
-#include "songObj.h"
+#include "radioObj.h"
 #include "mysqlconn.h"
 
+#define TEMPSYNCPREF "/.BeagleTomb/cache/tempcache.txt"
+#define createSQL "/opt/extras.ubuntu.com/beagletomb/src/createSQL.sql"
 
 using namespace std;
 
 class syncMe {
 
 public:
-
         string DBLocation;
 
-	syncMe(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
+        syncMe(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
 
         void videoWrite(songObj* Song, int songSize);
 
@@ -66,7 +64,7 @@ public:
 	void display(songObj* Artist, int *artSize, songObj* Album, int *albSize, songObj *Song, int *songSize);
 	void deleteDB(const char *dbLocation);
 	void createDB(const char *dbLocation);
-	int control(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
+        int control(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
 
 	virtual ~syncMe();
 };

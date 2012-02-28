@@ -173,6 +173,31 @@ songObj* readDB::VideoFill( int *vidSize){
     *vidSize = count;
     return Video;
 }
+
+radioObj readDB::RadioFill(int *radSize){
+
+    int count = 0;
+    Database *db;
+    db = new Database(DBlocation2);
+    vector<vector<string> > result = db->query("SELECT * FROM radio;");
+    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
+    {
+        vector<string> row = *it;
+        string r_name, r_url;
+        r_name = row.at(1);
+        r_url = row.at(2);
+
+        if(r_name != "" && r_name != "-"){
+            play_list.Add(r_name, r_url);
+            count++;
+        }
+    }
+    *radSize = count;
+    return play_list;
+
+
+}
+
 void readDB::display(int artSize, int albSize, int songSize){
     int choice = 0;
     bool Exit = 0;

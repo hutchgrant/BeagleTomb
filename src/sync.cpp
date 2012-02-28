@@ -102,7 +102,6 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     songWrite(newSong, songSize);
     vidDirWrite(newVidDir, vidDirSize);
     videoWrite(newVideo, vidSize);
-
   //  RemoveTMP();
     return 1;
 }
@@ -330,7 +329,6 @@ void syncMe::videoWrite(songObj* Video, int vidSize){
         }
     }
 }
-
 
 void syncMe::writeMe(string qry){
 

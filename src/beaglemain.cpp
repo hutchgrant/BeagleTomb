@@ -31,6 +31,7 @@ BeagleMain::BeagleMain(QWidget *parent) :
     ui->MenuList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->TitleList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->PlayList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->list_radio->setEditTriggers(QAbstractItemView::NoEditTriggers);
     widget.setSeekSlider(ui->SEEK_slider);
     widget.setVolumeSlider(ui->VOL_dial);
 
@@ -45,11 +46,13 @@ void BeagleMain::Sync(int type){
     songSize = 0;
     vidDirSize = 0;
     vidSize = 0;
-
+   radSize = 0;
     if(type == 0){
         /// init playlist
         pl.setCount(0);
         pl.initPL();
+        /// init radio
+
         plMode= 0; // set playlist mode to browse
         playlistOpen = false; // set playlist open
         /// if SQL file doesn't exist
@@ -76,9 +79,18 @@ void BeagleMain::Sync(int type){
             Song = rDB.SongFill(&songSize);
             VidDir = rDB.VidDirFill(&vidDirSize);
             Video = rDB.VideoFill(&vidSize);
+            /// read from sql and fill radio obj
+            Radio = rDB.RadioFill(&radSize);
+            Radio.setDB(pref.getSQL());
+            Radio.setSize(radSize);
+            RefillRadioPL();
         }
     }
     else if(type == 1){
+
+        readDB rDB(pref.getSQL().c_str());
+        ///check database for previous radio stations
+        Radio = rDB.RadioFill(&radSize);
 
         pref.deleteDB(pref.getSQL().c_str());
         pref.createDB(pref.getSQL().c_str(), createSQL);
@@ -86,18 +98,24 @@ void BeagleMain::Sync(int type){
         cout << "syncing.... " << pref.getServ() << "\t" << pref.getPort()<<  endl;
         /// read from remote mysql write to local sqlite
         syncMe sy(pref.getServ().c_str(), pref.getUser().c_str(), pref.getPass().c_str(), pref.getTable().c_str(), pref.getSQL().c_str());
-
+        /// write radio stations
+        Radio.writeDBFill();
         /// write preferences to sql db
         pref.writeDB();
         pref.setInitDB();
         cout << "reading.... " << endl;
         /// read from sqlite to songObjs
-        readDB rDB(pref.getSQL().c_str());
         Artist = rDB.ArtistFill(&artSize);
         Album = rDB.AlbumFill(&albSize);
         Song = rDB.SongFill(&songSize);
         VidDir = rDB.VidDirFill(&vidDirSize);
         Video = rDB.VideoFill(&vidSize);
+        /// read from sql and fill radio obj
+        cout << "syncing radio" << endl;
+        Radio = rDB.RadioFill(&radSize);
+        Radio.setDB(pref.getSQL());
+        Radio.setSize(radSize);
+        RefillRadioPL();
         cout << "Database synced!" << endl;
     }
 }
@@ -625,16 +643,6 @@ void BeagleMain::on_PlayList_clicked(QModelIndex index)
      widget.close();
  }
 
-void BeagleMain::on_but_RadStart_clicked()
-{
-    QString QradURL;
-    string radURL;
-    QradURL = ui->entry_radURL->text();
-    radURL = QradURL.toStdString();
-
-    widget.start(QStringList(radURL.c_str()));
-}
-
 void BeagleMain::on_actionDonate_2_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://flattr.com/profile/hutchgrant", QUrl::TolerantMode));
@@ -645,4 +653,60 @@ void BeagleMain::on_ADMIN_but_clicked()
     char mediatombAdd[100];
     sprintf(mediatombAdd, "http://%s:%s", pref.getServ().c_str(), pref.getPort().c_str());
     QDesktopServices::openUrl(QUrl(mediatombAdd, QUrl::TolerantMode));
+}
+
+void BeagleMain::on_but_RadAdd_clicked()
+{
+    QString Radio_url;
+    QString Radio_name;
+
+    Radio_url = ui->entry_radURL->text();
+    Radio_name = ui->entry_radName->text();
+
+    Radio.Add(Radio_name.toStdString(),Radio_url.toStdString());
+    radSize++;
+
+    Radio.writeDB();
+    RefillRadioPL();
+}
+
+void BeagleMain::on_but_RemRad_clicked()
+{
+    int pos = 0;
+    string pl_ItemName;
+    pos = ui->list_radio->currentIndex().row();
+    pl_ItemName = Radio.getName(pos);
+    Radio.Remove(pl_ItemName, pos);
+    readDB rDB(pref.getSQL().c_str());
+    Radio = rDB.RadioFill(&radSize);
+    RefillRadioPL();
+}
+
+void BeagleMain::on_list_radio_clicked(QModelIndex index)
+{
+
+}
+
+/*
+  * refill playlist list with playlist model from playlist object
+  */
+void BeagleMain::RefillRadioPL(){
+    QStringList updatedList;
+   r_Model = new QStringListModel(this);
+    updatedList = Radio.RefillPlaylist();
+    r_Model->setStringList(updatedList);
+    ui->list_radio->setModel(r_Model);
+
+}
+
+void BeagleMain::on_list_radio_doubleClicked(QModelIndex index)
+{
+    int pos =0;
+    pos = ui->list_radio->currentIndex().row();
+    string finalUrl, finalName;
+    finalUrl = Radio.getUrl(pos);
+    finalName = Radio.getName(pos);
+    ui->SONG_lbl->setText((QString)finalName.c_str());
+    widget.show();
+    widget.start(QStringList(finalUrl.c_str()));
 }

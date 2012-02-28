@@ -71,7 +71,7 @@
      <string>Sync Menu!</string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="Playlist_tab">
      <attribute name="title">
@@ -266,39 +266,90 @@
      <attribute name="title">
       <string>Radio</string>
      </attribute>
-     <widget class="QPushButton" name="but_RadStart">
+     <widget class="QPushButton" name="but_RadAdd">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>60</y>
+        <x>0</x>
+        <y>210</y>
         <width>85</width>
         <height>27</height>
        </rect>
       </property>
       <property name="minimumSize">
        <size>
-        <width>85</width>
+        <width>80</width>
         <height>27</height>
        </size>
       </property>
       <property name="text">
-       <string>Start</string>
+       <string>Add</string>
       </property>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QPushButton" name="but_RemRad">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>1</y>
-        <width>161</width>
-        <height>50</height>
+        <x>90</x>
+        <y>210</y>
+        <width>81</width>
+        <height>27</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="minimumSize">
+       <size>
+        <width>80</width>
+        <height>27</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Remove</string>
+      </property>
+     </widget>
+     <widget class="QListView" name="list_radio">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>171</width>
+        <height>151</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>150</y>
+        <width>171</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="entry_radName"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>180</y>
+        <width>171</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Enter URL:</string>
+          <string>URL     </string>
          </property>
         </widget>
        </item>

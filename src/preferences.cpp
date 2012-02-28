@@ -32,6 +32,7 @@ preferences::preferences(){
     string PL = "/.BeagleTomb/playlist/";
     DBlocation = getenv("HOME") + DB;
     PLAYLISTDIR = getenv("HOME") + PL;
+
 }
 preferences::preferences(const preferences& src){
     USER = src.USER;
@@ -141,7 +142,6 @@ void preferences::readDB(){
         setTable(str5);
         setSQL(str6);
         setPlaylistDir(str7);
-        cout << "read playlist dir " << getPlaylistDir() << endl;
     }
 }
 
