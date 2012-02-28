@@ -26,7 +26,8 @@ SOURCES += src/main.cpp\
     src/about.cpp \
     src/newplaylist.cpp \
     src/playlistobj.cpp \
-    src/openplaylist.cpp
+    src/openplaylist.cpp \
+    src/radioObj.cpp
 
 sources.path = /opt/extras.ubuntu.com/beagletomb
 INSTALLS += sources
@@ -59,7 +60,8 @@ HEADERS  += src/beaglemain.h \
     src/Database.h \
     src/beaglemain.h \
     src/about.h \
-    src/openplaylist.h
+    src/openplaylist.h \
+    src/radioObj.h
 LIBS += -L/usr/lib/ -lmysqlclient \
         -L/usr/include/ -lsqlite3
 
