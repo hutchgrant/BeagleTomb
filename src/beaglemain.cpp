@@ -567,9 +567,7 @@ void BeagleMain::on_SAVE_but_clicked()
     if(newPL.exec()==QDialog::Accepted){
         if(newPL.plExists()){
             fileName = newPL.getFile();
-            cout << fileName << endl;
              fileLocate = newPL.getLocate();
-            cout << fileLocate << endl;
              pl.setFullLocation(fileName, fileLocate);
              pl.writePLfile();
         }
@@ -587,9 +585,7 @@ void BeagleMain::on_OPEN_but_clicked()
         if(openPL.exec()==QDialog::Accepted){
            if(openPL.plExists()){
                fileName = openPL.getFile();
-               cout << fileName << endl;
                fileLocate = openPL.getLocate();
-                cout << fileLocate << endl;
                  pl.setFullLocation(fileName, fileLocate);
            }
         }

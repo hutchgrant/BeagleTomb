@@ -28,7 +28,7 @@
 #include <cstring>
 #include <QMainWindow>
 #include <QDir>
-#define TEMPPREF "/.BeagleTomb/cache/tempPref.txt"
+#include <QtSql>
 #define TEMPCACHE "/.BeagleTomb/cache/dbcache.txt"
 #include <stdio.h>
 #include <iostream>

@@ -51,12 +51,6 @@ preferences::preferences(string DFLTSQL)
 }
 
 
-/*
- * Open any filename
- *
- */
-
-
 /// get initial db file from text cache
 bool preferences::initDB(){
     bool found = false;
@@ -145,7 +139,6 @@ void preferences::readDB(){
     }
 }
 
-
 /// write to preference table sql
 void preferences::writeDB(){
     
@@ -164,29 +157,22 @@ void preferences::writeDB(){
     // cout << os;
     str2 = os.str();
     writeMe(str2);
-    sendToShell();
 }
 
 //// write to output file temp qry
 void preferences::writeMe(string qry){
+   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "Connection");
+   db.setDatabaseName(DBlocation.c_str());
 
-    ofstream outputFile;
-    string temp_pref = TEMPPREF;
-    string final = getenv("HOME") + temp_pref;
-    outputFile.open(final.c_str());
-
-    outputFile << qry;
-
-    outputFile.close();
-}
-
-/// pipe temp output fil to sqlite
-void preferences::sendToShell() {
-    char FinalLink[150];
-    string temp_pref = TEMPPREF;
-    string full_pref_location = getenv("HOME") + temp_pref;
-    sprintf(FinalLink, "sqlite3 %s < %s", DBlocation.c_str(), full_pref_location.c_str());
-    system(FinalLink);
+    if(!db.open()){
+        cout << "couldn't connect to database";
+    }
+    else{
+        QSqlQuery myQry(db);
+        myQry.prepare(qry.c_str());
+        myQry.exec();
+        db.close();
+    }
 }
 
 void preferences::createCache(){
@@ -203,14 +189,10 @@ void preferences::createCache(){
     QDir(q_main).mkdir(q_main);
     QDir(q_main).mkdir(q_cache);
     QDir(q_main).mkdir(q_playlist);
-
-
-
 }
 
 preferences& preferences::operator=(const preferences& src){
-    
-    
+
     if(this != &src)
     {
         setUser(src.USER);

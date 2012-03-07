@@ -69,8 +69,7 @@ void radioObj::ReInitPL(){
   */
 void radioObj::Remove(string name, int pos){
     char qryState[200];
-        sprintf(qryState, "\"DELETE from radio WHERE name = '%s';\"", name.c_str());
-        cout << qryState << endl;
+        sprintf(qryState, "DELETE from radio WHERE name = '%s'", name.c_str());
         sendToShell(qryState);
 }
 
@@ -82,7 +81,6 @@ void radioObj::Add(string name, string url)
      /// Add to our playlist object
     setName(name,radioCount);
     setUrl(url,radioCount);
-    cout << "adding radio " << getName(radioCount) << endl;
     radioCount++;
 }
 
@@ -94,11 +92,9 @@ QStringList radioObj::RefillPlaylist(){
     r_ItemCount = 0;
     QStringList RadioItem;
     string str;
-        cout << "count is " << radioCount << endl;
         for(int i = 0; i<= radioCount-1; i++){
             str = getName(i);
             if(str.compare("-") != 0)
-            cout << "refilling with " << str << endl;
                 RadioItem << str.c_str();
                 r_ItemCount++;
         }
@@ -108,8 +104,7 @@ QStringList radioObj::RefillPlaylist(){
 void radioObj::writeDB(){
     char qryState[200];
      int count = radioCount - 1;
-        sprintf(qryState, "\"INSERT INTO radio (id, name, url) VALUES (null, '%s', '%s');\"", getName(count).c_str(), getUrl(count).c_str());
-        cout << qryState << endl;
+        sprintf(qryState, "INSERT INTO radio (id, name, url) VALUES (null, '%s', '%s')", getName(count).c_str(), getUrl(count).c_str());
         sendToShell(qryState);
 }
 
@@ -118,8 +113,7 @@ void radioObj::writeDBFill(){
     char *qryState;
      for(int count = 0; count <= radioCount-1; count++){
          qryState = new char[200];
-        sprintf(qryState, "\"INSERT INTO radio (id, name, url) VALUES (null, '%s', '%s');\"", getName(count).c_str(), getUrl(count).c_str());
-        cout << qryState << endl;
+        sprintf(qryState, "INSERT INTO radio (id, name, url) VALUES (null, '%s', '%s')", getName(count).c_str(), getUrl(count).c_str());
         sendToShell(qryState);
      }
 }
@@ -154,26 +148,16 @@ radioObj::~radioObj(){
 }
 
 void radioObj::sendToShell(string qry){
-    char FinalLink[550];
-    sprintf(FinalLink, "sqlite3 %s %s", DBlocation.c_str(), qry.c_str());
-    cout << "final qry : " << FinalLink <<endl;
-    system(FinalLink);
-}
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "Connection");
+    db.setDatabaseName(DBlocation.c_str());
 
-
-int radioObj::getMaxPos(int count) {
-    int posMax;
-
-    if (count < 400 && count > 100) {
-        posMax = 100;
-    } else if (count < 100 && count > 20) {
-        posMax = 10;
-    } else if (count < 20 && count < 10) {
-        posMax = 1;
-    } else if (count < 20 && count > 10) {
-        posMax = 5;
-    } else {
-        posMax = 200;
-    }
-    return posMax;
+     if(!db.open()){
+         cout << "couldn't connect to database";
+     }
+     else{
+         QSqlQuery myQry(db);
+         myQry.prepare(qry.c_str());
+         myQry.exec();
+         db.close();
+     }
 }

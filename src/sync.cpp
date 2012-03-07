@@ -20,33 +20,16 @@
 
 
 #include "sync.h"
-#include "mysqlconn.h"
-#include "readDB.h"
 using namespace std;
 syncMe::syncMe(const char *server, const char *user, const char *pass,
                const char *table, const char *dbLocation) {
+
+
+    string home = getenv("HOME");
+     string temp_pref = home + TEMPSYNCPREF;
+   db = QSqlDatabase::addDatabase("QSQLITE", "Connection");
+   db.setDatabaseName(temp_pref.c_str());
     control(server, user, pass, table, dbLocation);
-}
-
-void syncMe::display(songObj* Artist, int *artSize, songObj* Album,
-                     int *albSize, songObj *Song, int *songSize) {
-    int Exit = 0;
-    for (int i = 1; i <= *artSize - 1 && !Exit; i++) {
-
-        if (Artist[i].getFileID() == 0) {
-            Exit = 1;
-        } else {
-            cout << Artist[i];
-        }
-    }
-    cout << endl;
-    for (int i = 1; i <= *albSize - 1; i++) {
-        cout << Album[i];
-    }
-    cout << endl;
-    for (int i = 1; i <= *songSize - 1; i++) {
-        cout << Song[i];
-    }
 }
 
 void syncMe::deleteDB(const char *dbLocation) {
@@ -102,14 +85,9 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     songWrite(newSong, songSize);
     vidDirWrite(newVidDir, vidDirSize);
     videoWrite(newVideo, vidSize);
-  //  RemoveTMP();
     return 1;
 }
-void syncMe::RemoveTMP(){
-    char Final[100];
-    sprintf("rm %s", TEMPSYNCPREF);
-    system(Final);
-}
+
 void syncMe::artistWrite(songObj* Artist, int artSize){
     int  pos = 0, posMax = 0, counter = 0, countRemind = 0;
 
@@ -145,7 +123,6 @@ void syncMe::artistWrite(songObj* Artist, int artSize){
         writeMe(str2);
         posMax += counter;
         pos += counter;
-        sendToShell();
 
         if (m == (artSize / counter) - 1) {
             posMax = pos + artSize - ((artSize / counter)
@@ -189,7 +166,6 @@ void syncMe::albumWrite(songObj* Album, int albSize){
         writeMe(str2);
         posMax += counter;
         pos += counter;
-        sendToShell();
 
         if (m == (albSize / counter) - 1) {
             posMax = pos + albSize - ((albSize / counter)
@@ -232,7 +208,6 @@ void syncMe::songWrite(songObj* Song, int songSize){
         writeMe(str2);
         posMax += counter;
         pos += counter;
-        sendToShell();
 
         if (m == (songSize / counter) - 1) {
             posMax = pos + songSize - ((songSize / counter)
@@ -276,7 +251,6 @@ void syncMe::vidDirWrite(songObj* vidDir, int vidDirSize){
         writeMe(str2);
         posMax += counter;
         pos += counter;
-        sendToShell();
 
         if (m == (vidDirSize / counter) - 1) {
             posMax = pos + vidDirSize - ((vidDirSize / counter)
@@ -321,7 +295,6 @@ void syncMe::videoWrite(songObj* Video, int vidSize){
         writeMe(str2);
         posMax += counter;
         pos += counter;
-        sendToShell();
 
         if (m == (vidSize / counter) - 1) {
             posMax = pos + vidSize - ((vidSize / counter)
@@ -332,14 +305,15 @@ void syncMe::videoWrite(songObj* Video, int vidSize){
 
 void syncMe::writeMe(string qry){
 
-    ofstream outputFile;
-    string temp_pref = TEMPSYNCPREF;
-    string final = getenv("HOME") + temp_pref;
-    outputFile.open(final.c_str());
-
-    outputFile << qry;
-
-    outputFile.close();
+       if(!db.open()){
+           cout << "couldn't connect to database";
+       }
+       else{
+           QSqlQuery myQry(db);
+           myQry.prepare(qry.c_str());
+           myQry.exec();
+           db.close();
+       }
 }
 
 
@@ -360,14 +334,5 @@ int syncMe::getMaxPos(int count) {
     return posMax;
 }
 
-void syncMe::sendToShell() {
-    char FinalLink[150];
-    string temp_pref = TEMPSYNCPREF;
-    string final = getenv("HOME") + temp_pref;
-    sprintf(FinalLink, "sqlite3 %s < %s", DBLocation.c_str(), final.c_str());
-    system(FinalLink);
-}
-
 syncMe::~syncMe() {
-
 }

@@ -21,6 +21,9 @@
 
 #ifndef SYNCMe_H_
 #define SYNCMe_H_
+
+#include <QtSql>
+
 #include <iostream>
 #include <stdio.h>
 #include <iostream>
@@ -30,11 +33,14 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+
+#include "mysqlconn.h"
+#include "readDB.h"
 #include "songObj.h"
 #include "radioObj.h"
 #include "mysqlconn.h"
 
-#define TEMPSYNCPREF "/.BeagleTomb/cache/tempcache.txt"
+#define TEMPSYNCPREF "/.BeagleTomb/BTmedia.db"
 #define createSQL "/opt/extras.ubuntu.com/beagletomb/src/createSQL.sql"
 
 using namespace std;
@@ -43,6 +49,7 @@ class syncMe {
 
 public:
         string DBLocation;
+        QSqlDatabase db;
 
         syncMe(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
 
