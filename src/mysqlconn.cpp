@@ -28,53 +28,25 @@ mysqlconn::mysqlconn(const char *server, const char* user, const char *pass, con
     mysqlD.user = user;
     mysqlD.password = pass;
     mysqlD.database = table;
-    /* Example input
- mysqlD.server = "192.168.1.116"; // the address of mysql DB
- mysqlD.user = "mediatomb"; 		// the user of mysql DB
- mysqlD.password = "mediatomb"; // the password of user of mysql DB
- mysqlD.database = "mediatomb"; // the table of mysql DB
- */
 }
 
-songObj* mysqlconn::dynamicArt(songObj* Artist, int sizeArt) {
-    size_t newsize = sizeArt;
-    songObj* MyCpy;
-    MyCpy = new songObj[newsize];
-
-    memcpy(MyCpy, Artist, sizeArt * sizeof(int));
-
-    delete[] Artist;
-    Artist = new songObj[newsize];
-    Artist = MyCpy;
-    return Artist;
-}
-
-MYSQL* mysqlconn::mysql_connection_setup(
+QSqlDatabase mysqlconn::mysql_connection_setup(
     struct connection_details mysql_details) {
-    // init mysql connection
-    MYSQL *connection = mysql_init(NULL);
     // connect to the database with the details attached.
-    if (!mysql_real_connect(connection, mysql_details.server,
-                            mysql_details.user, mysql_details.password, mysql_details.database,
-                            0, NULL, 0)) {
-        printf("Conection error : %s\n", mysql_error(connection));
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(mysql_details.server);
+    db.setDatabaseName(mysql_details.database);
+    db.setUserName(mysql_details.user);
+    db.setPassword(mysql_details.password);
+
+    if (!db.open()) {
+        printf("Conection error ");
         exit(1);
     }
-    return connection;
+    return db;
 }
 
-/**
- * Performs the query.
- */
-MYSQL_RES* mysqlconn::mysql_perform_query(MYSQL *connection, char *sql_query) {
-    // send the query to the database
-    if (mysql_query(connection, sql_query)) {
-        printf("MySQL query error : %s\n", mysql_error(connection));
-        exit(1);
-    }
-
-    return mysql_use_result(connection);
-}
 
 songObj* mysqlconn::connectAlbum(songObj* Artist, int *artSize, songObj* Album, int *albSize){
     bool Myexit = false;
@@ -91,9 +63,8 @@ songObj* mysqlconn::connectAlbum(songObj* Artist, int *artSize, songObj* Album, 
         Album[i].set("-", 0, 0);
     }
 
-    MYSQL *conn = NULL; // the connection
-    MYSQL_RES *res = NULL; // the results
-    MYSQL_ROW row = NULL; // the results row (line by line)
+    QSqlDatabase db;
+    QSqlQuery query;
 
     while(Myexit != true){
 
@@ -105,35 +76,46 @@ songObj* mysqlconn::connectAlbum(songObj* Artist, int *artSize, songObj* Album, 
             Myexit = 1;
         }
         // connect to the mysql database
-        conn = mysql_connection_setup(mysqlD);
+        db = mysql_connection_setup(mysqlD);
+
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
                 curID );
 
-        res = mysql_perform_query(conn, myQry);
+        query = QString(myQry);
 
-        while ((row = mysql_fetch_row(res)) != NULL) {
+        while (query.next()){
+
+
+            QString QVal = query.value(0).toString();
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
+            QString QVal5 = query.value(5).toString();
+
             ///////*****  Query for Album rows using artist
-            if(strcmp(row[4], "object.container.album.musicAlbum") == 0){
-                if (atoi(row[2]) == curID) {
+            if(QVal4.toStdString().compare("object.container.album.musicAlbum") == 0){
+                if (QVal2.toInt() == curID) {
                     albCount++;
-                    Album[albCount].set(row[5], atoi(row[0]), atoi(row[2]));
+                    string Qstr5Convert = QVal5.toStdString();
+                    char *QVal5Convert;
+                    QVal5Convert = new char[Qstr5Convert.length() + 1];
+                    strcpy(QVal5Convert, Qstr5Convert.c_str());
+                    Album[albCount].set(QVal5Convert, QVal.toInt(), QVal2.toInt());
                 }
             }
-
         }
         *albSize = albCount;
         QryCount++;
         if (QryCount == *artSize) {
             Myexit = true;
         }
-        mysql_free_result(res);
-        mysql_close(conn);
+        db.close();
     }
     return Album;
-
 }
-songObj* mysqlconn::connectSong(songObj* Album, int *albSize, songObj* Song, int *songSize){
 
+songObj* mysqlconn::connectSong(songObj* Album, int *albSize, songObj* Song, int *songSize){
 
     int songCount = 0;
     int QryCount = 0;
@@ -148,9 +130,9 @@ songObj* mysqlconn::connectSong(songObj* Album, int *albSize, songObj* Song, int
         Song[i].set("-", 0, 0);
     }
 
-    MYSQL *conn = NULL; // the connection
-    MYSQL_RES *res = NULL; // the results
-    MYSQL_ROW row = NULL; // the results row (line by line)
+    QSqlDatabase db;
+    QSqlQuery query;
+
 
     while (Myexit != true){
 
@@ -160,7 +142,7 @@ songObj* mysqlconn::connectSong(songObj* Album, int *albSize, songObj* Song, int
 	}
 
 	// connect to the mysql database
-	conn = mysql_connection_setup(mysqlD);
+        db = mysql_connection_setup(mysqlD);
 	curID = Album[QryCount+1].getFileID();
 	if(curID == 0){
             Myexit = true;
@@ -170,14 +152,27 @@ songObj* mysqlconn::connectSong(songObj* Album, int *albSize, songObj* Song, int
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
                 curID);
 
-        res = mysql_perform_query(conn, myQry);
+        query = QString(myQry);
 
-        while ((row = mysql_fetch_row(res)) != NULL) {
+        while (query.next()){
+
+
+            QString QVal = query.value(0).toString();
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
+            QString QVal5 = query.value(5).toString();
+
 
             ///////*****  Query for Songs
-            if (atoi(row[2]) == curID) {
+            if (QVal2.toInt() == curID) {
                 songCount++;
-                Song[songCount].set(row[5], atoi(row[0]), atoi(row[2]));
+                string QstrConvert = QVal5.toStdString();
+                char *QVal5Convert;
+                QVal5Convert = new char[QstrConvert.length() + 1];
+                strcpy(QVal5Convert, QstrConvert.c_str());
+                Song[songCount].set(QVal5Convert, QVal.toInt(), QVal2.toInt());
             }
         }
 
@@ -186,9 +181,7 @@ songObj* mysqlconn::connectSong(songObj* Album, int *albSize, songObj* Song, int
         if (QryCount == *albSize) {
             Myexit = true;
         }
-
-        mysql_free_result(res);
-        mysql_close(conn);
+        db.close();
     }
     return Song;
 }
@@ -203,9 +196,9 @@ songObj* mysqlconn::connectArtist(songObj* Artist, int artMenu, int *mySize){
         Artist[i].set("-", 0, 0);
     }
 
-    MYSQL *conn = NULL; // the connection
-    MYSQL_RES *res = NULL; // the results
-    MYSQL_ROW row = NULL; // the results row (line by line)
+    QSqlDatabase db;
+    QSqlQuery query;
+
 
     char *myQry = NULL;
 
@@ -214,28 +207,36 @@ songObj* mysqlconn::connectArtist(songObj* Artist, int artMenu, int *mySize){
     }
 
     // connect to the mysql database
-    conn = mysql_connection_setup(mysqlD);
+    db = mysql_connection_setup(mysqlD);
 
     /// use artist menu ID  to get artists
 
     sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
             artMenu);
-    res = mysql_perform_query(conn, myQry);
+    query = QString(myQry);
 
-    while ((row = mysql_fetch_row(res)) != NULL) {
+    while (query.next()){
+
+    QString QVal = query.value(0).toString();
+    QString QVal1 = query.value(1).toString();
+    QString QVal2 = query.value(2).toString();
+    QString QVal3 = query.value(3).toString();
+    QString QVal4 = query.value(4).toString();
+    QString QVal5 = query.value(5).toString();
 
         ///////*****  Query for MAIN root menu
-        if (atoi(row[2]) == artMenu) {
-
-            Artist[artCount].set(row[5], atoi(row[0]), atoi(row[2]));
+        if (QVal2.toInt() == artMenu) {
+            string Qstr5Convert = QVal5.toStdString();
+            char *QVal5Convert;
+            QVal5Convert = new char[Qstr5Convert.length() + 1];
+            strcpy(QVal5Convert, Qstr5Convert.c_str());
+            Artist[artCount].set(QVal5Convert, QVal.toInt(), QVal2.toInt());
             artCount++;
         }
     }
 
     *mySize = artCount;
-    mysql_free_result(res);
-    mysql_close(conn);
-
+    db.close();
     return Artist;
 }
 
@@ -256,9 +257,10 @@ songObj* mysqlconn::connectVideo(songObj* VidDir, int *vidDirSize, songObj* Vide
         Video[i].set("-", 0, 0);
     }
 
-    MYSQL *conn = NULL; // the connection
-    MYSQL_RES *res = NULL; // the results
-    MYSQL_ROW row = NULL; // the results row (line by line)
+
+    QSqlDatabase db;
+    QSqlQuery query;
+
 
     while (Myexit != true){
 
@@ -268,7 +270,7 @@ songObj* mysqlconn::connectVideo(songObj* VidDir, int *vidDirSize, songObj* Vide
         }
 
         // connect to the mysql database
-        conn = mysql_connection_setup(mysqlD);
+        db = mysql_connection_setup(mysqlD);
         curID = VidDir[QryCount+1].getFileID();
         if(curID == 0){
             Myexit = true;
@@ -278,14 +280,26 @@ songObj* mysqlconn::connectVideo(songObj* VidDir, int *vidDirSize, songObj* Vide
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
                 curID);
 
-        res = mysql_perform_query(conn, myQry);
+        query = QString(myQry);
 
-        while ((row = mysql_fetch_row(res)) != NULL) {
+        while (query.next()){
 
+
+            QString QVal = query.value(0).toString();
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
+            QString QVal5 = query.value(5).toString();
             ///////*****  Query for Songs
-            if (atoi(row[2]) == curID) {
+
+            if (QVal2.toInt() == curID) {
                 VidCount++;
-                Video[VidCount].set(row[5], atoi(row[0]), atoi(row[2]));
+                string Qstr5Convert = QVal5.toStdString();
+                char *QVal5Convert;
+                QVal5Convert = new char[Qstr5Convert.length() + 1];
+                strcpy(QVal5Convert, Qstr5Convert.c_str());
+                Video[VidCount].set(QVal5Convert, QVal.toInt(), QVal2.toInt());
             }
         }
 
@@ -295,8 +309,7 @@ songObj* mysqlconn::connectVideo(songObj* VidDir, int *vidDirSize, songObj* Vide
             Myexit = true;
         }
 
-        mysql_free_result(res);
-        mysql_close(conn);
+        db.close();
     }
     return Video;
 }
@@ -314,9 +327,8 @@ songObj* mysqlconn::connectVidDir(songObj* VidDir, int vidMenu, int *vidDirSize)
         VidDir[i].set("-", 0, 0);
     }
 
-    MYSQL *conn = NULL; // the connection
-    MYSQL_RES *res = NULL; // the results
-    MYSQL_ROW row = NULL; // the results row (line by line)
+    QSqlDatabase db;
+    QSqlQuery query;
 
     char *myQry = NULL;
 
@@ -325,30 +337,37 @@ songObj* mysqlconn::connectVidDir(songObj* VidDir, int vidMenu, int *vidDirSize)
     }
 
     // connect to the mysql database
-    conn = mysql_connection_setup(mysqlD);
+    db = mysql_connection_setup(mysqlD);
 
     /// use video menu ID  to get vid directory
 
     sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
             vidMenu);
-    res = mysql_perform_query(conn, myQry);
 
-    while ((row = mysql_fetch_row(res)) != NULL) {
+    query = QString(myQry);
 
+    while (query.next()){
+
+
+        QString QVal = query.value(0).toString();
+        QString QVal1 = query.value(1).toString();
+        QString QVal2 = query.value(2).toString();
+        QString QVal3 = query.value(3).toString();
+        QString QVal4 = query.value(4).toString();
+        QString QVal5 = query.value(5).toString();
         ///////*****  Query for MAIN root menu
-        if (atoi(row[2]) == vidMenu) {
-
-            VidDir[VidDirCount].set(row[5], atoi(row[0]), atoi(row[2]));
+        if (QVal2.toInt() == vidMenu) {
+            string Qstr5Convert = QVal5.toStdString();
+            char *QVal5Convert;
+            QVal5Convert = new char[Qstr5Convert.length() + 1];
+            strcpy(QVal5Convert, Qstr5Convert.c_str());
+            VidDir[VidDirCount].set(QVal5Convert, QVal.toInt(), QVal2.toInt());
             VidDirCount++;
         }
     }
 
     *vidDirSize = VidDirCount;
-    /* clean up the database result set */
-    mysql_free_result(res);
-    /* clean up the database link */
-    mysql_close(conn);
-
+    db.close();
     return VidDir;
 }
 
@@ -361,9 +380,8 @@ int mysqlconn::connectVidMenu(){
     int rowCount = 0;
     char *myQry = NULL;
 
-    MYSQL *conn = NULL; // the connection
-    MYSQL_RES *res = NULL; // the results
-    MYSQL_ROW row = NULL; // the results row (line by line)
+    QSqlDatabase db;
+    QSqlQuery query;
 
     while (Myexit != true) {
 
@@ -372,7 +390,7 @@ int mysqlconn::connectVidMenu(){
         }
 
         // connect to the mysql database
-        conn = mysql_connection_setup(mysqlD);
+        db = mysql_connection_setup(mysqlD);
 
         /// use root to query for the Main menu's (audio + video)
         if (QryCount == 0) {
@@ -385,17 +403,23 @@ int mysqlconn::connectVidMenu(){
                     vidMenuID);
         }
 
-        //	cout << myQry << endl;
-        res = mysql_perform_query(conn, myQry);
+        query = QString(myQry);
         rowCount = 0;
-        while ((row = mysql_fetch_row(res)) != NULL) {
+        while (query.next()){
 
-            if (atoi(row[2]) == 0 && rowCount == 3){
-                vidMenuID = atoi(row[0]);
+            QString QVal = query.value(0).toString();
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
+            QString QVal5 = query.value(5).toString();
+
+            if (QVal2.toInt() == 0 && rowCount == 3){
+                vidMenuID = QVal.toInt();
             }
 
-            if(atoi(row[2]) == vidMenuID && rowCount == 1){
-                vidDirMenuID = atoi(row[0]);
+            if(QVal2.toInt() == vidMenuID && rowCount == 1){
+                vidDirMenuID = QVal.toInt();
             }
             rowCount++;
 
@@ -404,10 +428,8 @@ int mysqlconn::connectVidMenu(){
         if (QryCount > 2) { // + albCount
             Myexit = true;
         }
-        /* clean up the database result set */
-        mysql_free_result(res);
-        /* clean up the database link */
-        mysql_close(conn);
+
+        db.close();
     }
     return vidDirMenuID;
 }
@@ -420,9 +442,8 @@ int mysqlconn::connectArtMenu() {
 
     char *myQry = NULL;
 
-    MYSQL *conn = NULL; // the connection
-    MYSQL_RES *res = NULL; // the results
-    MYSQL_ROW row = NULL; // the results row (line by line)
+    QSqlDatabase db;
+    QSqlQuery query;
 
     while (Myexit != true) {
 
@@ -431,7 +452,7 @@ int mysqlconn::connectArtMenu() {
         }
 
         // connect to the mysql database
-        conn = mysql_connection_setup(mysqlD);
+        db = mysql_connection_setup(mysqlD);
 
         /// use root to query for the Main menu's (audio + video)
         if (QryCount == 0) {
@@ -444,25 +465,29 @@ int mysqlconn::connectArtMenu() {
             sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
                     audMenuID);
         }
-        res = mysql_perform_query(conn, myQry);
+        query = QString(myQry);
+        while (query.next()){
 
-        while ((row = mysql_fetch_row(res)) != NULL) {
-
+            QString QVal = query.value(0).toString();
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
+            QString QVal5 = query.value(5).toString();
             ///////*****  Query for MAIN root menu
-            if (atoi(row[2]) == 0 && QryCount == 0) {
+            if (QVal2.toInt() == 0 && QryCount == 0) {
                 menu++;
                 if (menu == 1) {
-                    audMenuID = atoi(row[0]);
-                    //	cout << audMenuID << endl;
+                    audMenuID = QVal.toInt();
                 }
             }
 
             //check for Audio menus
-            else if (atoi(row[2]) == audMenuID) {
+            else if (QVal2.toInt() == audMenuID) {
                 artMenu++;
                 //set ID of artist sub Menu
                 if (artMenu == 4) {
-                    artMenuID = atoi(row[0]);
+                    artMenuID = QVal.toInt();
                 }
             }
 
@@ -471,8 +496,7 @@ int mysqlconn::connectArtMenu() {
         if (QryCount > 3) { // + albCount
             Myexit = true;
         }
-        mysql_free_result(res);
-        mysql_close(conn);
+        db.close();
     }
     return artMenuID;
 }

@@ -22,23 +22,15 @@
 #ifndef MYSQLCONN_H_
 #define MYSQLCONN_H_
 
-#include <mysql/mysql.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <string.h>
-
-#include "mysql_connection.h"
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
 #include "songObj.h"
+#include <QtSql>
 
-using namespace sql::mysql;
 using namespace std;
 
 #define MAXART 10000
@@ -65,12 +57,8 @@ public:
         songObj* connectVideo(songObj* VidDir, int *vidDirSize, songObj* Video, int *vidSize);
         int connectVidMenu();
         int connectArtMenu();
-	void display(ostream& os, int pos);
-	songObj* dynamicAlb(songObj* Album, int increase);
-	songObj* dynamicArt(songObj* Artist, int increase);
-	songObj* dynamicSong(songObj* Song, int increase);
-	MYSQL * mysql_connection_setup(struct connection_details mysql_details);
-	MYSQL_RES* mysql_perform_query(MYSQL *connection, char *sql_query);
+        void display(ostream& os, int pos);
+        QSqlDatabase mysql_connection_setup(struct connection_details mysql_details);
          virtual ~mysqlconn();
 };
 

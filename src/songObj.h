@@ -40,7 +40,7 @@ class songObj {
 
 public:
 	songObj();
-	void set(char *name, int id, int par);
+        void set(char *name, int id, int par);
 	songObj(char *n, int id, int par);
 	songObj(const songObj& src);
 	songObj& operator=(const songObj& src);
