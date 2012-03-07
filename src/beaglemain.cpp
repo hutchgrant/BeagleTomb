@@ -51,7 +51,6 @@ void BeagleMain::Sync(int type){
         /// init playlist
         pl.setCount(0);
         pl.initPL();
-        /// init radio
 
         plMode= 0; // set playlist mode to browse
         playlistOpen = false; // set playlist open
@@ -64,7 +63,7 @@ void BeagleMain::Sync(int type){
                 pref.createCache();
                 pref = prefDg.getPref();
                 //create custom sql db
-                pref.createDB(pref.getSQL().c_str(), createSQL);
+                pref.createDB();
                 /// write preferences to sql db
                 pref.writeDB();
                 pref.setInitDB();
@@ -93,7 +92,7 @@ void BeagleMain::Sync(int type){
         Radio = rDB.RadioFill(&radSize);
 
         pref.deleteDB(pref.getSQL().c_str());
-        pref.createDB(pref.getSQL().c_str(), createSQL);
+        pref.createDB();
 
         cout << "syncing.... " << pref.getServ() << "\t" << pref.getPort()<<  endl;
         /// read from remote mysql write to local sqlite
@@ -443,7 +442,7 @@ void BeagleMain::on_actionPreferences_2_activated()
         //delete custom sql db
         pref.deleteDB(pref.getSQL().c_str());
         //create custom sql db
-        pref.createDB(pref.getSQL().c_str(), createSQL);
+        pref.createDB();
         /// write preferences to sql db
         pref.writeDB();
     }

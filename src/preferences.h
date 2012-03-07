@@ -49,7 +49,7 @@ public:
     void readDB();
     void writeMe(string qry);
     void deleteDB(const char *dbLocation);
-    void createDB(const char *dbLocation, const char *createSQLocation);
+    void createDB();
     void sendToShell();
     void createCache();
     /// get initial db file from text cache

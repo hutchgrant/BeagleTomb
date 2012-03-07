@@ -39,11 +39,17 @@ void syncMe::deleteDB(const char *dbLocation) {
 }
 
 void syncMe::createDB(const char *dbLocation) {
-    char FinalLink[150];
-    string create_sql = createSQL;
-    string final = create_sql;
-    sprintf(FinalLink, "sqlite3 %s < %s ", dbLocation, create_sql.c_str() );
-    system(FinalLink);
+    string finalQry[7];
+    finalQry[0] = "create table Artists(key INTEGER PRIMARY KEY,Artist TEXT,ArtistID integer, ArtistPar integer) ";
+    finalQry[1] = "create table Albums(key INTEGER PRIMARY KEY,Album TEXT,AlbumID integer, AlbumPar integer)";
+    finalQry[2] = "create table Songs(key INTEGER PRIMARY KEY,Song TEXT,SongID integer, SongPar integer)";
+    finalQry[3] = "create table Videos(key INTEGER PRIMARY KEY,Video TEXT,VideoID integer, VideoPar integer)";
+    finalQry[4] = "create table VidDirs(key INTEGER PRIMARY KEY,VidDir TEXT,VidDirID integer, VidDirPar integer)";
+    finalQry[5] = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
+    finalQry[6] = "create table radio(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT (0),name TEXT NOT NULL,url TEXT NOT NULL)";
+    for(int i=0; i<7; i++){
+        writeMe(finalQry[i]);
+    }
 }
 
 int syncMe::control(const char *server, const char *user, const char *pass,
