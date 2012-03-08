@@ -23,19 +23,23 @@
 using namespace std;
 syncMe::syncMe(const char *server, const char *user, const char *pass,
                const char *table, const char *dbLocation) {
-
-
     string home = getenv("HOME");
      string temp_pref = home + TEMPSYNCPREF;
-   db = QSqlDatabase::addDatabase("QSQLITE", "Connection");
+   db = QSqlDatabase::addDatabase("QSQLITE", "connection");
    db.setDatabaseName(temp_pref.c_str());
+
     control(server, user, pass, table, dbLocation);
+
 }
 
 void syncMe::deleteDB(const char *dbLocation) {
     char FinalLink[150];
     sprintf(FinalLink, "rm %s ", dbLocation);
     system(FinalLink);
+}
+
+void syncMe::OpenDB(){
+
 }
 
 void syncMe::createDB(const char *dbLocation) {
@@ -85,7 +89,6 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     newVideo = ms.connectVideo(newVidDir, &vidDirSize, Video, &vidSize);
 
     ///  sync artist,album,song objects to the local sql database
-
     artistWrite(newArtist, artSize);
     albumWrite(newAlbum, albSize);
     songWrite(newSong, songSize);
@@ -311,10 +314,7 @@ void syncMe::videoWrite(songObj* Video, int vidSize){
 
 void syncMe::writeMe(string qry){
 
-       if(!db.open()){
-           cout << "couldn't connect to database";
-       }
-       else{
+       if(db.open()){
            QSqlQuery myQry(db);
            myQry.prepare(qry.c_str());
            myQry.exec();

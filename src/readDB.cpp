@@ -46,28 +46,19 @@ readDB::readDB(const char *dbLocation) {
     for(int i = 0; i<= MAX; i++){
         Video[i].set("-", 0, 0);
     }
+
 }
 
-QSqlDatabase readDB::OpenDB(){
-   QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
-   cout << DBlocation2 << endl;
-   db2.setDatabaseName(DBlocation2);
+void readDB::OpenDB(){
+    db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2.setDatabaseName(DBlocation2);
 
-   if(!db2.open()){
-       cout << "error connecting with database" << endl;
-        exit(1);
-   }
-   return db2;
 }
 
 songObj* readDB::SongFill(int *songSize){
-    QSqlDatabase db2 = OpenDB();
     int count = 0;
-    if(!db2.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
-    QSqlQuery query(db2);
+     if(db2.open()){
+       QSqlQuery query(db2);
 
      query = QString("SELECT * FROM songs");
 
@@ -94,11 +85,7 @@ songObj* readDB::SongFill(int *songSize){
 songObj* readDB::AlbumFill(int *albSize){
 
     int count = 0;
-    QSqlDatabase db2 = OpenDB();
-    if(!db2.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
+     if(db2.open()){
     QSqlQuery query(db2);
             query = QString("SELECT * FROM albums");
 
@@ -123,14 +110,10 @@ songObj* readDB::AlbumFill(int *albSize){
 }
 
 songObj* readDB::ArtistFill( int *artSize){
-
+    OpenDB();
     int count = 0;
-    QSqlDatabase db2 = OpenDB();
-    if(!db2.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
-    QSqlQuery query(db2);
+    if(db2.open()){
+   QSqlQuery query(db2);
               query = QString("SELECT * FROM artists");
 
             while (query.next()){
@@ -155,13 +138,9 @@ songObj* readDB::ArtistFill( int *artSize){
 songObj* readDB::VidDirFill( int *vidDirSize){
 
     int count = 0;
-   QSqlDatabase db2 = OpenDB();
-    if(!db2.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
-    QSqlQuery query(db2);
-              query = QString("SELECT * FROM viddirs");
+    if(db2.open()){
+   QSqlQuery query(db2);
+    query = QString("SELECT * FROM viddirs");
 
             while (query.next()){
                 QString QVal1 = query.value(1).toString();
@@ -185,12 +164,8 @@ songObj* readDB::VidDirFill( int *vidDirSize){
 songObj* readDB::VideoFill( int *vidSize){
 
     int count = 0;
-    QSqlDatabase db2 = OpenDB();
-    if(!db2.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
-    QSqlQuery query(db2);
+    if(db2.open()){
+   QSqlQuery query(db2);
              query = QString("SELECT * FROM videos");
 
             while (query.next()){
@@ -216,12 +191,8 @@ songObj* readDB::VideoFill( int *vidSize){
 radioObj readDB::RadioFill(int *radSize){
 
     int count = 0;
-    QSqlDatabase db2 = OpenDB();
-    if(!db2.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
-    QSqlQuery query(db2);
+    if(db2.open()){
+   QSqlQuery query(db2);
               query = QString("SELECT * FROM radio");
 
             while (query.next()){

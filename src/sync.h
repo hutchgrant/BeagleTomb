@@ -71,6 +71,7 @@ public:
 	void display(songObj* Artist, int *artSize, songObj* Album, int *albSize, songObj *Song, int *songSize);
 	void deleteDB(const char *dbLocation);
 	void createDB(const char *dbLocation);
+        void OpenDB();
         int control(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
 
 	virtual ~syncMe();

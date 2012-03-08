@@ -40,15 +40,8 @@ using namespace std;
 #define MAXQRY 1000
 class mysqlconn {
 
-	struct connection_details {
-		const char *server;
-		const char *user;
-		const char *password;
-		const char *database;
-	};
-
 public:
-	struct connection_details mysqlD;
+        QSqlDatabase db;
 	mysqlconn(const char *server, const char* user, const char *pass, const char *database);
 	songObj* connectArtist(songObj* Artist, int artMenu, int *mySize);
 	songObj* connectSong(songObj* Album, int *albSize, songObj* Song, int *songSize);
@@ -58,7 +51,6 @@ public:
         int connectVidMenu();
         int connectArtMenu();
         void display(ostream& os, int pos);
-        QSqlDatabase mysql_connection_setup(struct connection_details mysql_details);
          virtual ~mysqlconn();
 };
 

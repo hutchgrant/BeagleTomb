@@ -40,6 +40,7 @@ class readDB {
         char *DBlocation2;
 
 public:
+        QSqlDatabase db2;
         readDB(const char *dbLocation);
 	songObj* SongFill(int *songSize);
 	songObj* AlbumFill(int *albSize);
@@ -47,7 +48,7 @@ public:
         songObj* VidDirFill(int *vidDirSize);
         songObj* VideoFill(int *vidSize);
        radioObj RadioFill( int *radSize);
-       QSqlDatabase OpenDB();
+       void OpenDB();
 	void display(int artSize, int albSize, int songSize);
 	virtual ~readDB();
 };
