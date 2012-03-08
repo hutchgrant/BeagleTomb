@@ -119,32 +119,52 @@ void preferences::createDB() {
     }
 }
 
+
+QSqlDatabase preferences::OpenDB(){
+   QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+   db2.setDatabaseName(DBlocation.c_str());
+
+   if(!db2.open()){
+       cout << "error connecting with database" << endl;
+        exit(1);
+   }
+   return db2;
+}
+
 /// read preference table from sql
 void preferences::readDB(){
 
-    Database *db;
-    db = new Database(DBlocation.c_str());
-    vector<vector<string> > result = db->query("SELECT * FROM pref;");
-    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
-    {
-        vector<string> row = *it;
-        string str = "", str2, str3, str4, str5, str6, str7;
-        str = row.at(1);
-        str2 = row.at(2);
-        str3 = row.at(3);
-        str4 = row.at(4);
-        str5 = row.at(5);
-        str6 = row.at(6);
-        str7 = row.at(7);
-
-        setUser(str);
-        setPass(str2);
-        setServ(str3);
-        setPort(str4);
-        setTable(str5);
-        setSQL(str6);
-        setPlaylistDir(str7);
+    QSqlDatabase db2 = OpenDB();
+    int count = 0;
+    if(!db2.open()){
+        cout << "couldn't connect to database";
     }
+    else{
+    QSqlQuery query(db2);
+
+     query = QString("SELECT * FROM pref");
+
+     while (query.next()){
+         QString QVal1 = query.value(1).toString();
+         QString QVal2 = query.value(2).toString();
+         QString QVal3 = query.value(3).toString();
+         QString QVal4 = query.value(4).toString();
+         QString QVal5 = query.value(5).toString();
+         QString QVal6 = query.value(6).toString();
+         QString QVal7 = query.value(7).toString();
+
+
+         setUser(QVal1.toStdString());
+         setPass(QVal2.toStdString());
+         setServ(QVal3.toStdString());
+         setPort(QVal4.toStdString());
+         setTable(QVal5.toStdString());
+         setSQL(QVal6.toStdString());
+         setPlaylistDir(QVal7.toStdString());
+     }
+
+    }
+
 }
 
 /// write to preference table sql
