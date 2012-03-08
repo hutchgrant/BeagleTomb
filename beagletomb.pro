@@ -23,7 +23,6 @@ SOURCES += src/main.cpp\
     src/prefdialog.cpp \
     src/mysqlconn.cpp \
     src/mplaycon.cpp \
-    src/Database.cpp \
     src/about.cpp \
     src/newplaylist.cpp \
     src/playlistobj.cpp \
@@ -43,7 +42,6 @@ HEADERS  += src/beaglemain.h \
     src/prefdialog.h \
     src/mysqlconn.h \
     src/mplaycon.h \
-    src/Database.h \
     src/about.h \
     src/newplaylist.h \
     src/playlistobj.h \
@@ -58,7 +56,6 @@ HEADERS  += src/beaglemain.h \
     src/newplaylist.h \
     src/mysqlconn.h \
     src/mplaycon.h \
-    src/Database.h \
     src/beaglemain.h \
     src/about.h \
     src/openplaylist.h \
@@ -75,6 +72,3 @@ FORMS    += \
 
 RESOURCES += \
     images/BTres.qrc
-
-OTHER_FILES += \
-    src/createSQL.sql

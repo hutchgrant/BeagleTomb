@@ -22,7 +22,6 @@
 #ifndef PREFDIALOG_H
 #define PREFDIALOG_H
 #include <QDialog>
-#include "Database.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
