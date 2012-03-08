@@ -47,152 +47,205 @@ readDB::readDB(const char *dbLocation) {
         Video[i].set("-", 0, 0);
     }
 }
+
+QSqlDatabase readDB::OpenDB(){
+   QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+   cout << DBlocation2 << endl;
+   db2.setDatabaseName(DBlocation2);
+
+   if(!db2.open()){
+       cout << "error connecting with database" << endl;
+        exit(1);
+   }
+   return db2;
+}
+
 songObj* readDB::SongFill(int *songSize){
-
+    QSqlDatabase db2 = OpenDB();
     int count = 0;
-    Database *db;
-    db = new Database(DBlocation2);
-    vector<vector<string> > result = db->query("SELECT * FROM songs;");
-    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
-    {
-        vector<string> row = *it;
-        string str = "", str2, str3;
-        char *cStr = "\0";
-        str = row.at(1);
-        str2 = row.at(2);
-        str3 = row.at(3);
-        cStr = new char[str.size()];
-        cStr = (char*)str.c_str();
-
-        if(atoi(str2.c_str()) != 0){
-            Song[count].set(cStr, atoi(str2.c_str()), atoi(str3.c_str()));
-            count++;
-        }
+    if(!db2.open()){
+        cout << "couldn't connect to database";
     }
-    *songSize = count;
+    else{
+    QSqlQuery query(db2);
+
+     query = QString("SELECT * FROM songs");
+
+     while (query.next()){
+         QString QVal1 = query.value(1).toString();
+         QString QVal2 = query.value(2).toString();
+         QString QVal3 = query.value(3).toString();
+
+         if(QVal2.toInt() != 0){
+             string QstrConvert = QVal1.toStdString();
+             char *QVal1Convert;
+             QVal1Convert = new char[QstrConvert.length() + 1];
+             strcpy(QVal1Convert, QstrConvert.c_str());
+             Song[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+             count++;
+         }
+     }
+     *songSize = count;
+     db2.close();
+    }
     return Song;
 }
+
 songObj* readDB::AlbumFill(int *albSize){
 
     int count = 0;
-    Database *db;
-    db = new Database(DBlocation2);
-    vector<vector<string> > result = db->query("SELECT * FROM albums;");
-    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
-    {
-        vector<string> row = *it;
-        string str = "", str2, str3;
-        char *cStr = "\0";
-        str = row.at(1);
-        str2 = row.at(2);
-        str3 = row.at(3);
-        cStr = new char[str.size()];
-        cStr = (char*)str.c_str();
-
-        if(atoi(str2.c_str()) != 0){
-            Album[count].set(cStr, atoi(str2.c_str()), atoi(str3.c_str()));
-            count++;
-        }
+    QSqlDatabase db2 = OpenDB();
+    if(!db2.open()){
+        cout << "couldn't connect to database";
     }
-    *albSize = count;
+    else{
+    QSqlQuery query(db2);
+            query = QString("SELECT * FROM albums");
+
+            while (query.next()){
+                QString QVal1 = query.value(1).toString();
+                QString QVal2 = query.value(2).toString();
+                QString QVal3 = query.value(3).toString();
+
+                if(QVal2.toInt() != 0){
+                    string QstrConvert = QVal1.toStdString();
+                    char *QVal1Convert;
+                    QVal1Convert = new char[QstrConvert.length() + 1];
+                    strcpy(QVal1Convert, QstrConvert.c_str());
+                    Album[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    count++;
+                }
+            }
+            *albSize = count;
+             db2.close();
+    }
     return Album;
 }
 
 songObj* readDB::ArtistFill( int *artSize){
 
     int count = 0;
-    Database *db;
-    db = new Database(DBlocation2);
-    vector<vector<string> > result = db->query("SELECT * FROM artists;");
-    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
-    {
-        vector<string> row = *it;
-        string str = "", str2, str3;
-        char *cStr = "\0";
-        str = row.at(1);
-        str2 = row.at(2);
-        str3 = row.at(3);
-        cStr = new char[str.size()];
-        cStr = (char*)str.c_str();
-
-        if(atoi(str2.c_str()) != 0){
-            Artist[count].set(cStr, atoi(str2.c_str()), atoi(str3.c_str()));
-            count++;
-        }
+    QSqlDatabase db2 = OpenDB();
+    if(!db2.open()){
+        cout << "couldn't connect to database";
     }
-    *artSize = count;
+    else{
+    QSqlQuery query(db2);
+              query = QString("SELECT * FROM artists");
+
+            while (query.next()){
+                QString QVal1 = query.value(1).toString();
+                QString QVal2 = query.value(2).toString();
+                QString QVal3 = query.value(3).toString();
+
+                if(QVal2.toInt() != 0){
+                    string QstrConvert = QVal1.toStdString();
+                    char *QVal1Convert;
+                    QVal1Convert = new char[QstrConvert.length() + 1];
+                    strcpy(QVal1Convert, QstrConvert.c_str());
+                    Artist[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    count++;
+                }
+            }
+            *artSize = count;
+             db2.close();
+    }
     return Artist;
 }
 songObj* readDB::VidDirFill( int *vidDirSize){
 
     int count = 0;
-    Database *db;
-    db = new Database(DBlocation2);
-    vector<vector<string> > result = db->query("SELECT * FROM viddirs;");
-    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
-    {
-        vector<string> row = *it;
-        string str = "", str2, str3;
-        char *cStr = "\0";
-        str = row.at(1);
-        str2 = row.at(2);
-        str3 = row.at(3);
-        cStr = new char[str.size()];
-        cStr = (char*)str.c_str();
-
-        if(atoi(str2.c_str()) != 0){
-            VidDir[count].set(cStr, atoi(str2.c_str()), atoi(str3.c_str()));
-            count++;
-        }
+   QSqlDatabase db2 = OpenDB();
+    if(!db2.open()){
+        cout << "couldn't connect to database";
     }
-    *vidDirSize = count;
+    else{
+    QSqlQuery query(db2);
+              query = QString("SELECT * FROM viddirs");
+
+            while (query.next()){
+                QString QVal1 = query.value(1).toString();
+                QString QVal2 = query.value(2).toString();
+                QString QVal3 = query.value(3).toString();
+
+                if(QVal2.toInt() != 0){
+                    string QstrConvert = QVal1.toStdString();
+                    char *QVal1Convert;
+                    QVal1Convert = new char[QstrConvert.length() + 1];
+                    strcpy(QVal1Convert, QstrConvert.c_str());
+                    VidDir[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    count++;
+                }
+            }
+            *vidDirSize = count;
+             db2.close();
+    }
     return VidDir;
 }
 songObj* readDB::VideoFill( int *vidSize){
 
     int count = 0;
-    Database *db;
-    db = new Database(DBlocation2);
-    vector<vector<string> > result = db->query("SELECT * FROM videos;");
-    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
-    {
-        vector<string> row = *it;
-        string str = "", str2, str3;
-        char *cStr = "\0";
-        str = row.at(1);
-        str2 = row.at(2);
-        str3 = row.at(3);
-        cStr = new char[str.size()];
-        cStr = (char*)str.c_str();
-
-        if(atoi(str2.c_str()) != 0){
-            Video[count].set(cStr, atoi(str2.c_str()), atoi(str3.c_str()));
-            count++;
-        }
+    QSqlDatabase db2 = OpenDB();
+    if(!db2.open()){
+        cout << "couldn't connect to database";
     }
-    *vidSize = count;
+    else{
+    QSqlQuery query(db2);
+             query = QString("SELECT * FROM videos");
+
+            while (query.next()){
+                QString QVal1 = query.value(1).toString();
+                QString QVal2 = query.value(2).toString();
+                QString QVal3 = query.value(3).toString();
+
+                if(QVal2.toInt() != 0){
+                    string QstrConvert = QVal1.toStdString();
+                    char *QVal1Convert;
+                    QVal1Convert = new char[QstrConvert.length() + 1];
+                    strcpy(QVal1Convert, QstrConvert.c_str());
+                    Video[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    count++;
+                }
+            }
+            *vidSize = count;
+             db2.close();
+    }
     return Video;
 }
 
 radioObj readDB::RadioFill(int *radSize){
 
     int count = 0;
-    Database *db;
-    db = new Database(DBlocation2);
-    vector<vector<string> > result = db->query("SELECT * FROM radio;");
-    for(vector<vector<string> >::iterator it = result.begin(); it < result.end() ; ++it)
-    {
-        vector<string> row = *it;
-        string r_name, r_url;
-        r_name = row.at(1);
-        r_url = row.at(2);
-
-        if(r_name != "" && r_name != "-"){
-            play_list.Add(r_name, r_url);
-            count++;
-        }
+    QSqlDatabase db2 = OpenDB();
+    if(!db2.open()){
+        cout << "couldn't connect to database";
     }
-    *radSize = count;
+    else{
+    QSqlQuery query(db2);
+              query = QString("SELECT * FROM radio");
+
+            while (query.next()){
+                QString QVal1 = query.value(1).toString();
+                QString QVal2 = query.value(2).toString();
+
+
+                if(QVal1.toStdString() != "" && QVal1.toStdString() != "-"){
+                    string QstrConvert = QVal1.toStdString();
+                    char *QVal1Convert;
+                    QVal1Convert = new char[QstrConvert.length() + 1];
+                    strcpy(QVal1Convert, QstrConvert.c_str());
+
+                    string QstrConvert2 = QVal2.toStdString();
+                    char *QVal2Convert;
+                    QVal2Convert = new char[QstrConvert2.length() + 1];
+                    strcpy(QVal2Convert, QstrConvert2.c_str());
+                    play_list.Add(QVal1Convert, QVal2Convert);
+                    count++;
+                }
+             }
+        *radSize = count;
+         db2.close();
+    }
     return play_list;
 
 

@@ -32,12 +32,14 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
+#include <QtSql>
 using namespace std;
 class readDB {
 
         songObj *Artist, *Album, *Song, *Video, *VidDir;
         radioObj play_list;
-	char *DBlocation2;
+        char *DBlocation2;
+
 public:
         readDB(const char *dbLocation);
 	songObj* SongFill(int *songSize);
@@ -46,6 +48,7 @@ public:
         songObj* VidDirFill(int *vidDirSize);
         songObj* VideoFill(int *vidSize);
        radioObj RadioFill( int *radSize);
+       QSqlDatabase OpenDB();
 	void display(int artSize, int albSize, int songSize);
 	virtual ~readDB();
 };

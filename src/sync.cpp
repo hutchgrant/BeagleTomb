@@ -341,4 +341,5 @@ int syncMe::getMaxPos(int count) {
 }
 
 syncMe::~syncMe() {
+    db.close();
 }
