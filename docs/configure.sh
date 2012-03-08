@@ -49,7 +49,3 @@ rm -R ./tmp/apd
 rm ./tmp/mysqlConf
 rm ./tmp/config2.xml
 rm ./tmp/config.xml
-
-
-sudo cp ~/BeagleTomb/BT /usr/bin/BT
-sudo chmod 777 /usr/bin/BT

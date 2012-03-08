@@ -1,6 +1,8 @@
-Beagletomb 0.1.3 Ubuntu install instructions
+BeagleTomb 0.1.6 Ubuntu install instructions
 
-If USING ON A LOCAL NETWORK: MAKE YOUR SERVER A STATIC LOCAL IP FIRST not included
+Enables any user to connect with their entire media library, remotely, at the click of a buttion
+Create playlists of your remote media, browse audio/video quickly and easily.
+
 
 mediatomb install
 $ sudo apt-get install tasksel mediatomb 
@@ -20,15 +22,20 @@ $  pkill mediatomb
 $  sudo mediatomb --port 49152    or any port you want to bind to
 This process is not configured automatically on startup. I recommend setting that in your startup menu. You will need mediatomb running or beagletomb will not work. You can add files to mediatomb by browsing to your servers ip and port e.g. http://192.168.1.101:49152 then simply add your media.
 
+
+If you haven't already, set your host machine to a static IP on your router.
+
+
 beagletomb client install
-$  sudo apt-get install mplayer qt4-qmake qt4-dev-tools sqlite3 libmysqlclient-dev libsqlite3-dev libmysqlcppconn-dev
+
+$  sudo apt-get install mplayer libqt4-dev
 
 download beagletomb.v.0.1.3.tar.gz assuming in Downloads directory within your user home folder.
  $ cd ~/Downloads
  $  tar -zxvf beagletomb*.tar.gz 
  $ sudo mkdir /opt/extras.ubuntu.com
- $ sudo cp beagletomb /opt/extras.ubuntu.com/
- $ chmod -R 777 /opt/extras.ubuntu.com/
+ $ sudo cp -R beagletomb /opt/extras.ubuntu.com/
+ $ chmod 777 -R /opt/extras.ubuntu.com/beagletomb
 
 compile and run
  $ cd /opt/extras.ubuntu.com/beagletomb
@@ -46,3 +53,5 @@ On first open you will be asked to enter your server credentials. Make sure the 
 The defaults are:
 
 user: mediatomb pass: mediatomb table: mediatomb SqlDir?: BTmedia.db
+
+
