@@ -21,7 +21,6 @@
 
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
-#include "Database.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
