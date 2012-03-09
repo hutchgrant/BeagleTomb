@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Beagle Tomb v.0.1.5</string>
+   <string>Beagle Tomb v.0.1.6</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QListView" name="MenuList">
@@ -336,7 +336,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>0</x>

@@ -29,9 +29,6 @@ SOURCES += src/main.cpp\
     src/openplaylist.cpp \
     src/radioObj.cpp
 
-sources.path = /opt/extras.ubuntu.com/beagletomb
-INSTALLS += sources
-
 HEADERS  += src/beaglemain.h \
     src/sync.h \
     src/songObj.h \
@@ -60,8 +57,6 @@ HEADERS  += src/beaglemain.h \
     src/about.h \
     src/openplaylist.h \
     src/radioObj.h
-LIBS += -L/usr/lib/ -lmysqlclient \
-        -L/usr/include/ -lsqlite3
 
 FORMS    += \
     src/prefdialog.ui \
