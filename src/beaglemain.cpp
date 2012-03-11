@@ -90,8 +90,10 @@ void BeagleMain::Sync(int type){
         readDB rDB(pref.getSQL().c_str());
         ///check database for previous radio stations
         Radio = rDB.RadioFill(&radSize);
-
+        // read preferences prior to delete
+   //     pref.readDB();
         pref.deleteDB(pref.getSQL().c_str());
+        ///
         pref.createDB();
 
         cout << "syncing.... " << pref.getServ() << "\t" << pref.getPort()<<  endl;
@@ -440,9 +442,9 @@ void BeagleMain::on_actionPreferences_2_activated()
     if (prefDg.exec()==QDialog::Accepted) {
         pref = prefDg.getPref();
         //delete custom sql db
-        pref.deleteDB(pref.getSQL().c_str());
+      //  pref.deleteDB(pref.getSQL().c_str());
         //create custom sql db
-        pref.createDB();
+      //  pref.createDB();
         /// write preferences to sql db
         pref.writeDB();
     }

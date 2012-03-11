@@ -33,6 +33,8 @@ preferences::preferences(){
     DBlocation = getenv("HOME") + DB;
     PLAYLISTDIR = getenv("HOME") + PL;
 
+
+
 }
 preferences::preferences(const preferences& src){
     USER = src.USER;
@@ -82,7 +84,6 @@ bool preferences::initDB(){
         fclose(fp);
         return false;
     }
-
 }
 
 /// set initial db file in text cache
@@ -106,6 +107,7 @@ void preferences::deleteDB(const char *dbLocation) {
 
 /// create database
 void preferences::createDB() {
+     OpenDB();
     string finalQry[7];
     finalQry[0] = "create table Artists(key INTEGER PRIMARY KEY,Artist TEXT,ArtistID integer, ArtistPar integer) ";
     finalQry[1] = "create table Albums(key INTEGER PRIMARY KEY,Album TEXT,AlbumID integer, AlbumPar integer)";
@@ -120,26 +122,16 @@ void preferences::createDB() {
 }
 
 
-QSqlDatabase preferences::OpenDB(){
-   QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+void preferences::OpenDB(){
+   db2 = QSqlDatabase::addDatabase("QSQLITE");
    db2.setDatabaseName(DBlocation.c_str());
-
-   if(!db2.open()){
-       cout << "error connecting with database" << endl;
-        exit(1);
-   }
-   return db2;
 }
 
 /// read preference table from sql
 void preferences::readDB(){
-
-    QSqlDatabase db2 = OpenDB();
+    OpenDB();
     int count = 0;
-    if(!db2.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
+    if(db2.open()){
     QSqlQuery query(db2);
 
      query = QString("SELECT * FROM pref");
@@ -162,44 +154,32 @@ void preferences::readDB(){
          setSQL(QVal6.toStdString());
          setPlaylistDir(QVal7.toStdString());
      }
-
+    db2.close();
     }
 
 }
 
 /// write to preference table sql
 void preferences::writeDB(){
-    
+        OpenDB();
     string str2;
     stringstream os;
-    os << " INSERT INTO pref (usr, PASS, SERVER, PRT, SQLTABLE, SQL, PLAYLISTDIR) " <<
-          "SELECT \"" << USER << "\" AS \"" << "usr" << "\", \""
+    os << "INSERT INTO pref (usr, PASS, SERVER, PRT, SQLTABLE, SQL, PLAYLISTDIR) VALUES ('"
+       << USER << "','" << PASS << "','" << SERVER << "','" << PORT  << "','" << TABLE  << "','" << DBlocation << "','" << PLAYLISTDIR << "')";
 
-       <<  PASS << "\" AS \"" << "PASS" << "\", \""
-       << SERVER << "\" AS \"" << "SERVER" << "\", \""
-       <<  PORT << "\" AS \"" << "PRT" << "\", \""
-       <<  TABLE << "\" AS \"" << "SQLTABLE" << "\", \""
-       <<  DBlocation << "\" AS \"" << "SQL" << "\", \""
-       << PLAYLISTDIR << "\" AS \"" << "PLAYLISTDIR" << "\""
-       << ";";
-    // cout << os;
     str2 = os.str();
+//    cout << str2 << endl;
     writeMe(str2);
 }
 
 //// write to output file temp qry
 void preferences::writeMe(string qry){
-   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "Connection");
-   db.setDatabaseName(DBlocation.c_str());
 
-    if(!db.open()){
-        cout << "couldn't connect to database";
-    }
-    else{
-        QSqlQuery myQry(db);
+    if(db2.open()){
+        QSqlQuery myQry(db2);
         myQry.prepare(qry.c_str());
         myQry.exec();
-        db.close();
+        db2.close();
     }
 }
 

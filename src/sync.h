@@ -41,7 +41,6 @@
 #include "mysqlconn.h"
 
 #define TEMPSYNCPREF "/.BeagleTomb/BTmedia.db"
-#define createSQL "/opt/extras.ubuntu.com/beagletomb/src/createSQL.sql"
 
 using namespace std;
 

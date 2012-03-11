@@ -28,7 +28,11 @@ syncMe::syncMe(const char *server, const char *user, const char *pass,
    db = QSqlDatabase::addDatabase("QSQLITE", "connection");
    db.setDatabaseName(temp_pref.c_str());
 
-    control(server, user, pass, table, dbLocation);
+
+   if(control(server, user, pass, table, dbLocation)==0){
+        // future error popup
+   }
+
 
 }
 
@@ -87,7 +91,11 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     newSong = ms.connectSong(newAlbum, &albSize, Song, &songSize);
     newVidDir = ms.connectVidDir(VidDir, vidDirMenu, &vidDirSize);
     newVideo = ms.connectVideo(newVidDir, &vidDirSize, Video, &vidSize);
-
+    if(artMenu ==0){
+        cout << "empty database or invalid login" << endl;
+        return 0;
+    }
+    else{
     ///  sync artist,album,song objects to the local sql database
     artistWrite(newArtist, artSize);
     albumWrite(newAlbum, albSize);
@@ -95,6 +103,7 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     vidDirWrite(newVidDir, vidDirSize);
     videoWrite(newVideo, vidSize);
     return 1;
+    }
 }
 
 void syncMe::artistWrite(songObj* Artist, int artSize){
@@ -341,5 +350,5 @@ int syncMe::getMaxPos(int count) {
 }
 
 syncMe::~syncMe() {
-    db.close();
+   // db.close();
 }

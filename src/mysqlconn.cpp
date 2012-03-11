@@ -96,6 +96,9 @@ songObj* mysqlconn::connectAlbum(songObj* Artist, int *artSize, songObj* Album, 
         }
          db.close();
         }
+        else{
+            cout << "error couldn't connect to mysql" << endl;
+        }
     }
     return Album;
 }
@@ -192,7 +195,7 @@ songObj* mysqlconn::connectArtist(songObj* Artist, int artMenu, int *mySize){
             artMenu);
 
     if(!db.open()){
-        cout << "couldn't connect to database";
+        cout << "error couldn't connect to mysql" << endl;
     }
     else{
     QSqlQuery query(db);
@@ -221,6 +224,7 @@ songObj* mysqlconn::connectArtist(songObj* Artist, int artMenu, int *mySize){
     *mySize = artCount;
     db.close();
     }
+
     return Artist;
 }
 
@@ -240,9 +244,6 @@ songObj* mysqlconn::connectVideo(songObj* VidDir, int *vidDirSize, songObj* Vide
     for(int i= 0 ; i <= MAXVIDEO; i++){
         Video[i].set("-", 0, 0);
     }
-
-
-
 
     while (Myexit != true){
 
@@ -292,6 +293,10 @@ songObj* mysqlconn::connectVideo(songObj* VidDir, int *vidDirSize, songObj* Vide
         }
 
         db.close();
+        }
+        else{
+            cout << "error couldn't to mysql" << endl;
+              Myexit = true;
         }
     }
     return Video;
@@ -346,6 +351,9 @@ songObj* mysqlconn::connectVidDir(songObj* VidDir, int vidMenu, int *vidDirSize)
 
     *vidDirSize = VidDirCount;
     db.close();
+    }
+    else{
+        cout << "error couldn't connect to vid dir in mysql" << endl;
     }
     return VidDir;
 }
@@ -407,6 +415,10 @@ int mysqlconn::connectVidMenu(){
         }
         db.close();
 
+        }
+        else{
+            cout << "error couldn't connect to vid menu in mysql" << endl;
+              Myexit = true;
         }
     }
     return vidDirMenuID;
@@ -471,6 +483,10 @@ int mysqlconn::connectArtMenu() {
             Myexit = true;
         }
         db.close();
+        }
+        else{
+            cout << "error couldn't connect to mysql" << endl;
+              Myexit = true;
         }
     }
     return artMenuID;

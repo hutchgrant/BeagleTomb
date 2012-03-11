@@ -190,7 +190,6 @@ playlistobj& playlistobj::operator=(const playlistobj& src)
     return *this;
 }
 int playlistobj::close(){
-     //           fclose(fp);
         return 1;
 }
 
