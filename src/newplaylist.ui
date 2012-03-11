@@ -62,7 +62,7 @@
     <item>
      <widget class="QLineEdit" name="PLNAME_entry">
       <property name="text">
-       <string>/RaspberryTomb/playlist/newplaylist.pl</string>
+       <string>/BeagleTomb/playlist/newplaylist.pl</string>
       </property>
      </widget>
     </item>
