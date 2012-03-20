@@ -28,7 +28,7 @@ If you haven't already, set your host machine to a static IP on your router.
 
 beagletomb client install
 
-$  sudo apt-get install mplayer libqt4-dev
+$  sudo apt-get install mplayer libqt4-dev libqt4-opengl libqt4-opengl-dev libqt4-network libqt4-sql libqt4-sql-sqlite
 
 download beagletomb.v.0.1.3.tar.gz assuming in Downloads directory within your user home folder.
  $ cd ~/Downloads
