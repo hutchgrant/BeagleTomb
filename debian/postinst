@@ -1,0 +1,3 @@
+#! /bin/bash -e
+
+/opt/extras.ubuntu.com/beagletomb/docs/compile.sh
