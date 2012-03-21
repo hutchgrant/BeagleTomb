@@ -43,12 +43,15 @@ public:
     int pl_selected;
 
     mplayCon();
-    void set(playlistobj &plobj, preferences prefs, int plselected);
     void startSong(char *FinSong, int selID);
 
     virtual ~mplayCon();
 
     void run();
+
+private:
+    void set(playlistobj &plobj, preferences prefs, int plselected);
+
 };
 
 #endif // MPLAYCON_H

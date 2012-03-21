@@ -1,16 +1,16 @@
 Source: beagletomb
 Section: net
 Priority: extra
-Maintainer: Grant Hutchinson <h.g.utchinson@gmail.com>
-Build-Depends: debhelper (>= 7.0.50~), libqt4-dev, qt4-qmake, g++, make, libqt4-opengl-dev
+Maintainer: Grant Hutchinson (HutchGrant) <h.g.utchinson@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), libqt4-dev, libqt4-sql, libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-network, mplayer, qt4-qmake, libqt4-opengl, libqt4-opengl-dev
 Standards-Version: 3.9.1
-Homepage: <insert the upstream URL, if relevant>
+Homepage: http://sourceforge.net/projects/beagletomb/
 #Vcs-Git: git://github.com/hutchgrant/beagletomb.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/beagletomb.git;a=summary
 
 Package: beagletomb
 Architecture: i386
-Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-dev, mplayer, qt4-qmake, g++, make, libqt4-opengl-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-dev, libqt4-sql, libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-network, mplayer, qt4-qmake, g++, make, libqt4-opengl, libqt4-opengl-dev
 Description: Remote audio and video client
  Enables any user to connect with their 
  entire media library, remotely, at the 

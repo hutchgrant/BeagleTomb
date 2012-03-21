@@ -52,27 +52,28 @@ void mplayCon::run(){
         if(widget2.state() == -1) {   // if loaded but doing nothing
             startSong(FinSong, selID);
        }
-        if(widget2.state() == 0){
-             pl_selected++;
+        else if(widget2.state() == 0){  // if idle state
+              pl_selected++;
              startSong(FinSong, selID);
+        }
+        else if(widget2.state() == 1) {  // if in loading state
+
+        }
+        else if(widget2.state() == 2) {  // if in stopped state
+           // widget2.stop();
         }
   // }
 
 }
 void mplayCon::set(playlistobj &plobj, preferences prefs, int plselected){
 
-
+    QMPwidget Twidget;
     pl = plobj;
-
     pref = prefs;
 
     if(pl_selected >=0){
-    pl_selected = plselected;
+        pl_selected = plselected;
     }
-    else{
-        pl_selected =0;
-    }
-
 }
 
 void mplayCon::startSong(char *FinSong, int selID){
