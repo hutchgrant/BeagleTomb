@@ -2,7 +2,7 @@ Source: beagletomb
 Section: net
 Priority: extra
 Maintainer: Grant Hutchinson (HutchGrant) <h.g.utchinson@gmail.com>
-Build-Depends: debhelper (>= 7.0.50~), libqt4-dev, libqt4-sql, libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-network, mplayer, qt4-qmake, libqt4-opengl, libqt4-opengl-dev
+Build-Depends: debhelper (>= 7.0.50~), libqt4-dev, libqt4-sql, libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-network, qt4-qmake, libqt4-opengl, libqt4-opengl-dev
 Standards-Version: 3.9.1
 Homepage: http://sourceforge.net/projects/beagletomb/
 #Vcs-Git: git://github.com/hutchgrant/beagletomb.git
