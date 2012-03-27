@@ -24,29 +24,6 @@
 readDB::readDB(const char *dbLocation) {
     DBlocation2 = new char[strlen(dbLocation) + 1];
     strcpy(DBlocation2, dbLocation);
-
-    Artist = new songObj[MAX];
-    for(int i = 0; i<= MAX; i++){
-        Artist[i].set("-",0,0);
-    }
-
-    Album = new songObj[MAX];
-    for(int i = 0; i<= MAX; i++){
-        Album[i].set("-",0,0);
-    }
-    Song = new songObj[MAX];
-    for(int i = 0; i<= MAX; i++){
-        Song[i].set("-", 0, 0);
-    }
-    VidDir = new songObj[MAX];
-    for(int i = 0; i<= MAX; i++){
-        VidDir[i].set("-", 0, 0);
-    }
-    Video = new songObj[MAX];
-    for(int i = 0; i<= MAX; i++){
-        Video[i].set("-", 0, 0);
-    }
-
 }
 
 void readDB::OpenDB(){
@@ -55,7 +32,7 @@ void readDB::OpenDB(){
 
 }
 
-songObj* readDB::SongFill(int *songSize){
+fileObj& readDB::SongFill(fileObj& Song){
     int count = 0;
      if(db2.open()){
        QSqlQuery query(db2);
@@ -68,21 +45,16 @@ songObj* readDB::SongFill(int *songSize){
          QString QVal3 = query.value(3).toString();
 
          if(QVal2.toInt() != 0){
-             string QstrConvert = QVal1.toStdString();
-             char *QVal1Convert;
-             QVal1Convert = new char[QstrConvert.length() + 1];
-             strcpy(QVal1Convert, QstrConvert.c_str());
-             Song[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+             Song.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
              count++;
          }
      }
-     *songSize = count;
      db2.close();
     }
     return Song;
 }
 
-songObj* readDB::AlbumFill(int *albSize){
+fileObj& readDB::AlbumFill(fileObj& Album){
 
     int count = 0;
      if(db2.open()){
@@ -95,21 +67,16 @@ songObj* readDB::AlbumFill(int *albSize){
                 QString QVal3 = query.value(3).toString();
 
                 if(QVal2.toInt() != 0){
-                    string QstrConvert = QVal1.toStdString();
-                    char *QVal1Convert;
-                    QVal1Convert = new char[QstrConvert.length() + 1];
-                    strcpy(QVal1Convert, QstrConvert.c_str());
-                    Album[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    Album.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
                     count++;
                 }
             }
-            *albSize = count;
              db2.close();
     }
     return Album;
 }
 
-songObj* readDB::ArtistFill( int *artSize){
+fileObj& readDB::ArtistFill(fileObj& Artist){
     OpenDB();
     int count = 0;
     if(db2.open()){
@@ -122,20 +89,15 @@ songObj* readDB::ArtistFill( int *artSize){
                 QString QVal3 = query.value(3).toString();
 
                 if(QVal2.toInt() != 0){
-                    string QstrConvert = QVal1.toStdString();
-                    char *QVal1Convert;
-                    QVal1Convert = new char[QstrConvert.length() + 1];
-                    strcpy(QVal1Convert, QstrConvert.c_str());
-                    Artist[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    Artist.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
                     count++;
                 }
             }
-            *artSize = count;
              db2.close();
     }
     return Artist;
 }
-songObj* readDB::VidDirFill( int *vidDirSize){
+fileObj& readDB::VidDirFill( fileObj& VidDir){
 
     int count = 0;
     if(db2.open()){
@@ -152,16 +114,15 @@ songObj* readDB::VidDirFill( int *vidDirSize){
                     char *QVal1Convert;
                     QVal1Convert = new char[QstrConvert.length() + 1];
                     strcpy(QVal1Convert, QstrConvert.c_str());
-                    VidDir[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    VidDir.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
                     count++;
                 }
             }
-            *vidDirSize = count;
              db2.close();
     }
     return VidDir;
 }
-songObj* readDB::VideoFill( int *vidSize){
+fileObj& readDB::VideoFill( fileObj& Video){
 
     int count = 0;
     if(db2.open()){
@@ -178,11 +139,10 @@ songObj* readDB::VideoFill( int *vidSize){
                     char *QVal1Convert;
                     QVal1Convert = new char[QstrConvert.length() + 1];
                     strcpy(QVal1Convert, QstrConvert.c_str());
-                    Video[count].set(QVal1Convert, QVal2.toInt(), QVal3.toInt());
+                    Video.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
                     count++;
                 }
             }
-            *vidSize = count;
              db2.close();
     }
     return Video;
@@ -222,7 +182,7 @@ radioObj readDB::RadioFill(int *radSize){
 
 }
 
-void readDB::display(int artSize, int albSize, int songSize){
+void readDB::display( fileObj&Artist, fileObj& Song,fileObj& Album ){
     int choice = 0;
     bool Exit = 0;
     while(!Exit){
@@ -232,22 +192,16 @@ void readDB::display(int artSize, int albSize, int songSize){
 	cin >> choice;
 
 	if(choice == 1){
-            for(int i = 0; i<=artSize; i++){
-                cout << Artist[i];
-            }
-            cout << "total artists: " << artSize;
+            Artist.display();
+            cout << "total artists: " << Artist.getSize();
 	}
 	if(choice == 2){
-            for(int i = 0; i<=albSize; i++){
-                cout << Album[i];
-            }
-            cout << "Total Albums: " << albSize;
+            Album.display();
+            cout << "Total Albums: " << Album.getSize();
 	}
 	if(choice == 3){
-            for(int i = 0; i<=songSize; i++){
-                cout << Song[i];
-            }
-            cout << "Total Songs: " << songSize;
+            Song.display();
+            cout << "Total Songs: " << Song.getSize();
 	}
 	if(choice == 4){
             Exit = 1;

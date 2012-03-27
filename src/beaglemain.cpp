@@ -73,11 +73,11 @@ void BeagleMain::Sync(int type){
         else{
             //// read from sql and fill songObjs
             readDB rDB(pref.getSQL().c_str());
-            Artist = rDB.ArtistFill(&artSize);
-            Album = rDB.AlbumFill(&albSize);
-            Song = rDB.SongFill(&songSize);
-            VidDir = rDB.VidDirFill(&vidDirSize);
-            Video = rDB.VideoFill(&vidSize);
+            Artist = rDB.ArtistFill(Artist);
+            Album = rDB.AlbumFill(Album);
+            Song = rDB.SongFill(Song);
+            VidDir = rDB.VidDirFill(VidDir);
+            Video = rDB.VideoFill(Video);
             /// read from sql and fill radio obj
             Radio = rDB.RadioFill(&radSize);
             Radio.setDB(pref.getSQL());
@@ -106,11 +106,11 @@ void BeagleMain::Sync(int type){
         pref.setInitDB();
         cout << "reading.... " << endl;
         /// read from sqlite to songObjs
-        Artist = rDB.ArtistFill(&artSize);
-        Album = rDB.AlbumFill(&albSize);
-        Song = rDB.SongFill(&songSize);
-        VidDir = rDB.VidDirFill(&vidDirSize);
-        Video = rDB.VideoFill(&vidSize);
+        Artist = rDB.ArtistFill(Artist);
+        Album = rDB.AlbumFill(Album);
+        Song = rDB.SongFill(Song);
+        VidDir = rDB.VidDirFill(VidDir);
+        Video = rDB.VideoFill(Video);
         /// read from sql and fill radio obj
         cout << "syncing radio" << endl;
         Radio = rDB.RadioFill(&radSize);
@@ -129,20 +129,20 @@ void BeagleMain::updateMenu(int type){
     m_Model = new QStringListModel(this);
     if(type == 1){
         /// update with artist
-        for(int i=0; i<= artSize; i++){
-            curMenu << Artist[i].getFile();
+        for(int i=0; i< Artist.getSize(); i++){
+            curMenu << Artist.getName(i);
         }
     }
     else if(type == 2){
         /// update with album
-        for(int i=0; i<= albSize; i++){
-            curMenu << Album[i].getFile();
+        for(int i=0; i< Album.getSize(); i++){
+            curMenu << Album.getName(i);
         }
     }
     else if(type == 3){
         /// update with directories
-        for(int i=0; i<=vidDirSize; i++){
-            curMenu << VidDir[i].getFile();
+        for(int i=0; i< VidDir.getSize(); i++){
+            curMenu << VidDir.getName(i);
         }
     }
 
@@ -164,12 +164,12 @@ void BeagleMain::updateAlbMenu(int select){
     QStringList curAlb;
     m_Model = new QStringListModel(this);
     curAlbID = new int[MAX];
-    selID = Artist[select].getFileID();    /// selected ID
+    selID = Artist.getID(select);    /// selected ID
 
-    for(int i=0; i<= albSize; i++){
-        if(Album[i].getFilePar() == selID ){
-            curAlb << Album[i].getFile();
-            curAlbID[albCount] = Album[i].getFileID();
+    for(int i=0; i< Album.getSize(); i++){
+        if(Album.getPar(i) == selID ){
+            curAlb << Album.getName(i);
+            curAlbID[albCount] = Album.getID(i);
             albCount++;
         }
     }
@@ -185,8 +185,8 @@ void BeagleMain::updateTitle(){
     t_Model = new QStringListModel(this);
     QStringList songList;
 
-    for(int i = 0; i<= songSize; i++){
-        songList << Song[i].getFile();
+    for(int i = 0; i<= Song.getSize(); i++){
+        songList << Song.getName(i);
     }
     t_Model->setStringList(songList);
     ui->TitleList->setModel(t_Model);
@@ -205,31 +205,31 @@ void BeagleMain::updateTitle(int selected){
     curSongID = new int[MAX];
     curVidID = new int[MAX];
     if(MenuMode == 3){     ///  if ALL ALBUM
-        selID = Album[selected].getFileID();
-        for(int i = 0; i<= songSize; i++){
-            if(Song[i].getFilePar() == selID){
-                curSong << Song[i].getFile();
-                curSongID[songCount] = Song[i].getFileID();
+        selID = Album.getID(selected);
+        for(int i = 0; i< Song.getSize(); i++){
+            if(Song.getPar(i) == selID){
+                curSong << Song.getName(i);
+                curSongID[songCount] = Song.getID(i);
                 songCount++;
             }
         }
     }
     else if(MenuMode == 4){    ////// if VIDEO DIR MODE
-        selID = VidDir[selected].getFileID();
-        for(int i = 0; i<= vidSize; i++){
-            if(Video[i].getFilePar() == selID){
-                curSong << Video[i].getFile();
-                curVidID[vidCount] = Video[i].getFileID();
+        selID = VidDir.getID(selected);
+        for(int i = 0; i<= Video.getSize(); i++){
+            if(Video.getPar(i) == selID){
+                curSong << Video.getName(i);
+                curVidID[vidCount] = Video.getID(i);
                 vidCount++;
             }
         }
     }
     else{   /// IF ALBUM DIR MODE
         selID = curAlbID[selected];
-        for(int i = 0; i<= songSize; i++){
-            if(Song[i].getFilePar() == selID){
-                curSong << Song[i].getFile();
-                curSongID[songCount] = Song[i].getFileID();
+        for(int i = 0; i<= Song.getSize(); i++){
+            if(Song.getPar(i) == selID){
+                curSong << Song.getName(i);
+                curSongID[songCount] = Song.getID(i);
                 songCount++;
             }
         }
@@ -287,11 +287,6 @@ void BeagleMain::PlaylistPlay(int selID){
 BeagleMain::~BeagleMain()
 {
     delete ui;
-    delete [] Artist;
-    delete [] Album;
-    delete [] Song;
-    delete [] Video;
-    delete [] VidDir;
 }
 
 /*
@@ -350,21 +345,21 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
 
     if(MenuMode == 2 || MenuMode == 3){
         selID = curSongID[selected];
-        FinSong = checkSongObjByID(selID, Song, songSize);
-        FinParentID = checkSongObjParByID(selID,Song, songSize);
-        FinParent = checkSongObjByID(FinParentID, Song, songSize);
+        FinSong = checkSongObjByID(selID, Song);
+        FinParentID = checkSongObjParByID(selID,Song);
+        FinParent = checkSongObjByID(FinParentID, Song);
     }
     else if(MenuMode == 4){
         selID = curVidID[selected];
-        FinSong = checkSongObjByID(selID, Video, vidSize);
-        FinParentID = checkSongObjParByID(selID,Video, vidSize);
-        FinParent = checkSongObjByID(FinParentID, Video, vidSize);
+        FinSong = checkSongObjByID(selID, Video);
+        FinParentID = checkSongObjParByID(selID,Video);
+        FinParent = checkSongObjByID(FinParentID, Video);
     }
     else{
-        selID = Song[selected].getFileID();
-        FinSong = checkSongObjByID(selID, Song, songSize);
-        FinParentID = checkSongObjParByID(selID,Song, songSize);
-        FinParent = checkSongObjByID(FinParentID, Song, songSize);
+        selID = Song.getID(selected);
+        FinSong = checkSongObjByID(selID, Song);
+        FinParentID = checkSongObjParByID(selID,Song);
+        FinParent = checkSongObjByID(FinParentID, Song);
     }
     // start song
     startSong(FinSong, selID);
@@ -483,15 +478,15 @@ void BeagleMain::on_ADD_but_clicked()
 
     if(MenuMode == 2 || MenuMode == 3){
          selID = curSongID[selected];
-      strBuffer=checkSongObjByID(selID, Song, songSize);
+      strBuffer=checkSongObjByID(selID, Song);
     }
     else if(MenuMode == 4){
          selID = curVidID[selected];
-       strBuffer=checkSongObjByID(selID, Video, vidSize);
+       strBuffer=checkSongObjByID(selID, Video);
     }
     else{
-        selID = Song[selected].getFileID();
-        strBuffer=checkSongObjByID(selID, Song, songSize);
+        selID = Song.getID(selected);
+        strBuffer=checkSongObjByID(selID, Song);
     }
     pl.AddTo(selID, strBuffer);
     RefillMainPL();

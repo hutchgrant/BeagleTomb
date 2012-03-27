@@ -62,7 +62,7 @@ public:
     openplaylist openPL;
     QMPwidget widget;
     mplayCon mplay;
-    songObj* Artist, *Song, *Album, *VidDir, *Video;
+    fileObj Artist, Song, Album, VidDir, Video;
     radioObj Radio;
     int artSize, albSize, songSize, vidSize, vidDirSize, radSize;
 

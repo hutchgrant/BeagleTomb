@@ -28,31 +28,26 @@
 #include <iostream>
 #include <string>
 #include <string.h>
+#include "songObj.h"
 #include <QtSql>
-#include "fileobj.h"
+
 using namespace std;
 
-#define MAXQRY 100
+#define MAXART 10000
+#define MAXALB 10000
+#define MAXSONG 20000
+#define MAXVIDEO 10000
+#define MAXQRY 1000
 class mysqlconn {
 
 public:
         QSqlDatabase db;
 	mysqlconn(const char *server, const char* user, const char *pass, const char *database);
-
-        fileObj& connectArtist(int artMenu, fileObj& Artist);
-        fileObj& connectAlbum(fileObj& Artist, fileObj& Album);
-        fileObj& connectSong(fileObj& Album, fileObj& Song);
-        fileObj& connectVidDir(int vidMenu, fileObj& VidDir);
-        fileObj& connectVideo(fileObj& VidDir, fileObj& Video);
-
-
-        /*
 	songObj* connectArtist(songObj* Artist, int artMenu, int *mySize);
 	songObj* connectSong(songObj* Album, int *albSize, songObj* Song, int *songSize);
 	songObj* connectAlbum(songObj* Artist, int *artSize, songObj* Album, int *albSize);
         songObj* connectVidDir(songObj* VidDir, int vidDirMenu, int *vidDirSize);
         songObj* connectVideo(songObj* VidDir, int *vidDirSize, songObj* Video, int *vidSize);
-        */
         int connectVidMenu();
         int connectArtMenu();
         void display(ostream& os, int pos);

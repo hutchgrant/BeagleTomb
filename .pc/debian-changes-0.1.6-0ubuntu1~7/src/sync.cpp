@@ -70,7 +70,9 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     vidSize = 0, vidDirSize = 0;
 
     /// init Objects
-    fileObj Artist, Album, Song, VidDir, Video;
+    songObj *Artist = NULL, *Album = NULL, *Song = NULL, *VidDir = NULL, *Video = NULL;
+    songObj *newSong, *newAlbum, *newArtist;
+    songObj *newVideo, *newVidDir;
     //attempt to delete previous DB
     deleteDB(dbLocation);
 
@@ -83,33 +85,30 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     // get main artist menu
     artMenu = ms.connectArtMenu();
     vidDirMenu = ms.connectVidMenu();
-    // query mysql each artist,album,song,vidDir,video - store and return objects
-    Artist = ms.connectArtist(artMenu, Artist);
-    Album = ms.connectAlbum(Artist, Album);
-  //  Album.display();
-    Song = ms.connectSong(Album,Song);
-    VidDir = ms.connectVidDir(vidDirMenu,VidDir);
-    Video = ms.connectVideo(VidDir,Video);
-
+    // get from mysql each artist,album,song - store and return objects
+    newArtist = ms.connectArtist(Artist, artMenu, &artSize);
+    newAlbum = ms.connectAlbum(newArtist, &artSize, Album, &albSize);
+    newSong = ms.connectSong(newAlbum, &albSize, Song, &songSize);
+    newVidDir = ms.connectVidDir(VidDir, vidDirMenu, &vidDirSize);
+    newVideo = ms.connectVideo(newVidDir, &vidDirSize, Video, &vidSize);
     if(artMenu ==0){
         cout << "empty database or invalid login" << endl;
         return 0;
     }
     else{
     ///  sync artist,album,song objects to the local sql database
-    artistWrite(Artist);
-    albumWrite(Album);
-    songWrite(Song);
-    vidDirWrite(VidDir);
-    videoWrite(Video);
+    artistWrite(newArtist, artSize);
+    albumWrite(newAlbum, albSize);
+    songWrite(newSong, songSize);
+    vidDirWrite(newVidDir, vidDirSize);
+    videoWrite(newVideo, vidSize);
     return 1;
     }
 }
 
-void syncMe::artistWrite(fileObj& Artist){
+void syncMe::artistWrite(songObj* Artist, int artSize){
     int  pos = 0, posMax = 0, counter = 0, countRemind = 0;
-    int artSize =0;
-    artSize = Artist.getSize();
+
     string str2;
     counter = getMaxPos(artSize);
     posMax = counter;
@@ -118,21 +117,21 @@ void syncMe::artistWrite(fileObj& Artist){
         countRemind = 0;
         stringstream os;
         for (int i = pos; i <= posMax; i++) {
-            str2 = Artist.getName(i);
+            str2 = Artist[i].getFile();
 
             str2.erase(remove(str2.begin(), str2.end(), '\"'), str2.end());
-            Artist.setName(i,(char *)str2.c_str());
+            Artist[i].setFile((char *)str2.c_str());
             //           cout << str2 << endl;
             if (i != posMax && countRemind == 0) {
                 os << " INSERT INTO artists (Artist,ArtistID,ArtistPar) " <<
-                      "SELECT \"" << Artist.getName(i) << "\" AS \"" << "Artist" << "\", \""
-                   <<  Artist.getID(i) << "\" AS \"" << "ArtistID" << "\", \""
-                   << Artist.getPar(i) << "\" AS \"" << "ArtistPar" << "\"";
+                      "SELECT \"" << Artist[i].getFile() << "\" AS \"" << "Artist" << "\", \""
+                   <<  Artist[i].getFileID() << "\" AS \"" << "ArtistID" << "\", \""
+                   << Artist[i].getFilePar() << "\" AS \"" << "ArtistPar" << "\"";
                 //             cout << os;
                 countRemind++;
             }
             if (i != posMax && countRemind != 0) {
-                os << " UNION SELECT \""<< Artist.getName(i)<<"\",\""<< Artist.getID(i)<<"\",\""<<Artist.getPar(i)<<"\"";
+                os << " UNION SELECT \""<< Artist[i].getFile()<<"\",\""<< Artist[i].getFileID()<<"\",\""<<Artist[i].getFilePar()<<"\"";
 
             } else if (i == posMax && countRemind != 0) {
                 os << ";";
@@ -150,12 +149,10 @@ void syncMe::artistWrite(fileObj& Artist){
     }
 }
 
-void syncMe::albumWrite(fileObj& Album){
+void syncMe::albumWrite(songObj* Album, int albSize){
     int  pos = 0, posMax = 0, counter = 0, countRemind = 0;
-    int albSize = 0;
-    albSize = Album.getSize();
-    string str2;
 
+    string str2;
     counter = getMaxPos(albSize);
     posMax = counter;
 
@@ -163,21 +160,21 @@ void syncMe::albumWrite(fileObj& Album){
         countRemind = 0;
         stringstream os;
         for (int i = pos; i <= posMax; i++) {
-            str2 = Album.getName(i);
+            str2 = Album[i].getFile();
 
             str2.erase(remove(str2.begin(), str2.end(), '\"'), str2.end());
-            Album.setName(i,(char *)str2.c_str());
+            Album[i].setFile((char *)str2.c_str());
             //         cout << str2 << endl;
             if (i != posMax && countRemind == 0) {
                 os << " INSERT INTO albums (Album,AlbumID,AlbumPar) " <<
-                      "SELECT \"" << Album.getName(i) << "\" AS \"" << "Album" << "\", \""
-                   <<  Album.getID(i) << "\" AS \"" << "AlbumID" << "\", \""
-                   << Album.getPar(i) << "\" AS \"" << "AlbumPar" << "\"";
+                      "SELECT \"" << Album[i].getFile() << "\" AS \"" << "Album" << "\", \""
+                   <<  Album[i].getFileID() << "\" AS \"" << "AlbumID" << "\", \""
+                   << Album[i].getFilePar() << "\" AS \"" << "AlbumPar" << "\"";
                 //           cout << os;
                 countRemind++;
             }
             if (i != posMax && countRemind != 0) {
-                os << " UNION SELECT \""<< Album.getName(i)<<"\",\""<< Album.getID(i)<<"\",\""<<Album.getPar(i)<<"\"";
+                os << " UNION SELECT \""<< Album[i].getFile()<<"\",\""<< Album[i].getFileID()<<"\",\""<<Album[i].getFilePar()<<"\"";
 
             } else if (i == posMax && countRemind != 0) {
                 os << ";";
@@ -194,10 +191,9 @@ void syncMe::albumWrite(fileObj& Album){
         }
     }
 }
-void syncMe::songWrite(fileObj& Song){
+void syncMe::songWrite(songObj* Song, int songSize){
     int  pos = 0, posMax = 0, counter = 0, countRemind = 0;
-    int songSize = 0;
-    songSize = Song.getSize();
+
     string str2;
     counter = getMaxPos(songSize);
     posMax = counter;
@@ -206,21 +202,21 @@ void syncMe::songWrite(fileObj& Song){
         countRemind = 0;
         stringstream os;
         for (int i = pos; i <= posMax; i++) {
-            str2 = Song.getName(i);
+            str2 = Song[i].getFile();
 
             str2.erase(remove(str2.begin(), str2.end(), '\"'), str2.end());
-            Song.setName(i,(char *)str2.c_str());
+            Song[i].setFile((char *)str2.c_str());
             //         cout << str2 << endl;
             if (i != posMax && countRemind == 0) {
                 os << " INSERT INTO songs (Song,SongID,SongPar) " <<
-                      "SELECT \"" << Song.getName(i) << "\" AS \"" << "Song" << "\", \""
-                   <<  Song.getID(i) << "\" AS \"" << "SongID" << "\", \""
-                   << Song.getPar(i) << "\" AS \"" << "SongPar" << "\"";
+                      "SELECT \"" << Song[i].getFile() << "\" AS \"" << "Song" << "\", \""
+                   <<  Song[i].getFileID() << "\" AS \"" << "SongID" << "\", \""
+                   << Song[i].getFilePar() << "\" AS \"" << "SongPar" << "\"";
                 //           cout << os;
                 countRemind++;
             }
             if (i != posMax && countRemind != 0) {
-                os << " UNION SELECT \""<< Song.getName(i)<<"\",\""<< Song.getID(i)<<"\",\""<<Song.getPar(i)<<"\"";
+                os << " UNION SELECT \""<< Song[i].getFile()<<"\",\""<< Song[i].getFileID()<<"\",\""<<Song[i].getFilePar()<<"\"";
 
             } else if (i == posMax && countRemind != 0) {
                 os << ";";
@@ -238,10 +234,9 @@ void syncMe::songWrite(fileObj& Song){
     }
 }
 
-void syncMe::vidDirWrite(fileObj& vidDir){
+void syncMe::vidDirWrite(songObj* vidDir, int vidDirSize){
     int  pos = 0, posMax = 0, counter = 0, countRemind = 0;
-    int vidDirSize = 0;
-    vidDirSize = vidDir.getSize();
+
     string str2;
     counter = getMaxPos(vidDirSize);
     posMax = counter;
@@ -250,21 +245,21 @@ void syncMe::vidDirWrite(fileObj& vidDir){
         countRemind = 0;
         stringstream os;
         for (int i = pos; i <= posMax; i++) {
-            str2 = vidDir.getName(i);
+            str2 = vidDir[i].getFile();
 
             str2.erase(remove(str2.begin(), str2.end(), '\"'), str2.end());
-            vidDir.setName(i,(char *)str2.c_str());
+            vidDir[i].setFile((char *)str2.c_str());
             //       cout << str2 << endl;
             if (i != posMax && countRemind == 0) {
                 os << " INSERT INTO viddirs (VidDir,VidDirID,VidDirPar) " <<
-                      "SELECT \"" << vidDir.getName(i) << "\" AS \"" << "VidDir" << "\", \""
-                   <<  vidDir.getID(i) << "\" AS \"" << "VidDirID" << "\", \""
-                   << vidDir.getPar(i) << "\" AS \"" << "VidDirPar" << "\"";
+                      "SELECT \"" << vidDir[i].getFile() << "\" AS \"" << "VidDir" << "\", \""
+                   <<  vidDir[i].getFileID() << "\" AS \"" << "VidDirID" << "\", \""
+                   << vidDir[i].getFilePar() << "\" AS \"" << "VidDirPar" << "\"";
                 //          cout << os;
                 countRemind++;
             }
             if (i != posMax && countRemind != 0) {
-                os << " UNION SELECT \""<< vidDir.getName(i)<<"\",\""<< vidDir.getID(i)<<"\",\""<<vidDir.getPar(i)<<"\"";
+                os << " UNION SELECT \""<< vidDir[i].getFile()<<"\",\""<< vidDir[i].getFileID()<<"\",\""<<vidDir[i].getFilePar()<<"\"";
 
             } else if (i == posMax && countRemind != 0) {
                 os << ";";
@@ -283,10 +278,9 @@ void syncMe::vidDirWrite(fileObj& vidDir){
 }
 
 
-void syncMe::videoWrite(fileObj& Video){
+void syncMe::videoWrite(songObj* Video, int vidSize){
     int  pos = 0, posMax = 0, counter = 0, countRemind = 0;
-    int vidSize = 0;
-    vidSize = Video.getSize();
+
     string str2;
     counter = getMaxPos(vidSize);
     posMax = counter;
@@ -295,21 +289,21 @@ void syncMe::videoWrite(fileObj& Video){
         countRemind = 0;
         stringstream os;
         for (int i = pos; i <= posMax; i++) {
-            str2 = Video.getName(i);
+            str2 = Video[i].getFile();
 
             str2.erase(remove(str2.begin(), str2.end(), '\"'), str2.end());
-            Video.setName(i,(char *)str2.c_str());
+            Video[i].setFile((char *)str2.c_str());
             //        cout << str2 << endl;
             if (i != posMax && countRemind == 0) {
                 os << " INSERT INTO videos (Video,VideoID,VideoPar) " <<
-                      "SELECT \"" << Video.getName(i) << "\" AS \"" << "Video" << "\", \""
-                   <<  Video.getID(i) << "\" AS \"" << "VideoID" << "\", \""
-                   << Video.getPar(i) << "\" AS \"" << "VideoPar" << "\"";
+                      "SELECT \"" << Video[i].getFile() << "\" AS \"" << "Video" << "\", \""
+                   <<  Video[i].getFileID() << "\" AS \"" << "VideoID" << "\", \""
+                   << Video[i].getFilePar() << "\" AS \"" << "VideoPar" << "\"";
                 //           cout << os;
                 countRemind++;
             }
             if (i != posMax && countRemind != 0) {
-                os << " UNION SELECT \""<< Video.getName(i)<<"\",\""<< Video.getID(i)<<"\",\""<<Video.getPar(i)<<"\"";
+                os << " UNION SELECT \""<< Video[i].getFile()<<"\",\""<< Video[i].getFileID()<<"\",\""<<Video[i].getFilePar()<<"\"";
 
             } else if (i == posMax && countRemind != 0) {
                 os << ";";

@@ -39,7 +39,6 @@
 #include "songObj.h"
 #include "radioObj.h"
 #include "mysqlconn.h"
-#include "fileobj.h"
 
 #define TEMPSYNCPREF "/.BeagleTomb/BTmedia.db"
 
@@ -53,22 +52,22 @@ public:
 
         syncMe(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
 
-        void videoWrite(fileObj& Video);
+        void videoWrite(songObj* Song, int songSize);
 
-        void vidDirWrite(fileObj& VidDir);
+        void vidDirWrite(songObj* Song, int songSize);
 
-        void songWrite(fileObj& Song);
+        void songWrite(songObj* Song, int songSize);
 
-        void albumWrite(fileObj& Album);
+        void albumWrite(songObj* Album, int albSize);
 
-        void artistWrite(fileObj& Artist);
+        void artistWrite(songObj* Artist, int artSize);
 
         void writeMe(string qry);;
 
         int getMaxPos(int count);
         void sendToShell();
         void RemoveTMP();
-        void display(songObj* Artist, int *artSize, songObj* Album, int *albSize, songObj *Song, int *songSize);
+	void display(songObj* Artist, int *artSize, songObj* Album, int *albSize, songObj *Song, int *songSize);
 	void deleteDB(const char *dbLocation);
 	void createDB(const char *dbLocation);
         void OpenDB();
