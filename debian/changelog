@@ -1,3 +1,9 @@
+beagletomb (0.1.6-0ubuntu1~8) natty; urgency=low
+
+  * Update: Fixed dynamic memory allocation, sync improved (Closes: #nnnn)
+
+ -- Grant Hutchinson <h.g.utchinson@gmail.com>  Mon, 27 Mar 2012 18:59:22 -0500
+
 beagletomb (0.1.6-0ubuntu1~7) natty; urgency=low
 
   * Update: Fixed dynamic memory allocation, sync improved (Closes: #nnnn)
