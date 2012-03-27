@@ -25,31 +25,29 @@
 #ifndef READDB_H_
 #define READDB_H_
 #define MAX 10000
-#include "songObj.h"
 #include "radioObj.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
 #include <QtSql>
+#include "fileobj.h"
 using namespace std;
 class readDB {
-
-        songObj *Artist, *Album, *Song, *Video, *VidDir;
         radioObj play_list;
         char *DBlocation2;
 
 public:
         QSqlDatabase db2;
         readDB(const char *dbLocation);
-	songObj* SongFill(int *songSize);
-	songObj* AlbumFill(int *albSize);
-	songObj* ArtistFill(int *artSize);
-        songObj* VidDirFill(int *vidDirSize);
-        songObj* VideoFill(int *vidSize);
+        fileObj& SongFill(fileObj& Song);
+        fileObj& AlbumFill(fileObj& Album);
+        fileObj& ArtistFill(fileObj& Artist);
+        fileObj& VidDirFill(fileObj& VidDir);
+        fileObj& VideoFill(fileObj& Video);
        radioObj RadioFill( int *radSize);
        void OpenDB();
-	void display(int artSize, int albSize, int songSize);
+        void display(fileObj&Artist, fileObj& Song,fileObj& Album);
 	virtual ~readDB();
 };
 

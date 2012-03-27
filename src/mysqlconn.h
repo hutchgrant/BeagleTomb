@@ -28,16 +28,11 @@
 #include <iostream>
 #include <string>
 #include <string.h>
-#include "songObj.h"
 #include <QtSql>
 #include "fileobj.h"
 using namespace std;
 
-#define MAXART 1000
-#define MAXALB 1000
-#define MAXSONG 2000
-#define MAXVIDEO 1000
-#define MAXQRY 1000
+#define MAXQRY 100
 class mysqlconn {
 
 public:

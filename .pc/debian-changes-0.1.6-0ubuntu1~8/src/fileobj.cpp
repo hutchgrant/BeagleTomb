@@ -51,14 +51,11 @@ void fileObj::REinitFile(int oldsize, int newsize){
         idCopy[i] = 0;
     }
 
-    for(int i=0; i< objSize; i++){
+    for(int i=0; i< objSize-4; i++){
         nameCopy[i] = fileName[i];
         parCopy[i] = filePar[i];
         idCopy[i] = fileID[i];
     }
-    delete [] fileName;
-    delete [] fileID;
-    delete [] filePar;
       initFile(InitSize);
    /// refill array fileName fileID filePar array
 
@@ -107,54 +104,4 @@ fileObj& fileObj::operator=(const fileObj& src){
     }
      return *this;
 
-}
-
-
-/*
-  *  Search any Object for a track name by the using the ID
-  */
-char* checkSongObjByID(int id, fileObj& src){
-    char *FinSong;
-    if(src.getSize() > 0){
-        for(int i = 0; i< src.getSize(); i++){
-            if(src.getID(i) == id){
-
-                FinSong = new char[strlen(src.getName(i))+1];
-                strcpy(FinSong,src.getName(i));
-            }
-        }
-    }
-    return FinSong;
-}
-
-/*
-  *  Search any Object for a track ID by the using the parent
-  */
-int checkSongObjIDbyPar(int par, fileObj& src){
-    int FinID = 0;
-    if(src.getSize() > 0){
-        for(int i = 0; i< src.getSize(); i++){
-            if(src.getPar(i) == par){
-
-                FinID = src.getID(i);
-            }
-        }
-    }
-    return FinID;
-}
-
-/*
-  *  Search any Object for a track Par by the using the ID
-  */
-int checkSongObjParByID(int id, fileObj& src){
-    int FinPar;
-    if(src.getSize() > 0){
-        for(int i = 0; i< src.getSize(); i++){
-            if(src.getID(i) == id){
-
-                FinPar = src.getPar(i);
-            }
-        }
-    }
-    return FinPar;
 }

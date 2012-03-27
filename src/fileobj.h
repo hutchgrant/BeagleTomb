@@ -86,6 +86,12 @@ public:
         objSize = 0;
         delete [] fileName;
     }
+
+
 };
+
+char* checkSongObjByID(int id, fileObj& src);   // returns song name based on query by unique ID
+int checkSongObjIDByPar(int par, fileObj& src);   // returns song ID based on query by parent ID
+int checkSongObjParByID(int id, fileObj& src);   // returns song ParID based on query by ID
 
 #endif // FILEOBJ_H
