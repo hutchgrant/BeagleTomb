@@ -51,11 +51,14 @@ void fileObj::REinitFile(int oldsize, int newsize){
         idCopy[i] = 0;
     }
 
-    for(int i=0; i< objSize-4; i++){
+    for(int i=0; i< objSize; i++){
         nameCopy[i] = fileName[i];
         parCopy[i] = filePar[i];
         idCopy[i] = fileID[i];
     }
+    delete [] fileName;
+    delete [] fileID;
+    delete [] filePar;
       initFile(InitSize);
    /// refill array fileName fileID filePar array
 
