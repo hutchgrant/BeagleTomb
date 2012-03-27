@@ -27,7 +27,8 @@ SOURCES += src/main.cpp\
     src/newplaylist.cpp \
     src/playlistobj.cpp \
     src/openplaylist.cpp \
-    src/radioObj.cpp
+    src/radioObj.cpp \
+    src/fileobj.cpp
 
 HEADERS  += src/beaglemain.h \
     src/sync.h \
@@ -56,7 +57,8 @@ HEADERS  += src/beaglemain.h \
     src/beaglemain.h \
     src/about.h \
     src/openplaylist.h \
-    src/radioObj.h
+    src/radioObj.h \
+    src/fileobj.h
 
 FORMS    += \
     src/prefdialog.ui \
