@@ -1,0 +1,6 @@
+Makefile /opt/extras.ubuntu.com/beagletomb
+beagletomb.pro /opt/extras.ubuntu.com/beagletomb/
+docs/*.* /opt/extras.ubuntu.com/beagletomb/docs
+src/*.* /opt/extras.ubuntu.com/beagletomb/src/
+images/*.* /opt/extras.ubuntu.com/beagletomb/images/
+beagletomb.desktop /usr/share/applications/
