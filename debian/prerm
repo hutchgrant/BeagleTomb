@@ -1,0 +1,4 @@
+#! /bin/bash -e
+
+rm -R /opt/extras.ubuntu.com/beagletomb
+rm /usr/bin/beagletomb

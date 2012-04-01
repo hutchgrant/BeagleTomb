@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>FFWD_icon.png</file>
+        <file>FWD_icon.png</file>
+        <file>PAUSE_icon.png</file>
+        <file>RRWD_icon.png</file>
+        <file>RWD_icon.png</file>
+        <file>STOP_icon.png</file>
+        <file>beagletomb_icon.png</file>
+    </qresource>
+</RCC>
