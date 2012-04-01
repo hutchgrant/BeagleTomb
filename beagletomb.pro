@@ -4,8 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-QT       += sql
+QT       += core gui sql
 
 TARGET = beagletomb
 TEMPLATE = app
@@ -28,7 +27,8 @@ SOURCES += src/main.cpp\
     src/playlistobj.cpp \
     src/openplaylist.cpp \
     src/radioObj.cpp \
-    src/fileobj.cpp
+    src/fileobj.cpp \
+    src/localsync.cpp
 
 HEADERS  += src/beaglemain.h \
     src/sync.h \
@@ -58,7 +58,8 @@ HEADERS  += src/beaglemain.h \
     src/about.h \
     src/openplaylist.h \
     src/radioObj.h \
-    src/fileobj.h
+    src/fileobj.h \
+    src/localsync.h
 
 FORMS    += \
     src/prefdialog.ui \

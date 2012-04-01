@@ -24,14 +24,14 @@ using namespace std;
 syncMe::syncMe(const char *server, const char *user, const char *pass,
                const char *table, const char *dbLocation) {
     string home = getenv("HOME");
-     string temp_pref = home + TEMPSYNCPREF;
-   db = QSqlDatabase::addDatabase("QSQLITE", "connection");
-   db.setDatabaseName(temp_pref.c_str());
+    string temp_pref = home + TEMPSYNCPREF;
+    db = QSqlDatabase::addDatabase("QSQLITE", "connection");
+    db.setDatabaseName(temp_pref.c_str());
 
 
-   if(control(server, user, pass, table, dbLocation)==0){
+    if(control(server, user, pass, table, dbLocation)==0){
         // future error popup
-   }
+    }
 
 
 }
@@ -86,7 +86,7 @@ int syncMe::control(const char *server, const char *user, const char *pass,
     // query mysql each artist,album,song,vidDir,video - store and return objects
     Artist = ms.connectArtist(artMenu, Artist);
     Album = ms.connectAlbum(Artist, Album);
-  //  Album.display();
+    //  Album.display();
     Song = ms.connectSong(Album,Song);
     VidDir = ms.connectVidDir(vidDirMenu,VidDir);
     Video = ms.connectVideo(VidDir,Video);
@@ -96,13 +96,13 @@ int syncMe::control(const char *server, const char *user, const char *pass,
         return 0;
     }
     else{
-    ///  sync artist,album,song objects to the local sql database
-    artistWrite(Artist);
-    albumWrite(Album);
-    songWrite(Song);
-    vidDirWrite(VidDir);
-    videoWrite(Video);
-    return 1;
+        ///  sync artist,album,song objects to the local sql database
+        artistWrite(Artist);
+        albumWrite(Album);
+        songWrite(Song);
+        vidDirWrite(VidDir);
+        videoWrite(Video);
+        return 1;
     }
 }
 
@@ -329,12 +329,12 @@ void syncMe::videoWrite(fileObj& Video){
 
 void syncMe::writeMe(string qry){
 
-       if(db.open()){
-           QSqlQuery myQry(db);
-           myQry.prepare(qry.c_str());
-           myQry.exec();
-           db.close();
-       }
+    if(db.open()){
+        QSqlQuery myQry(db);
+        myQry.prepare(qry.c_str());
+        myQry.exec();
+        db.close();
+    }
 }
 
 
@@ -356,5 +356,5 @@ int syncMe::getMaxPos(int count) {
 }
 
 syncMe::~syncMe() {
-   // db.close();
+    // db.close();
 }

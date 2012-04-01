@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "sync.h"
-#include "songObj.h"
 #include "readDB.h"
 #include "mplaycon.h"
 #include "prefdialog.h"
@@ -37,6 +36,7 @@
 #include "newplaylist.h"
 #include "openplaylist.h"
 #include "radioObj.h"
+#include "localsync.h"
 namespace Ui {
 class BeagleMain;
 }
@@ -53,6 +53,7 @@ public:
     int plMode;        /// playlist mode : 1 playlist browsing and 2: browsing tracks within playlist
     int pl_selected;  /// global playlist selection
      int title_selected;  /// global title selection
+    int CON_MODE;
 
     About ab;
     PrefDialog prefDg;
@@ -62,7 +63,8 @@ public:
     openplaylist openPL;
     QMPwidget widget;
     mplayCon mplay;
-    fileObj Artist, Song, Album, VidDir, Video;
+    localsync SyncAudioLocal, SyncVideoLocal;
+    fileObj Artist, Song, Album, VidDir, Video, DirecLocal, SongLocal, vidDirecLocal, VideoLocal;
     radioObj Radio;
     int artSize, albSize, songSize, vidSize, vidDirSize, radSize;
 
@@ -75,8 +77,11 @@ public:
    ~BeagleMain();
 
     void updateMenu(int type);
-
     void updateTitle();
+    void updateLclSongDirs();
+    void updateLclSongs();
+    void updateLclVidDirs();
+    void updateLclVideos();
 
     void updateAlbMenu(int select);
     void updateTitle(int select);
@@ -88,6 +93,7 @@ public:
     void RefillMainPL();
     void RefillPLFolder();
     void startSong(char *FinSong, int selID);
+    void startLocal(char *finSong, char *finPath);
     void PlaylistPlay(int selID);
     void closeEvent(QCloseEvent *event);
 
@@ -150,6 +156,12 @@ private slots:
     void on_list_radio_clicked(QModelIndex index);
 
     void on_list_radio_doubleClicked(QModelIndex index);
+
+    void on_but_import_aud_clicked();
+
+    void on_but_remote_tog_clicked();
+
+    void on_but_import_vid_clicked();
 
 private:
     Ui::BeagleMain *ui;

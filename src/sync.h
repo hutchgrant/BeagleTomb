@@ -36,7 +36,6 @@
 
 #include "mysqlconn.h"
 #include "readDB.h"
-#include "songObj.h"
 #include "radioObj.h"
 #include "mysqlconn.h"
 #include "fileobj.h"
@@ -68,7 +67,6 @@ public:
         int getMaxPos(int count);
         void sendToShell();
         void RemoveTMP();
-        void display(songObj* Artist, int *artSize, songObj* Album, int *albSize, songObj *Song, int *songSize);
 	void deleteDB(const char *dbLocation);
 	void createDB(const char *dbLocation);
         void OpenDB();

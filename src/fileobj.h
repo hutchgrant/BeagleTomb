@@ -6,16 +6,20 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
+#include <QtGui/QMainWindow>
+
 using namespace std;
 class fileObj
 {
 public:
 
     string *fileName;    // Item name
+    string *filePath;    // Item Path  *only if local
     int *fileID;         // Item Identification number
     int *filePar;       // Item Parent number
     int objSize;        // Number of Items
     int InitSize;       // Number size before reallocate
+
 
     fileObj();
     fileObj(const fileObj& src);
@@ -24,25 +28,41 @@ public:
     void initFile(int initSZ);
     void REinitFile(int oldsize, int newsize);
     void display();
-    ~fileObj();
+    virtual ~fileObj();
 
     void setName(int item, const char *name){
         if(item >= 0 && item <= objSize){
             fileName[item] = name;
         }
     }
+    void setPath(int item, const char *path){
+        if(item >= 0 && item <= objSize){
+            filePath[item] = path;
+        }
+    }
+
     void setID(int item, int newID){
-       if(item >= 0 && item <= objSize){
+        if(item >= 0 && item <= objSize){
             /// fill with new entry
             fileID[item] = newID;
-       }
+        }
     }
     void setPar(int item, int newPar){
-       if(item >= 0 && item <= objSize){
+        if(item >= 0 && item <= objSize){
 
             /// fill with new entry
             filePar[item] = newPar;
-       }
+        }
+    }
+    void set(int item, int newid, int newpar, const char *newname, const char *newpath){
+        if (objSize >= InitSize-1){
+            REinitFile(InitSize, 1000);
+        }
+        setID(item, newid);
+        setPar(item, newpar);
+        setName(item, newname);
+        setPath(item, newpath);
+        objSize++;
     }
     void set(int item, int newid, int newpar, const char *newname){
         if (objSize >= InitSize-1){
@@ -51,12 +71,14 @@ public:
         setID(item, newid);
         setPar(item, newpar);
         setName(item, newname);
+        setPath(item, "-");
         objSize++;
     }
-    void setInit(int item, int newid, int newpar, const char *newname){
+    void setInit(int item, int newid, int newpar, const char *newname, const char *newpath){
         setID(item, newid);
         setPar(item, newpar);
         setName(item, newname);
+        setPath(item, newpath);
         InitSize++;
     }
     int getID(int item){
@@ -71,6 +93,13 @@ public:
         strcpy(final, fileName[item].c_str());
         return final;
     }
+    char *getPath(int item){
+        char *final;
+        final = new char[filePath[item].length()+1];
+        strcpy(final, filePath[item].c_str());
+        return final;
+    }
+
     int getSize(){
         return objSize;
     }
@@ -81,11 +110,6 @@ public:
         return InitSize;
     }
 
-
-    void delFileName(){
-        objSize = 0;
-        delete [] fileName;
-    }
 
 
 };
