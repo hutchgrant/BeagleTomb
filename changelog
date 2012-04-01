@@ -1,8 +1,8 @@
-beagletomb (0.1.7-0ubuntu1~1) natty; urgency=low
+beagletomb (0.1.7-0ubuntu1) natty; urgency=low
 
   * Added: New Local audio/video library sync, local features (Closes: #nnnn)
 
- -- Grant Hutchinson <h.g.utchinson@gmail.com>  Sun, 1 Apr 2012 2:02:22 -0500
+ -- Grant Hutchinson <h.g.utchinson@gmail.com>  Sun, 01 Apr 2012 02:02:22 -0500
 
 beagletomb (0.1.6-0ubuntu1~7) natty; urgency=low
 
