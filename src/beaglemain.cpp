@@ -263,12 +263,24 @@ void BeagleMain::updateTitle(int selected){
             }
         }
     }else{    /// IN LOCAL MODE
-        selID = DirecLocal.getID(selected);
-        for(int i = 0; i<SongLocal.getSize(); i++){
-            if(SongLocal.getPar(i) == selID){
-                curSong << SongLocal.getName(i);
-                curSongID[songCount] = SongLocal.getID(i);
-                songCount++;
+        if(MenuMode == 1){
+            selID = DirecLocal.getID(selected);
+            for(int i = 0; i<SongLocal.getSize(); i++){
+                if(SongLocal.getPar(i) == selID){
+                    curSong << SongLocal.getName(i);
+                    curSongID[songCount] = SongLocal.getID(i);
+                    songCount++;
+                }
+            }
+        }
+        if(MenuMode == 4){
+            selID = vidDirecLocal.getID(selected);
+            for(int i = 0; i<VideoLocal.getSize(); i++){
+                if(VideoLocal.getPar(i) == selID){
+                    curSong << VideoLocal.getName(i);
+                    curSongID[songCount] = VideoLocal.getID(i);
+                    songCount++;
+                }
             }
         }
     }
@@ -533,7 +545,7 @@ void BeagleMain::on_MenuList_clicked(QModelIndex index)
     int selected = ui->MenuList->currentIndex().row();
 
     if(MenuMode == 1){
-        if(CON_MODE != 0){  // REMOTE MODE
+        if(CON_MODE == 0){  // LOCAL MODE
             updateAlbMenu(selected);
         }
         else{
