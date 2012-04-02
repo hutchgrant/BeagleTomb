@@ -49,7 +49,13 @@ void BeagleMain::Sync(int type){
     songSize = 0;
     vidDirSize = 0;
     vidSize = 0;
-   radSize = 0;
+    radSize = 0;
+
+    SongLocal = SyncAudioLocal.readLocalDB(1, SongLocal);
+    DirecLocal = SyncAudioLocal.readLocalDB(0, DirecLocal);
+    vidDirecLocal = SyncAudioLocal.readLocalDB(2,vidDirecLocal);
+    VideoLocal = SyncVideoLocal.readLocalDB(3, VideoLocal);
+
     if(type == 0){
         /// init playlist
         pl.setCount(0);
@@ -94,7 +100,7 @@ void BeagleMain::Sync(int type){
         ///check database for previous radio stations
         Radio = rDB.RadioFill(&radSize);
         // read preferences prior to delete
-   //     pref.readDB();
+        //     pref.readDB();
         pref.deleteDB(pref.getSQL().c_str());
         ///
         pref.createDB();
@@ -130,25 +136,42 @@ void BeagleMain::Sync(int type){
 void BeagleMain::updateMenu(int type){
     QStringList curMenu;
     m_Model = new QStringListModel(this);
-    if(type == 1){
-        /// update with artist
-        for(int i=0; i< Artist.getSize(); i++){
-            curMenu << Artist.getName(i);
-        }
-    }
-    else if(type == 2){
-        /// update with album
-        for(int i=0; i< Album.getSize(); i++){
-            curMenu << Album.getName(i);
-        }
-    }
-    else if(type == 3){
-        /// update with directories
-        for(int i=0; i< VidDir.getSize(); i++){
-            curMenu << VidDir.getName(i);
-        }
-    }
 
+    if(CON_MODE == 1){ /// REMOTE MODE
+        if(type == 1){
+            /// update with artist
+            for(int i=0; i< Artist.getSize(); i++){
+                curMenu << Artist.getName(i);
+            }
+        }
+        else if(type == 2){
+            /// update with album
+            for(int i=0; i< Album.getSize(); i++){
+                curMenu << Album.getName(i);
+            }
+        }
+        else if(type == 3){
+            /// update with directories
+            for(int i=0; i< VidDir.getSize(); i++){
+                curMenu << VidDir.getName(i);
+            }
+        }
+    }else{
+        if(type == 1){
+            DirecLocal = SyncAudioLocal.readLocalDB(0, DirecLocal);
+            /// update with Artist Directories
+            for(int i=0; i< DirecLocal.getSize(); i++){
+                curMenu << DirecLocal.getName(i);
+            }
+        }
+        else if(type == 3){
+            vidDirecLocal = SyncVideoLocal.readLocalDB(2, vidDirecLocal);
+            /// update with video Directories
+            for(int i=0; i< vidDirecLocal.getSize(); i++){
+                curMenu << vidDirecLocal.getName(i);
+            }
+        }
+    }
 
     m_Model->setStringList(curMenu);
     ui->MenuList->setModel(m_Model);
@@ -207,32 +230,44 @@ void BeagleMain::updateTitle(int selected){
     t_Model = new QStringListModel(this);
     curSongID = new int[MAX];
     curVidID = new int[MAX];
-    if(MenuMode == 3){     ///  if ALL ALBUM
-        selID = Album.getID(selected);
-        for(int i = 0; i< Song.getSize(); i++){
-            if(Song.getPar(i) == selID){
-                curSong << Song.getName(i);
-                curSongID[songCount] = Song.getID(i);
-                songCount++;
+
+    if(CON_MODE == 1){  /// IN REMOTE MODE
+        if(MenuMode == 3){     ///  ALL ALBUM
+            selID = Album.getID(selected);
+            for(int i = 0; i< Song.getSize(); i++){
+                if(Song.getPar(i) == selID){
+                    curSong << Song.getName(i);
+                    curSongID[songCount] = Song.getID(i);
+                    songCount++;
+                }
             }
         }
-    }
-    else if(MenuMode == 4){    ////// if VIDEO DIR MODE
-        selID = VidDir.getID(selected);
-        for(int i = 0; i<= Video.getSize(); i++){
-            if(Video.getPar(i) == selID){
-                curSong << Video.getName(i);
-                curVidID[vidCount] = Video.getID(i);
-                vidCount++;
+        else if(MenuMode == 4){    ///  VIDEO DIR MODE
+            selID = VidDir.getID(selected);
+            for(int i = 0; i<= Video.getSize(); i++){
+                if(Video.getPar(i) == selID){
+                    curSong << Video.getName(i);
+                    curVidID[vidCount] = Video.getID(i);
+                    vidCount++;
+                }
             }
         }
-    }
-    else{   /// IF ALBUM DIR MODE
-        selID = curAlbID[selected];
-        for(int i = 0; i<= Song.getSize(); i++){
-            if(Song.getPar(i) == selID){
-                curSong << Song.getName(i);
-                curSongID[songCount] = Song.getID(i);
+        else{   /// ALBUM DIR MODE
+            selID = curAlbID[selected];
+            for(int i = 0; i<= Song.getSize(); i++){
+                if(Song.getPar(i) == selID){
+                    curSong << Song.getName(i);
+                    curSongID[songCount] = Song.getID(i);
+                    songCount++;
+                }
+            }
+        }
+    }else{    /// IN LOCAL MODE
+        selID = DirecLocal.getID(selected);
+        for(int i = 0; i<SongLocal.getSize(); i++){
+            if(SongLocal.getPar(i) == selID){
+                curSong << SongLocal.getName(i);
+                curSongID[songCount] = SongLocal.getID(i);
                 songCount++;
             }
         }
@@ -248,7 +283,7 @@ void BeagleMain::updateTitle(int selected){
   */
 void BeagleMain::updateLclVidDirs(){
 
-    vidDirecLocal = SyncVideoLocal.readLocalDB(2, vidDirecLocal);
+
     t_Model = new QStringListModel(this);
     QStringList dirList;
 
@@ -266,7 +301,6 @@ void BeagleMain::updateLclVidDirs(){
   */
 
 void BeagleMain::updateLclVideos(){
-    VideoLocal = SyncVideoLocal.readLocalDB(3, VideoLocal);
     t_Model = new QStringListModel(this);
     QStringList songList;
 
@@ -282,7 +316,6 @@ void BeagleMain::updateLclVideos(){
   */
 void BeagleMain::updateLclSongDirs(){
 
-    DirecLocal = SyncAudioLocal.readLocalDB(0, DirecLocal);
     t_Model = new QStringListModel(this);
     QStringList dirList;
 
@@ -294,16 +327,33 @@ void BeagleMain::updateLclSongDirs(){
 }
 
 /*
-  * UPDATE with Local Audio Files
+  * UPDATE with All Local Audio Files
   */
 
 void BeagleMain::updateLclSongs(){
-    SongLocal = SyncAudioLocal.readLocalDB(1, SongLocal);
-    t_Model = new QStringListModel(this);
     QStringList songList;
+    t_Model = new QStringListModel(this);
 
     for(int i = 0; i< SongLocal.getSize(); i++){
         songList << QString::fromStdString(string(SongLocal.getName(i)));
+    }
+    t_Model->setStringList(songList);
+    ui->TitleList->setModel(t_Model);
+}
+
+/*
+  * UPDATE with Local From Selected Directory
+  */
+
+void BeagleMain::updateLclSongs(int selected){
+    t_Model = new QStringListModel(this);
+    QStringList songList;
+    int selID = 0;
+    selID = DirecLocal.getID(selected);
+    for(int i = 0; i< SongLocal.getSize(); i++){
+        if(SongLocal.getPar(i) == selID){
+            songList << QString::fromStdString(string(SongLocal.getName(i)));
+        }
     }
     t_Model->setStringList(songList);
     ui->TitleList->setModel(t_Model);
@@ -338,7 +388,7 @@ void BeagleMain::startLocal(char *finSong, char *finPath){
   */
 void BeagleMain::RefillMainPL(){
     QStringList updatedList;
-   t_Model = new QStringListModel(this);
+    t_Model = new QStringListModel(this);
     updatedList = pl.RefillPlaylist();
     t_Model->setStringList(updatedList);
     ui->PlayList->setModel(t_Model);
@@ -349,23 +399,23 @@ void BeagleMain::RefillMainPL(){
   */
 void BeagleMain::RefillPLFolder(){
     QStringList updatedList;
-   t_Model = new QStringListModel(this);
+    t_Model = new QStringListModel(this);
     updatedList = pl.listDirectories(pl.getFullLocation().c_str());
     t_Model->setStringList(updatedList);
     ui->PlayList->setModel(t_Model);
 }
 
 void BeagleMain::PlaylistPlay(int selID){
-        char* FinSong;
-        for(int i = 0; i<= pl.getCount(); i++){
-            if(pl.getTrackID(i) == selID){
-                FinSong = new char[strlen(pl.getTrackName(i).c_str())+1];
-                strcpy(FinSong,pl.getTrackName(i).c_str());
-            }
+    char* FinSong;
+    for(int i = 0; i<= pl.getCount(); i++){
+        if(pl.getTrackID(i) == selID){
+            FinSong = new char[strlen(pl.getTrackName(i).c_str())+1];
+            strcpy(FinSong,pl.getTrackName(i).c_str());
         }
-        // start song
-        startSong(FinSong, selID);
     }
+    // start song
+    startSong(FinSong, selID);
+}
 /*
   * MEM CLEANUP
   */
@@ -391,45 +441,22 @@ void BeagleMain::on_SYNC_but_clicked()
 void BeagleMain::on_MODE_combo_currentIndexChanged(int index)
 {
     if(index == 1){   //  update lists with artists
-        if(CON_MODE == 1){
-            updateMenu(1);
-            MenuMode=1;
-        }
-        else{
-             MenuMode=1;
-            updateLclSongDirs();
-        }
+        updateMenu(1);
+        MenuMode=1;
     }
     else if(index == 2){  // update lists with albums
-        if(CON_MODE == 1){
-            updateMenu(2);
-            MenuMode=3;
-        }
-        else{
-       //      updateLclAlbumDir();  // need to detect albums first.
-        }
+        updateMenu(2);
+        MenuMode=3;
     }
     else if(index == 3){  // update lists with songs
-        if(CON_MODE == 1){
-            updateTitle();
-            TitleMode = 1;
-        }
-        else{
-            updateLclSongs();
-        }
-
+        updateTitle();
+        TitleMode = 1;
     }
     else if(index == 4){  // update lists with vid directories
-        if(CON_MODE == 1){
-            MenuMode = 4;
-            updateMenu(3);
-        }
-        else{
-             MenuMode = 4;
-            updateLclVidDirs();
-            updateLclVideos();
-        }
+        MenuMode = 4;
+        updateMenu(3);
     }
+
 }
 
 /*
@@ -454,7 +481,7 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
 
 
         delete [] finSong;
-   //     delete [] finParent;
+        //     delete [] finParent;
         delete [] finPath;
 
         if(MenuMode == 2 || MenuMode == 3){
@@ -506,11 +533,13 @@ void BeagleMain::on_MenuList_clicked(QModelIndex index)
     int selected = ui->MenuList->currentIndex().row();
 
     if(MenuMode == 1){
-        updateAlbMenu(selected);
+        if(CON_MODE != 0){  // REMOTE MODE
+            updateAlbMenu(selected);
+        }
+        else{
+            updateLclSongs(selected);
+        }
         MenuMode =2;
-    }
-    else if(MenuMode == 4){
-        updateTitle(selected);
     }
     else{
         updateTitle(selected);
@@ -570,9 +599,9 @@ void BeagleMain::on_actionPreferences_2_activated()
     if (prefDg.exec()==QDialog::Accepted) {
         pref = prefDg.getPref();
         //delete custom sql db
-      //  pref.deleteDB(pref.getSQL().c_str());
+        //  pref.deleteDB(pref.getSQL().c_str());
         //create custom sql db
-      //  pref.createDB();
+        //  pref.createDB();
         /// write preferences to sql db
         pref.writeDB();
     }
@@ -610,12 +639,12 @@ void BeagleMain::on_ADD_but_clicked()
     selected = ui->TitleList->currentIndex().row();
 
     if(MenuMode == 2 || MenuMode == 3){
-         selID = curSongID[selected];
-      strBuffer=checkSongObjByID(selID, Song);
+        selID = curSongID[selected];
+        strBuffer=checkSongObjByID(selID, Song);
     }
     else if(MenuMode == 4){
-         selID = curVidID[selected];
-       strBuffer=checkSongObjByID(selID, Video);
+        selID = curVidID[selected];
+        strBuffer=checkSongObjByID(selID, Video);
     }
     else{
         selID = Song.getID(selected);
@@ -638,18 +667,18 @@ void BeagleMain::on_PlayList_doubleClicked(QModelIndex index)
     int selID = 0;
     char *FinSong;
 
-       if(plMode == 1){
-           pl.readPLfile((pref.getPlaylistDir() + pl.getPLFolder(selected)).c_str());   /// edit with selected playlist currently defaulting
-            RefillMainPL();
-            playlistOpen = true;
-            plMode = 2;
-       }
-       else{
-           pl_selected = 0;
-           pl_selected = ui->PlayList->currentIndex().row();
-           selID = pl.getTrackID(pl_selected);
-           PlaylistPlay(selID);
-       }
+    if(plMode == 1){
+        pl.readPLfile((pref.getPlaylistDir() + pl.getPLFolder(selected)).c_str());   /// edit with selected playlist currently defaulting
+        RefillMainPL();
+        playlistOpen = true;
+        plMode = 2;
+    }
+    else{
+        pl_selected = 0;
+        pl_selected = ui->PlayList->currentIndex().row();
+        selID = pl.getTrackID(pl_selected);
+        PlaylistPlay(selID);
+    }
 
     /// thread adding future
     /*
@@ -696,9 +725,9 @@ void BeagleMain::on_SAVE_but_clicked()
     if(newPL.exec()==QDialog::Accepted){
         if(newPL.plExists()){
             fileName = newPL.getFile();
-             fileLocate = newPL.getLocate();
-             pl.setFullLocation(fileName, fileLocate);
-             pl.writePLfile();
+            fileLocate = newPL.getLocate();
+            pl.setFullLocation(fileName, fileLocate);
+            pl.writePLfile();
         }
     }
 }
@@ -710,18 +739,18 @@ void BeagleMain::on_OPEN_but_clicked()
     fileName = "";
     fileLocate = "";
 
-        openPL.show();
-        if(openPL.exec()==QDialog::Accepted){
-           if(openPL.plExists()){
-               fileName = openPL.getFile();
-               fileLocate = openPL.getLocate();
-                 pl.setFullLocation(fileName, fileLocate);
-           }
+    openPL.show();
+    if(openPL.exec()==QDialog::Accepted){
+        if(openPL.plExists()){
+            fileName = openPL.getFile();
+            fileLocate = openPL.getLocate();
+            pl.setFullLocation(fileName, fileLocate);
         }
+    }
 
-         /// list .pl files in preferreed directory
-        RefillPLFolder();
-        plMode = 1;
+    /// list .pl files in preferreed directory
+    RefillPLFolder();
+    plMode = 1;
 
 }
 
@@ -730,7 +759,7 @@ void BeagleMain::on_FFWD_but_clicked()
     int selID = 0;
 
     pl_selected++;
-     selID = pl.getTrackID(pl_selected);
+    selID = pl.getTrackID(pl_selected);
     PlaylistPlay(selID);
 
 }
@@ -738,9 +767,9 @@ void BeagleMain::on_FFWD_but_clicked()
 
 void BeagleMain::on_RRWD_but_clicked()
 {
-       int selID = 0;
+    int selID = 0;
     pl_selected--;
-     selID = pl.getTrackID(pl_selected);
+    selID = pl.getTrackID(pl_selected);
     PlaylistPlay(selID);
 }
 
@@ -763,10 +792,10 @@ void BeagleMain::on_PlayList_clicked(QModelIndex index)
     pl_selected = ui->PlayList->currentIndex().row();
 }
 
- void BeagleMain::closeEvent(QCloseEvent *event){
+void BeagleMain::closeEvent(QCloseEvent *event){
 
-     widget.close();
- }
+    widget.close();
+}
 
 void BeagleMain::on_actionDonate_2_triggered()
 {
@@ -817,7 +846,7 @@ void BeagleMain::on_list_radio_clicked(QModelIndex index)
   */
 void BeagleMain::RefillRadioPL(){
     QStringList updatedList;
-   r_Model = new QStringListModel(this);
+    r_Model = new QStringListModel(this);
     updatedList = Radio.RefillPlaylist();
     r_Model->setStringList(updatedList);
     ui->list_radio->setModel(r_Model);
@@ -853,9 +882,9 @@ void BeagleMain::on_but_import_aud_clicked()
 void BeagleMain::on_but_import_vid_clicked()
 {
     QDir usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
-   SyncVideoLocal.Sync(usrDir, 1);
-   updateLclVidDirs();
-   updateLclVideos();
+    SyncVideoLocal.Sync(usrDir, 1);
+    updateLclVidDirs();
+    updateLclVideos();
 }
 
 

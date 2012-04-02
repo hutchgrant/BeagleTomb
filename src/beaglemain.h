@@ -84,6 +84,7 @@ public:
     void updateTitle();
     void updateLclSongDirs();
     void updateLclSongs();
+    void updateLclSongs(int selected);
     void updateLclVidDirs();
     void updateLclVideos();
 
