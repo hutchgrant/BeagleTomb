@@ -164,3 +164,20 @@ int checkSongObjParByID(int id, fileObj& src){
     }
     return FinPar;
 }
+
+/*
+  *
+  * Search any Object for a track Path by using the ID
+  */
+char *checkSongObjPathByID(int id, fileObj& src){
+    char *finPath;
+    if(src.getSize() > 0){
+        for(int i =0; i< src.getSize(); i++){
+            if(src.getID(i) == id){
+                finPath = new char[strlen(src.getPath(i))+1];
+                finPath = src.getPath(i);
+            }
+        }
+    }
+    return finPath;
+}

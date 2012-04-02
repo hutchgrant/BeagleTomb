@@ -87,7 +87,9 @@ public:
     void updateLclSongs(int selected);
     void updateLclVidDirs();
     void updateLclVideos();
+    void updateLclVideos(int selected);
 
+    void initCueID(int type, int newsize, int initial);
     void updateAlbMenu(int select);
     void updateTitle(int select);
     void Sync(int type);

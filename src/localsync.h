@@ -91,7 +91,7 @@ public:
    void addFile(int count, string name, int par){
        lclFiles[count] = name;
        lclFilePar[count] = par;
-       lclFileID[count] = generateID();
+       lclFileID[count] = fileCount;
        fileCount++;
        if(fileCount >= fileINIT){
            initFiles(fileCount, 100);

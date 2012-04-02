@@ -44,6 +44,11 @@ void BeagleMain::Sync(int type){
     finSong = new char[100];
     finParent = new char[100];
     finPath = new char[100];
+    initCueID(0,100,0);
+    initCueID(1,100,0);
+    finSong = "-";
+    finParent = "-";
+    finPath = "-";
     artSize = 0;
     albSize = 0;
     songSize = 0;
@@ -51,10 +56,11 @@ void BeagleMain::Sync(int type){
     vidSize = 0;
     radSize = 0;
 
-    SongLocal = SyncAudioLocal.readLocalDB(1, SongLocal);
-    DirecLocal = SyncAudioLocal.readLocalDB(0, DirecLocal);
-    vidDirecLocal = SyncAudioLocal.readLocalDB(2,vidDirecLocal);
-    VideoLocal = SyncVideoLocal.readLocalDB(3, VideoLocal);
+    /// sync local files
+    DirecLocal = SyncAudioLocal.readLocalDB(0, DirecLocal);  // song directories
+    SongLocal = SyncAudioLocal.readLocalDB(1, SongLocal);  // songs
+    vidDirecLocal = SyncAudioLocal.readLocalDB(2,vidDirecLocal); //video directories
+    VideoLocal = SyncVideoLocal.readLocalDB(3, VideoLocal);  // videos
 
     if(type == 0){
         /// init playlist
@@ -159,6 +165,7 @@ void BeagleMain::updateMenu(int type){
     }else{
         if(type == 1){
             DirecLocal = SyncAudioLocal.readLocalDB(0, DirecLocal);
+            SongLocal = SyncAudioLocal.readLocalDB(1, SongLocal);
             /// update with Artist Directories
             for(int i=0; i< DirecLocal.getSize(); i++){
                 curMenu << DirecLocal.getName(i);
@@ -166,6 +173,7 @@ void BeagleMain::updateMenu(int type){
         }
         else if(type == 3){
             vidDirecLocal = SyncVideoLocal.readLocalDB(2, vidDirecLocal);
+            VideoLocal = SyncVideoLocal.readLocalDB(3, VideoLocal);
             /// update with video Directories
             for(int i=0; i< vidDirecLocal.getSize(); i++){
                 curMenu << vidDirecLocal.getName(i);
@@ -220,6 +228,36 @@ void BeagleMain::updateTitle(){
 }
 
 /*
+  *INIT CUE ID LIST
+  */
+void BeagleMain::initCueID(int type, int newsize, int inital)
+{
+    if(inital != 0){    // we're reallocating
+        if(type == 0){
+            delete [] curSongID;
+            curSongID = new int[newsize+1];
+            for(int i = 0; i<newsize; i++){
+                curSongID[i] = 0;
+            }
+        }
+        else if(type == 1){
+            delete [] curVidID;
+            curVidID = new int[newsize+1];
+            for(int i = 0; i<newsize; i++){
+                curVidID[i] = 0;
+            }
+        }
+    }
+    else{
+        curSongID = new int[newsize+1];
+        curVidID = new int[newsize+1];
+        for(int i = 0; i<newsize; i++){
+            curSongID[i] = 0;
+            curVidID[i] = 0;
+        }
+    }
+}
+/*
   *  UPDATE TITLE LIST WITH SONGS FROM SELECTED
   */
 void BeagleMain::updateTitle(int selected){
@@ -228,12 +266,10 @@ void BeagleMain::updateTitle(int selected){
     int selID = 0;
     QStringList curSong;
     t_Model = new QStringListModel(this);
-    curSongID = new int[MAX];
-    curVidID = new int[MAX];
-
     if(CON_MODE == 1){  /// IN REMOTE MODE
         if(MenuMode == 3){     ///  ALL ALBUM
             selID = Album.getID(selected);
+            initCueID(0, Song.getSize(),1);
             for(int i = 0; i< Song.getSize(); i++){
                 if(Song.getPar(i) == selID){
                     curSong << Song.getName(i);
@@ -244,6 +280,7 @@ void BeagleMain::updateTitle(int selected){
         }
         else if(MenuMode == 4){    ///  VIDEO DIR MODE
             selID = VidDir.getID(selected);
+            initCueID(1, Video.getSize(),1);
             for(int i = 0; i<= Video.getSize(); i++){
                 if(Video.getPar(i) == selID){
                     curSong << Video.getName(i);
@@ -254,6 +291,7 @@ void BeagleMain::updateTitle(int selected){
         }
         else{   /// ALBUM DIR MODE
             selID = curAlbID[selected];
+            initCueID(0, Song.getSize(),1);
             for(int i = 0; i<= Song.getSize(); i++){
                 if(Song.getPar(i) == selID){
                     curSong << Song.getName(i);
@@ -265,6 +303,7 @@ void BeagleMain::updateTitle(int selected){
     }else{    /// IN LOCAL MODE
         if(MenuMode == 1){
             selID = DirecLocal.getID(selected);
+            initCueID(0, SongLocal.getSize(),1);
             for(int i = 0; i<SongLocal.getSize(); i++){
                 if(SongLocal.getPar(i) == selID){
                     curSong << SongLocal.getName(i);
@@ -275,11 +314,12 @@ void BeagleMain::updateTitle(int selected){
         }
         if(MenuMode == 4){
             selID = vidDirecLocal.getID(selected);
+            initCueID(1, VideoLocal.getSize(),1);
             for(int i = 0; i<VideoLocal.getSize(); i++){
                 if(VideoLocal.getPar(i) == selID){
                     curSong << VideoLocal.getName(i);
-                    curSongID[songCount] = VideoLocal.getID(i);
-                    songCount++;
+                    curVidID[vidCount] = VideoLocal.getID(i);
+                    vidCount++;
                 }
             }
         }
@@ -288,6 +328,24 @@ void BeagleMain::updateTitle(int selected){
     t_Model->setStringList(curSong);
     ui->TitleList->setModel(t_Model);
 
+}
+
+/*
+  * UPDATE with Local From Selected Directory
+  */
+
+void BeagleMain::updateLclVideos(int selected){
+    t_Model = new QStringListModel(this);
+    QStringList songList;
+    int selID = 0;
+    selID = vidDirecLocal.getID(selected);
+    for(int i = 0; i< VideoLocal.getSize(); i++){
+        if(VideoLocal.getPar(i) == selID){
+            songList << QString::fromStdString(string(VideoLocal.getName(i)));
+        }
+    }
+    t_Model->setStringList(songList);
+    ui->TitleList->setModel(t_Model);
 }
 
 /*
@@ -361,10 +419,14 @@ void BeagleMain::updateLclSongs(int selected){
     t_Model = new QStringListModel(this);
     QStringList songList;
     int selID = 0;
+    songCount = 0;
+    initCueID(0, SongLocal.getSize(),1);
     selID = DirecLocal.getID(selected);
     for(int i = 0; i< SongLocal.getSize(); i++){
         if(SongLocal.getPar(i) == selID){
             songList << QString::fromStdString(string(SongLocal.getName(i)));
+            curSongID[songCount] = SongLocal.getID(i);
+            songCount++;
         }
     }
     t_Model->setStringList(songList);
@@ -491,28 +553,23 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
 
     if(CON_MODE == 1) {
 
-
-        delete [] finSong;
-        //     delete [] finParent;
-        delete [] finPath;
-
         if(MenuMode == 2 || MenuMode == 3){
             selID = curSongID[selected];
+            FinParentID = checkSongObjParByID(selID,Song);
             finSong = checkSongObjByID(selID, Song);
             FinParentID = checkSongObjParByID(selID,Song);
-            finParent = checkSongObjByID(FinParentID, Song);
         }
         else if(MenuMode == 4){
             selID = curVidID[selected];
-            finSong = checkSongObjByID(selID, Video);
             FinParentID = checkSongObjParByID(selID,Video);
+            finSong = checkSongObjByID(selID, Video);
             finParent = checkSongObjByID(FinParentID, Video);
         }
         else{
             selID = Song.getID(selected);
+            FinParentID = checkSongObjParByID(selID,Song);
             finSong = checkSongObjByID(selID, Song);
             FinParentID = checkSongObjParByID(selID,Song);
-            finParent = checkSongObjByID(FinParentID, Song);
         }
         // start song
         startSong(finSong, selID);
@@ -520,16 +577,21 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
     else{
 
         if(MenuMode != 4){
-            finSong = new char[strlen(SongLocal.getName(selected))+10];
-            finPath = new char[strlen(SongLocal.getPath(selected))+10];
-            finSong = SongLocal.getName(selected);
-            finPath = SongLocal.getPath(selected);
+
+
+            selID = curSongID[selected];
+            FinParentID = checkSongObjParByID(selID,SongLocal);
+            finSong = checkSongObjByID(selID, SongLocal);
+            finPath = checkSongObjPathByID(selID,SongLocal);
+
         }
         else{
-            finSong = new char[strlen(VideoLocal.getName(selected))+10];
-            finPath = new char[strlen(VideoLocal.getPath(selected))+10];
-            finSong = VideoLocal.getName(selected);
-            finPath = VideoLocal.getPath(selected);
+            selID = curVidID[selected];
+
+            finSong = checkSongObjByID(selID, VideoLocal);
+            FinParentID = checkSongObjParByID(selID,VideoLocal);
+            finParent = checkSongObjByID(FinParentID, VideoLocal);
+            finPath = checkSongObjPathByID(selID,VideoLocal);
         }
         startLocal(finSong, finPath);
     }
@@ -545,13 +607,22 @@ void BeagleMain::on_MenuList_clicked(QModelIndex index)
     int selected = ui->MenuList->currentIndex().row();
 
     if(MenuMode == 1){
-        if(CON_MODE == 0){  // LOCAL MODE
+        if(CON_MODE == 1){  // REMOTE MODE
             updateAlbMenu(selected);
+              MenuMode =2;
         }
         else{
-            updateLclSongs(selected);
+            updateTitle(selected);
         }
-        MenuMode =2;
+
+    }
+    else if(MenuMode == 4){
+        if(CON_MODE == 1){ //  REMOTE MODE
+            updateTitle(selected);
+        }
+        else{
+            updateTitle(selected);
+        }
     }
     else{
         updateTitle(selected);
