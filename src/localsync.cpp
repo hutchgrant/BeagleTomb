@@ -34,11 +34,11 @@ localsync::localsync()
     initFiles(0, 5);
     home = getenv("HOME");
     db_local = home + LOCALSYNC;
-    openLocalDB();
+
 }
 void localsync::openLocalDB(){
-    db = QSqlDatabase::addDatabase("QSQLITE", "connection");
-    db.setDatabaseName(db_local.c_str());
+        db = QSqlDatabase::addDatabase("QSQLITE", "connection");
+        db.setDatabaseName(db_local.c_str());
 }
 localsync::~localsync()
 {
@@ -239,6 +239,7 @@ void localsync::scanFiles(int scanType){
 
 fileObj& localsync::readLocalDB(int type, fileObj &src){
 
+     if(QFile::exists(db_local.c_str())){
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(db_local.c_str());
 
@@ -271,6 +272,7 @@ fileObj& localsync::readLocalDB(int type, fileObj &src){
             }
         }
         db.close();
+        }
     }
     return src;
 }
