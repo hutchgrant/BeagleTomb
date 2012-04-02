@@ -55,6 +55,10 @@ public:
      int title_selected;  /// global title selection
     int CON_MODE;
 
+    char *finParent;
+    char *finPath;
+    char *finSong;
+
     About ab;
     PrefDialog prefDg;
     preferences pref, pref2;

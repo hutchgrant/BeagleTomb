@@ -41,6 +41,9 @@ BeagleMain::BeagleMain(QWidget *parent) :
   *  SYNCHRONIZE ALL DATA
   */
 void BeagleMain::Sync(int type){
+    finSong = new char[100];
+    finParent = new char[100];
+    finPath = new char[100];
     artSize = 0;
     albSize = 0;
     songSize = 0;
@@ -322,7 +325,7 @@ void BeagleMain::startSong(char *FinSong, int selID){
 void BeagleMain::startLocal(char *finSong, char *finPath){
 
     char *final;
-    final = new char[sizeof(finPath) + 100];
+    final = new char[strlen(finPath) + 10];
     sprintf(final, "%s", finPath);
     cout << "Final File Playing: " << final << endl;
     ui->SONG_lbl->setText((QString)finSong);
@@ -369,6 +372,9 @@ void BeagleMain::PlaylistPlay(int selID){
 BeagleMain::~BeagleMain()
 {
     delete ui;
+    delete [] finSong;
+    delete [] finPath;
+    delete [] finParent;
 }
 
 /*
@@ -446,35 +452,33 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
 
     if(CON_MODE == 1) {
 
-        char *FinSong;
-        char *FinParent;
-        FinSong = new char[100];
-        FinParent = new char[100];
+
+        delete [] finSong;
+   //     delete [] finParent;
+        delete [] finPath;
 
         if(MenuMode == 2 || MenuMode == 3){
             selID = curSongID[selected];
-            FinSong = checkSongObjByID(selID, Song);
+            finSong = checkSongObjByID(selID, Song);
             FinParentID = checkSongObjParByID(selID,Song);
-            FinParent = checkSongObjByID(FinParentID, Song);
+            finParent = checkSongObjByID(FinParentID, Song);
         }
         else if(MenuMode == 4){
             selID = curVidID[selected];
-            FinSong = checkSongObjByID(selID, Video);
+            finSong = checkSongObjByID(selID, Video);
             FinParentID = checkSongObjParByID(selID,Video);
-            FinParent = checkSongObjByID(FinParentID, Video);
+            finParent = checkSongObjByID(FinParentID, Video);
         }
         else{
             selID = Song.getID(selected);
-            FinSong = checkSongObjByID(selID, Song);
+            finSong = checkSongObjByID(selID, Song);
             FinParentID = checkSongObjParByID(selID,Song);
-            FinParent = checkSongObjByID(FinParentID, Song);
+            finParent = checkSongObjByID(FinParentID, Song);
         }
         // start song
-        startSong(FinSong, selID);
+        startSong(finSong, selID);
     }
     else{
-        char *finPath;
-        char *finSong;
 
         if(MenuMode != 4){
             finSong = new char[strlen(SongLocal.getName(selected))+10];
