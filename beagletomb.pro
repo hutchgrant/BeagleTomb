@@ -15,7 +15,6 @@ QT += network \
 SOURCES += src/main.cpp\
     src/beaglemain.cpp \
     src/sync.cpp \
-    src/songObj.cpp \
     src/readDB.cpp \
     src/qmpwidget.cpp \
     src/preferences.cpp \
@@ -32,7 +31,6 @@ SOURCES += src/main.cpp\
 
 HEADERS  += src/beaglemain.h \
     src/sync.h \
-    src/songObj.h \
     src/readDB.h \
     src/qmpyuvreader.h \
     src/qmpwidget.h \
@@ -44,7 +42,6 @@ HEADERS  += src/beaglemain.h \
     src/newplaylist.h \
     src/playlistobj.h \
     src/sync.h \
-    src/songObj.h \
     src/readDB.h \
     src/qmpyuvreader.h \
     src/qmpwidget.h \

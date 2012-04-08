@@ -36,10 +36,20 @@ syncMe::syncMe(const char *server, const char *user, const char *pass,
 
 }
 
-void syncMe::deleteDB(const char *dbLocation) {
-    char FinalLink[150];
-    sprintf(FinalLink, "rm %s ", dbLocation);
-    system(FinalLink);
+/// remove All File databases
+void syncMe::deleteDB(const char *location) {
+    string finalRMPrefqry[5];
+    finalRMPrefqry[0] =  "delete table if exists artists";
+    finalRMPrefqry[1] =  "delete table if exists albums";
+    finalRMPrefqry[2] =  "delete table if exists songs";
+    finalRMPrefqry[3] =  "delete table if exists videos";
+    finalRMPrefqry[4] =  "delete table if exists viddirs";
+
+    if(QFile::exists(location)){
+        for(int i= 0; i<=4; i++){
+            writeMe(finalRMPrefqry[i]);
+        }
+    }
 }
 
 void syncMe::OpenDB(){
@@ -47,16 +57,16 @@ void syncMe::OpenDB(){
 }
 
 void syncMe::createDB(const char *dbLocation) {
-    string finalQry[7];
+    string finalQry[5];
+    if(QFile::exists(dbLocation)){
     finalQry[0] = "create table Artists(key INTEGER PRIMARY KEY,Artist TEXT,ArtistID integer, ArtistPar integer) ";
     finalQry[1] = "create table Albums(key INTEGER PRIMARY KEY,Album TEXT,AlbumID integer, AlbumPar integer)";
     finalQry[2] = "create table Songs(key INTEGER PRIMARY KEY,Song TEXT,SongID integer, SongPar integer)";
     finalQry[3] = "create table Videos(key INTEGER PRIMARY KEY,Video TEXT,VideoID integer, VideoPar integer)";
     finalQry[4] = "create table VidDirs(key INTEGER PRIMARY KEY,VidDir TEXT,VidDirID integer, VidDirPar integer)";
-    finalQry[5] = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
-    finalQry[6] = "create table radio(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT (0),name TEXT NOT NULL,url TEXT NOT NULL)";
-    for(int i=0; i<7; i++){
+    for(int i=0; i<=4; i++){
         writeMe(finalQry[i]);
+    }
     }
 }
 

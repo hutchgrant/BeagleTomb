@@ -39,14 +39,14 @@
 #include <QFileInfo>
 #include <QString>
 #include <QDebug>
-#include "songObj.h"
+#include "fileobj.h"
 using namespace std;
 
 class playlistobj
 {
    // Q_OBJECT
 public:
-    songObj* playlist_obj;
+    fileObj playlist_obj;
 
     string fullLocation;
     string fileLocation;
@@ -77,12 +77,12 @@ public:
     void RemoveFrom(int pos);
 
     void setTrackName(int pos, string name){
-        char chName[100];
-        strcpy(chName, name.c_str());
-        playlist_obj[pos].setFile(chName);
+        char *finName;
+            strcpy(finName, name.c_str());
+        playlist_obj.setName(pos, finName);
     }
     void setTrackID(int id, int pos){
-        playlist_obj[pos].setFileID(id);
+        playlist_obj.setID(pos,id);
     }
     void setFileName(string name){
         fileName = name;
@@ -108,10 +108,10 @@ public:
     }
 
     string getTrackName(int pos){
-        return playlist_obj[pos].getFile();
+        return playlist_obj.getName(pos);
     }
     int getTrackID(int pos){
-         return playlist_obj[pos].getFileID();
+         return playlist_obj.getID(pos);
     }
     string getFileName(){
         return fileName;

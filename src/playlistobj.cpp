@@ -25,7 +25,7 @@ playlistobj::playlistobj()
     initPL();
     /// set temp defaults later sync from db
     setFileName("newplaylist.pl");
-    setFileLocation("/.BeagleTomb/playlist/");
+    setFileLocation("/.beagletomb/playlist/");
     playlistOpen = false;
     playlistCount = 0;
     pl_obj_count = 0;
@@ -33,17 +33,12 @@ playlistobj::playlistobj()
 
 playlistobj::~playlistobj(){
 
-    delete [] playlist_obj;
 
 }
 
 void playlistobj::initPL(){
     /// re initialize playlist object
-
-    playlist_obj = new songObj[MAXPLAYSIZE];
-    for(int i = 0; i<= MAXPLAYSIZE; i++){
-        playlist_obj[i].set("-",0,0);
-    }
+    playlist_obj.initFile(100);
 }
 
 
@@ -55,12 +50,12 @@ void playlistobj::writePLfile(){
     mystring = NULL;
     myfile.open(fullLocation.c_str());
     for(int i=0; i<=pl_obj_count; i++){
-        mystring = new char[strlen(playlist_obj[i].getFile())+1];
-        strcpy(mystring, playlist_obj[i].getFile());
+        mystring = new char[strlen(playlist_obj.getPath(i))+1];
+        strcpy(mystring, playlist_obj.getPath(i));
         //// check each string for blanks, replace with underscores
         replace(&mystring[0], &mystring[strlen(mystring)], ' ', '_');
 
-        myfile << mystring << " : "<< playlist_obj[i].getFileID()<< endl;
+        myfile << mystring << " : "<< playlist_obj.getID(i)<< endl;
 
         delete [] mystring;
      }
@@ -104,35 +99,30 @@ void playlistobj::readPLfile(string location){
   */
 void playlistobj::RemoveFrom(int pos){
 
-    songObj *temp_pl;   // temp playlist object
+    fileObj temp_pl;   // temp playlist object
     int tempCount = 0;  // count the temp items
 
-    /// init temp playlist object
-    temp_pl = new songObj[MAXPLAYSIZE];
-    for(int i = 0; i<= MAXPLAYSIZE; i++){
-        temp_pl[i].set("-",0,0);
-    }
     /// get everything before the position we're removing
     for(int i = 0; i< pos; i++){
-        temp_pl[tempCount].setFile(playlist_obj[i].getFile());
-        temp_pl[tempCount].setFileID(playlist_obj[i].getFileID());
+        temp_pl.setName(tempCount, playlist_obj.getName(i));
+        temp_pl.setPath(tempCount, playlist_obj.getPath(i));
+        temp_pl.setID(tempCount, playlist_obj.getID(i));
+        temp_pl.setPar(tempCount, playlist_obj.getPar(i));
         tempCount++;
     }
     /// get everything after the position we're removing;
     for(int i = pos+1; i> pos && i<=pl_obj_count; i++){
-        temp_pl[tempCount].setFile(playlist_obj[i].getFile());
-        temp_pl[tempCount].setFileID(playlist_obj[i].getFileID());
+        temp_pl.setName(tempCount, playlist_obj.getName(i));
+        temp_pl.setPath(tempCount, playlist_obj.getPath(i));
+        temp_pl.setID(tempCount, playlist_obj.getID(i));
+        temp_pl.setPar(tempCount, playlist_obj.getPar(i));
         tempCount++;
     }
     pl_obj_count--;
     playlistCount--;
     initPL();
     /// refill original playlist object with altered temp object
-    for(int i=0; i<= tempCount; i++){
-        playlist_obj[i] = temp_pl[i];
-    }
-    /// clear memory
-    delete [] temp_pl;
+    playlist_obj = temp_pl;
 }
 
 
@@ -140,8 +130,7 @@ void playlistobj::AddTo(int selected, char *FinSong)
 {
 
     /// Add to our playlist object
-    playlist_obj[pl_obj_count].setFile(FinSong);
-    playlist_obj[pl_obj_count].setFileID(selected);
+    playlist_obj.set(pl_obj_count, selected, 0, FinSong);
     pl_obj_count++;
 }
 
@@ -154,7 +143,7 @@ QStringList playlistobj::RefillPlaylist(){
     QStringList curSong;
 // retrieve track listing and store temporairly
     for(int i = 0; i< pl_obj_count; i++){
-        curSong << playlist_obj[i].getFile();
+        curSong << playlist_obj.getName(i);
         playlistCount++;
     }
 
@@ -196,27 +185,13 @@ int playlistobj::close(){
 
 void playlistobj::Move(int mode, int selected){
     int selection2 = 0; // hold our temporary mock selection
-    songObj temp_pl;   // temp playlist object
-    songObj temp_pl2;   // temp playlist object
     int plCount = 0;   // count for temp pl item
-    if(mode == 1){
+    if(mode == 1){   // if moving up
         selection2 = selected + 1;
     }
-    else if(mode == 2){
+    else if(mode == 2){  // if moving down
         selection2 = selected -1;
     }
-
-    for(int i=0; i<= pl_obj_count; i++){
-        if(i == selection2){
-            temp_pl = playlist_obj[i];
-        }
-        else if(i == selected){
-            temp_pl2 = playlist_obj[i];
-        }
-    }
-    /// Now reverse those values
-    playlist_obj[selection2] = temp_pl2;
-    playlist_obj[selected] = temp_pl;
 
 
 }
@@ -243,8 +218,6 @@ QStringList playlistobj::listDirectories(const char *location){
          folder_count++;
         }
     }
-
-///    QStringList plFolder = myDir.entryList("*.pl");
     return QPLFolder;
 
 }

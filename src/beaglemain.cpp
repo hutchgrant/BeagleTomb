@@ -57,13 +57,7 @@ void BeagleMain::Sync(int type){
     VideoLocal = SyncVideoLocal.readLocalDB(3, VideoLocal);  // videos
 
     if(type == 0){
-        /// init playlist
-        pl.setCount(0);
-        pl.initPL();
 
-        plMode= 0; // set playlist mode to browse
-        playlistOpen = false; // set playlist open
-        /// if SQL file doesn't exist
         if(pref.initDB() == false){
             prefDg.show();
             if (prefDg.exec()==QDialog::Accepted) {
@@ -72,7 +66,7 @@ void BeagleMain::Sync(int type){
                 pref.createCache();
                 pref = prefDg.getPref();
                 //create custom sql db
-                pref.createDB();
+                pref.createPrefDB();
                 /// write preferences to sql db
                 pref.writeDB();
                 pref.setInitDB();
@@ -87,32 +81,22 @@ void BeagleMain::Sync(int type){
             Song = rDB.SongFill(Song);
             VidDir = rDB.VidDirFill(VidDir);
             Video = rDB.VideoFill(Video);
-            /// read from sql and fill radio obj
-            Radio = rDB.RadioFill(&radSize);
-            Radio.setDB(pref.getSQL());
-            Radio.setSize(radSize);
-            RefillRadioPL();
         }
+
+        /// init playlist
+        pl.setCount(0);
+        pl.initPL();
+
+        plMode= 0; // set playlist mode to browse
+        playlistOpen = false; // set playlist open
+
     }
     else if(type == 1){
-
-        readDB rDB(pref.getSQL().c_str());
-        ///check database for previous radio stations
-        Radio = rDB.RadioFill(&radSize);
-        // read preferences prior to delete
-        //     pref.readDB();
-        pref.deleteDB(pref.getSQL().c_str());
-        ///
-        pref.createDB();
 
         cout << "syncing.... " << pref.getServ() << "\t" << pref.getPort()<<  endl;
         /// read from remote mysql write to local sqlite
         syncMe sy(pref.getServ().c_str(), pref.getUser().c_str(), pref.getPass().c_str(), pref.getTable().c_str(), pref.getSQL().c_str());
-        /// write radio stations
-        Radio.writeDBFill();
-        /// write preferences to sql db
-        pref.writeDB();
-        pref.setInitDB();
+        readDB rDB(pref.getSQL().c_str());
         cout << "reading.... " << endl;
         /// read from sqlite to songObjs
         Artist = rDB.ArtistFill(Artist);
@@ -120,12 +104,7 @@ void BeagleMain::Sync(int type){
         Song = rDB.SongFill(Song);
         VidDir = rDB.VidDirFill(VidDir);
         Video = rDB.VideoFill(Video);
-        /// read from sql and fill radio obj
-        cout << "syncing radio" << endl;
-        Radio = rDB.RadioFill(&radSize);
-        Radio.setDB(pref.getSQL());
-        Radio.setSize(radSize);
-        RefillRadioPL();
+
         cout << "Database synced!" << endl;
     }
 }
@@ -690,9 +669,9 @@ void BeagleMain::on_actionPreferences_2_activated()
     if (prefDg.exec()==QDialog::Accepted) {
         pref = prefDg.getPref();
         //delete custom sql db
-        //  pref.deleteDB(pref.getSQL().c_str());
+        pref.deletePrefDB();
         //create custom sql db
-        //  pref.createDB();
+        pref.createPrefDB();
         /// write preferences to sql db
         pref.writeDB();
     }
@@ -729,7 +708,7 @@ void BeagleMain::on_ADD_but_clicked()
     strBuffer= new char[100];
     selected = ui->TitleList->currentIndex().row();
 
-    if(MenuMode == 2 || MenuMode == 3){
+    if(MenuMode == 1 || MenuMode == 2 || MenuMode == 3){
         selID = curSongID[selected];
         strBuffer=checkSongObjByID(selID, Song);
     }

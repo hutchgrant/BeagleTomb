@@ -40,7 +40,7 @@
 #include "mysqlconn.h"
 #include "fileobj.h"
 
-#define TEMPSYNCPREF "/.BeagleTomb/BTmedia.db"
+#define TEMPSYNCPREF "/.beagletomb/BTmedia.db"
 
 using namespace std;
 

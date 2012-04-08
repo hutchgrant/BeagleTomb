@@ -28,7 +28,6 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QtSql>
-#define TEMPCACHE "/.BeagleTomb/cache/dbcache.txt"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -37,6 +36,8 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#define TEMPCACHE "/.beagletomb/cache/dbcache.txt"
+
 using namespace std;
 class preferences
 {
@@ -49,8 +50,8 @@ public:
     void writeDB();
     void readDB();
     void writeMe(string qry);
-    void deleteDB(const char *dbLocation);
-    void createDB();
+    void deletePrefDB();
+    void createPrefDB();
     void sendToShell();
     void createCache();
     /// get initial db file from text cache

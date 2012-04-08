@@ -25,16 +25,13 @@ preferences::preferences(){
     
     USER = "mediatomb";
     PASS = "mediatomb";
-    SERVER = "192.168.1.116";
+    SERVER = "192.168.1.113";
     TABLE = "mediatomb";
     PORT = "49154";
-    string DB = "/.BeagleTomb/BTmedia.db";
-    string PL = "/.BeagleTomb/playlist/";
+    string DB = "/.beagletomb/BTmedia.db";
+    string PL = "/.beagletomb/playlist/";
     DBlocation = getenv("HOME") + DB;
     PLAYLISTDIR = getenv("HOME") + PL;
-
-
-
 }
 preferences::preferences(const preferences& src){
     USER = src.USER;
@@ -60,7 +57,7 @@ bool preferences::initDB(){
     FILE* fp;
     string tempcache = TEMPCACHE;
     string Cache = getenv("HOME") + tempcache;
-            fp = fopen(Cache.c_str(), "r");   /// open cached db location
+    fp = fopen(Cache.c_str(), "r");   /// open cached db location
 
     if(fp != NULL){
         rewind(fp);
@@ -98,77 +95,73 @@ void preferences::setInitDB(){
 
 }
 
-/// remove database
-void preferences::deleteDB(const char *dbLocation) {
-    char FinalLink[150];
-    sprintf(FinalLink, "rm %s ", dbLocation);
-    system(FinalLink);
+
+
+/// remove Preference database
+void preferences::deletePrefDB() {
+    string finalRMPrefqry =  "drop table pref if exists";
+    if(QFile::exists(DBlocation.c_str())){
+        writeMe(finalRMPrefqry);
+    }
 }
 
-/// create database
-void preferences::createDB() {
-     OpenDB();
-    string finalQry[7];
-    finalQry[0] = "create table Artists(key INTEGER PRIMARY KEY,Artist TEXT,ArtistID integer, ArtistPar integer) ";
-    finalQry[1] = "create table Albums(key INTEGER PRIMARY KEY,Album TEXT,AlbumID integer, AlbumPar integer)";
-    finalQry[2] = "create table Songs(key INTEGER PRIMARY KEY,Song TEXT,SongID integer, SongPar integer)";
-    finalQry[3] = "create table Videos(key INTEGER PRIMARY KEY,Video TEXT,VideoID integer, VideoPar integer)";
-    finalQry[4] = "create table VidDirs(key INTEGER PRIMARY KEY,VidDir TEXT,VidDirID integer, VidDirPar integer)";
-    finalQry[5] = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
-    finalQry[6] = "create table radio(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL DEFAULT (0),name TEXT NOT NULL,url TEXT NOT NULL)";
-    for(int i=0; i<7; i++){
-        writeMe(finalQry[i]);
-    }
+/// create Preference database
+void preferences::createPrefDB() {
+    OpenDB();
+    string finalQry;
+        finalQry = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
+       writeMe(finalQry);
 }
 
 
 void preferences::OpenDB(){
-   db2 = QSqlDatabase::addDatabase("QSQLITE", "connection2");
-   db2.setDatabaseName(DBlocation.c_str());
+    db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2.setDatabaseName(DBlocation.c_str());
 }
 
 /// read preference table from sql
 void preferences::readDB(){
-    //OpenDB();
+    OpenDB();
     int count = 0;
-    if(db2.open()){
-    QSqlQuery query(db2);
+    if(QFile::exists(DBlocation.c_str())){
+        if(db2.open()){
+            QSqlQuery query(db2);
 
-     query = QString("SELECT * FROM pref");
+            query = QString("SELECT * FROM pref");
 
-     while (query.next()){
-         QString QVal1 = query.value(1).toString();
-         QString QVal2 = query.value(2).toString();
-         QString QVal3 = query.value(3).toString();
-         QString QVal4 = query.value(4).toString();
-         QString QVal5 = query.value(5).toString();
-         QString QVal6 = query.value(6).toString();
-         QString QVal7 = query.value(7).toString();
+            while (query.next()){
+                QString QVal1 = query.value(1).toString();
+                QString QVal2 = query.value(2).toString();
+                QString QVal3 = query.value(3).toString();
+                QString QVal4 = query.value(4).toString();
+                QString QVal5 = query.value(5).toString();
+                QString QVal6 = query.value(6).toString();
+                QString QVal7 = query.value(7).toString();
 
 
-         setUser(QVal1.toStdString());
-         setPass(QVal2.toStdString());
-         setServ(QVal3.toStdString());
-         setPort(QVal4.toStdString());
-         setTable(QVal5.toStdString());
-         setSQL(QVal6.toStdString());
-         setPlaylistDir(QVal7.toStdString());
-     }
-    db2.close();
+                setUser(QVal1.toStdString());
+                setPass(QVal2.toStdString());
+                setServ(QVal3.toStdString());
+                setPort(QVal4.toStdString());
+                setTable(QVal5.toStdString());
+                setSQL(QVal6.toStdString());
+                setPlaylistDir(QVal7.toStdString());
+            }
+            db2.close();
+        }
     }
-
 }
 
 /// write to preference table sql
 void preferences::writeDB(){
-        OpenDB();
+    OpenDB();
     string str2;
     stringstream os;
     os << "INSERT INTO pref (usr, PASS, SERVER, PRT, SQLTABLE, SQL, PLAYLISTDIR) VALUES ('"
        << USER << "','" << PASS << "','" << SERVER << "','" << PORT  << "','" << TABLE  << "','" << DBlocation << "','" << PLAYLISTDIR << "')";
 
     str2 = os.str();
-//    cout << str2 << endl;
+    //    cout << str2 << endl;
     writeMe(str2);
 }
 
@@ -184,7 +177,7 @@ void preferences::writeMe(string qry){
 }
 
 void preferences::createCache(){
-    string main = "/.BeagleTomb";
+    string main = "/.beagletomb";
     string cache = "/cache";
     string playlist = "/playlist";
     string u_home = getenv("HOME");
