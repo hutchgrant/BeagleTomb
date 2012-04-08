@@ -38,36 +38,48 @@ using namespace std;
 class localsync
 {
 
-   int dirCount;  // counter for directories
-   int fileCount; // counter for files
+    int AudItemINIT; // allocated size for Audio Item Array
+    int VidItemINIT; // allocated size for Video Item Array
+    int AudDirINIT;  // allocated size for Audio Directory Array
+    int VidDirINIT;  // allocated size for Video Directory Array
 
-   int dirINIT;   // allocated size for DIR array
-   int fileINIT;  // allocated size for FILE array
+    int AudItemCount; // counter for local Audio Files
+    int VidItemCount; // counter for local Video Files
+    int AudDirCount;  // counter for local Audio directories
+    int VidDirCount; // counter for local Video directories
 
-   string *lclDir;   // local directory path array
-   string *lclDirName; // local directory name array
-   string *lclFiles;  // local files array
-   int *lclDirPar;   // parentID of each DIRECTORY
-   int *lclFilePar;  // parentID of each FILE
-   int *lclDirID;   //  ID for each directory;
-   int *lclFileID; // ID for each file;
+    string *lclDir;   // local directory path array
+    string *lclDirName; // local directory name array
+    string *lclFiles;  // local files array
+    string *lclFileNames;
+    int *lclDirPar;   // parentID of each DIRECTORY
+    int *lclFilePar;  // parentID of each FILE
+    int *lclDirID;   //  ID for each directory;
+    int *lclFileID; // ID for each file;
 
-   int lastID;   // Last ID in database for next ID
-   int parentID;  // ParentID of current DIR
-   int folderAddCount; // counter for overal number folder imports
+    int lastID;   // Last ID in database for next ID
+    int parentID;  // ParentID of current DIR
+    int AudFolderCount; // counter for overal audio folder imports i.e. last folder ID
+    int VidFolderCount;  // counter for overall video folder imports i.e. last folder ID
+    int AudioCount;      // counter for overall audio file imports i.e. last file ID
+    int VideoCount;      // counter for overall video file imports i.e. last file ID
 
-   QSqlDatabase db;
-   string home, db_local;
+    QSqlDatabase db;
+    string home, db_local;
 
 public:
     localsync();
     virtual ~localsync();
     void initAll();
-    void initFiles(int beg, int end);
-    void initDirs(int beg, int end);
+    void initFiles(int beg, int end, int count);
+    void initDirs(int beg, int end, int count);
+    void initLocalObj();
     void scanFiles(int scanType);
-    void scanDir(QString dir);
+    void scanDir(QString dir, int scanType);
 
+    string getDirectoryByPar(int parID, int count);
+
+    void getLastIDs(int type);
     void Sync(QDir usrDir, int syncType);
     void Remove();
 
@@ -75,71 +87,90 @@ public:
     void openLocalDB2();
 
     void createLocalDB();
-    void writeDBFiles(char *dbTable);
-    void writeDBDirs(char *dbTable);
+    void writeDBFiles(char *dbTable, int init, int type);
+    void writeDBDirs(char *dbTable, int init, int type);
     void writeMe(string qry);
-    void removeDir(int selected);
-//  void removeFile(int selected);
+    void removeDir(int selected, int mode);
+    //  void removeFile(int selected);
 
 
     int getMaxPos(int count);
-   fileObj& readLocalDB(int type, fileObj &src);
-   void setLastID(int last){
-       lastID = last;
-   }
+    fileObj& readLocalDB(int type, fileObj &src);
+    void setLastID(int last){
+        lastID = last;
+    }
 
-   void addFile(int count, string name, int par){
-       lclFiles[count] = name;
-       lclFilePar[count] = par;
-       lclFileID[count] = fileCount;
-       fileCount++;
-       if(fileCount >= fileINIT){
-           initFiles(fileCount, 100);
-       }
-   }
-   void addFolder(int count, string dir, string name){
-       if(dirCount == 0){
+    void addFile(int count, string direc, string name, int par, int type){
+        lclFileNames[count] = name;
+        lclFiles[count] = direc;
+        lclFilePar[count] = par;
+        if(type == 0){
+            lclFileID[count] = AudItemCount+AudioCount;
+            AudItemCount++;
+            if(AudItemCount >= AudItemINIT){
+                initFiles(AudItemCount, 100, AudItemCount);
+                AudItemINIT = AudItemCount + 100;
+            }
+        }
+        else{
+            lclFileID[count] = VidItemCount+VideoCount;
+            VidItemCount++;
+            if(VidItemCount >= VidItemINIT){
+                initFiles(VidItemCount, 100, VidItemCount);
+                VidItemINIT = VidItemCount + 100;
+            }
+        }
+    }
 
-           lclDir[count] = dir;     /// full path
-           lclDirName[count] = name;  /// folder name
-           lclDirID[count] = dirCount;     /// folder ID
-           lclDirPar[count] = 0; /// folder parent
-           parentID = 0;
-       }
-       else{
-           lclDir[count] = dir;         /// folder path
-           lclDirName[count] = name;    /// folder name
-           lclDirPar[count] = parentID; /// folder parent
-           lclDirID[count] = dirCount;     /// folder ID
-       }
-       dirCount++;                   /// dir count
-       if(dirCount >= dirINIT){
-           initDirs(dirCount, 100);
-       }
+    /*
+     * Import Audio + Video Folder.  Types: 0) Audio. 1) Video.
+     */
+    void addFolder(int count, string dir, string name, int type){
+        lclDir[count] = dir;       /// full path
+        lclDirName[count] = name;  /// folder name
+        if(type == 0){
+            if(AudDirCount == 0){          /// initial import folder
+                lclDirPar[count] = 0;      /// parent to root
+                lclDirID[count] = AudDirCount+AudFolderCount+5;
+                parentID = AudDirCount+AudFolderCount+1;
+                AudDirCount++;
+            }
+            else{
+                lclDirPar[count] = parentID;
+                lclDirID[count] = AudDirCount+AudFolderCount+1;
 
-   }
+                AudDirCount++;
+                if(AudDirCount >= AudDirINIT){
+                    initDirs(AudDirCount, 100, AudDirCount);
+                    AudDirINIT = AudDirCount + 100;
+                }
+            }
+        }
+        else{
+            if(VidDirCount == 0){
+                lclDirPar[count] = 0;      /// parent to root
+                lclDirID[count] = VidDirCount+VidFolderCount+1;
 
-   int generateID(){
+                parentID = VidDirCount+VidFolderCount+1;
+                VidDirCount++;
+            }
+            else{
+                lclDirPar[count] = parentID;
+                lclDirID[count] = VidDirCount+VidFolderCount+1;
 
-       const char alphagen[] = "0123456789";
-       int random[10];
-       char fin[10];
-       int final = 0;
-       for(int i=0; i<10; i++){
-           random[i] = rand() % 9;
-       }
+                VidDirCount++;
+                if(VidDirCount >= VidDirINIT){
+                    initDirs(VidDirCount, 100, VidDirCount);
+                    VidDirINIT = VidDirCount + 100;
+                }
 
-       for(int i =0; i<10; i++){
-           fin[i] = alphagen[random[i]];
-       }
-
-       final = atoi(fin);
-       return final;
-
-   }
+            }
+        }
+    }
 
 private:
     QDir mydir;
+
 };
 
 #endif // LOCALSYNC_H

@@ -41,14 +41,8 @@ BeagleMain::BeagleMain(QWidget *parent) :
   *  SYNCHRONIZE ALL DATA
   */
 void BeagleMain::Sync(int type){
-    finSong = new char[100];
-    finParent = new char[100];
-    finPath = new char[100];
     initCueID(0,100,0);
     initCueID(1,100,0);
-    finSong = "-";
-    finParent = "-";
-    finPath = "-";
     artSize = 0;
     albSize = 0;
     songSize = 0;
@@ -353,7 +347,6 @@ void BeagleMain::updateLclVideos(int selected){
   */
 void BeagleMain::updateLclVidDirs(){
 
-
     t_Model = new QStringListModel(this);
     QStringList dirList;
 
@@ -496,9 +489,6 @@ void BeagleMain::PlaylistPlay(int selID){
 BeagleMain::~BeagleMain()
 {
     delete ui;
-    delete [] finSong;
-    delete [] finPath;
-    delete [] finParent;
 }
 
 /*
@@ -510,7 +500,7 @@ void BeagleMain::on_SYNC_but_clicked()
 }
 
 /*
-  *When Mode combo button is changed, change the mode, update lists
+  *When Mode iu button is changed, change the mode, update lists
   */
 void BeagleMain::on_MODE_combo_currentIndexChanged(int index)
 {
@@ -550,26 +540,35 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
     int selected = 0;
     selected = ui->TitleList->currentIndex().row();
     int FinParentID = 0;
+    int finSongSize = 0;
+    int finPathSize = 0;
 
+    char *finPath;
+    char *finSong;
     if(CON_MODE == 1) {
+
 
         if(MenuMode == 2 || MenuMode == 3){
             selID = curSongID[selected];
+            finSongSize = strlen(checkSongObjByID(selID, Song));
+            finSong = new char[finSongSize + 1];
+
             FinParentID = checkSongObjParByID(selID,Song);
             finSong = checkSongObjByID(selID, Song);
-            FinParentID = checkSongObjParByID(selID,Song);
         }
         else if(MenuMode == 4){
             selID = curVidID[selected];
+            finSongSize = strlen(checkSongObjByID(selID, Video));
+            finSong = new char[finSongSize + 1];
             FinParentID = checkSongObjParByID(selID,Video);
             finSong = checkSongObjByID(selID, Video);
-            finParent = checkSongObjByID(FinParentID, Video);
         }
         else{
             selID = Song.getID(selected);
+            finSongSize = strlen(checkSongObjByID(selID, Song));
+            finSong = new char[finSongSize + 1];
             FinParentID = checkSongObjParByID(selID,Song);
             finSong = checkSongObjByID(selID, Song);
-            FinParentID = checkSongObjParByID(selID,Song);
         }
         // start song
         startSong(finSong, selID);
@@ -578,8 +577,13 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
 
         if(MenuMode != 4){
 
-
             selID = curSongID[selected];
+
+            finSongSize = strlen(checkSongObjByID(selID, SongLocal));
+            finPathSize = strlen(checkSongObjPathByID(selID, SongLocal));
+            finSong = new char[finSongSize + 1];
+            finPath = new char[finPathSize + 10];
+
             FinParentID = checkSongObjParByID(selID,SongLocal);
             finSong = checkSongObjByID(selID, SongLocal);
             finPath = checkSongObjPathByID(selID,SongLocal);
@@ -588,9 +592,13 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
         else{
             selID = curVidID[selected];
 
+            finSongSize = strlen(checkSongObjByID(selID, VideoLocal));
+            finPathSize = strlen(checkSongObjPathByID(selID, VideoLocal));
+            finSong = new char[finSongSize + 1];
+            finPath = new char[finPathSize + 1];
+
             finSong = checkSongObjByID(selID, VideoLocal);
             FinParentID = checkSongObjParByID(selID,VideoLocal);
-            finParent = checkSongObjByID(FinParentID, VideoLocal);
             finPath = checkSongObjPathByID(selID,VideoLocal);
         }
         startLocal(finSong, finPath);
@@ -955,8 +963,12 @@ void BeagleMain::on_but_import_aud_clicked()
 {
     QDir usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
     SyncAudioLocal.Sync(usrDir, 0);
-    updateLclSongDirs();
-    updateLclSongs();
+  //  updateLclSongDirs();
+  //  updateLclSongs();
+    CON_MODE = 0;
+    ui->but_remote_tog->setChecked(false);
+    ui->MODE_combo->setCurrentIndex(1);
+    updateMenu(1);
 }
 
 /*
@@ -966,8 +978,12 @@ void BeagleMain::on_but_import_vid_clicked()
 {
     QDir usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
     SyncVideoLocal.Sync(usrDir, 1);
-    updateLclVidDirs();
-    updateLclVideos();
+  //  updateLclVidDirs();
+ //   updateLclVideos();
+    CON_MODE = 0;
+    ui->but_remote_tog->setChecked(false);
+    ui->MODE_combo->setCurrentIndex(4);
+    updateMenu(3);
 }
 
 

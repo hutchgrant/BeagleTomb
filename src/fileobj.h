@@ -81,6 +81,11 @@ public:
         setPath(item, newpath);
         InitSize++;
     }
+    void setSize(int size){
+        objSize = size;
+
+    }
+
     int getID(int item){
         return fileID[item];
     }

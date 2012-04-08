@@ -12,6 +12,7 @@ fileObj::fileObj(const fileObj &src){
 
     if(src.objSize > 0){
         objSize = 0;
+        InitSize = 0;
         delete [] fileName;
         delete [] fileID;
         delete [] filePar;
@@ -99,6 +100,7 @@ fileObj& fileObj::operator=(const fileObj& src){
     if(this != &src){
         if(src.objSize > 0){
             objSize = 0;
+            InitSize = 0;
             delete [] fileName;
             delete [] fileID;
             delete [] filePar;

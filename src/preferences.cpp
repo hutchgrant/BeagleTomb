@@ -123,13 +123,13 @@ void preferences::createDB() {
 
 
 void preferences::OpenDB(){
-   db2 = QSqlDatabase::addDatabase("QSQLITE");
+   db2 = QSqlDatabase::addDatabase("QSQLITE", "connection2");
    db2.setDatabaseName(DBlocation.c_str());
 }
 
 /// read preference table from sql
 void preferences::readDB(){
-    OpenDB();
+    //OpenDB();
     int count = 0;
     if(db2.open()){
     QSqlQuery query(db2);
