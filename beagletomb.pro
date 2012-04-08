@@ -67,3 +67,21 @@ FORMS    += \
 
 RESOURCES += \
     images/BTres.qrc
+
+documentation.files = docs/*
+documentation.path = /usr/local/beagletomb/doc
+sources.files = src/*
+sources.path = /opt/extras.ubuntu.com/beagletomb/src
+target.path = /opt/extras.ubuntu.com/beagletomb
+other.files = ./*
+other.path = /opt/extras.ubuntu.com/beagletomb/release
+INSTALLS += target \
+            sources \
+            documentation \
+            other
+
+DESTDIR = /opt/extras.ubuntu.com/beagletomb/
+OBJECTS_DIR = $${DESTDIR}/.obj
+MOC_DIR = $${DESTDIR}/.moc
+RCC_DIR = $${DESTDIR}/.rcc
+UI_DIR = $${DESTDIR}/.ui

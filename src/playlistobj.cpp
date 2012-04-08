@@ -132,6 +132,9 @@ void playlistobj::AddTo(int selected, char *FinSong)
     /// Add to our playlist object
     playlist_obj.set(pl_obj_count, selected, 0, FinSong);
     pl_obj_count++;
+    if(pl_obj_count >= playlist_obj.getInit()){
+        playlist_obj.REinitFile(playlist_obj.getInit(), 100);
+    }
 }
 
 /*

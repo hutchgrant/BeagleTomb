@@ -61,7 +61,6 @@ void BeagleMain::Sync(int type){
         if(pref.initDB() == false){
             prefDg.show();
             if (prefDg.exec()==QDialog::Accepted) {
-
                 //create cache directory
                 pref.createCache();
                 pref = prefDg.getPref();

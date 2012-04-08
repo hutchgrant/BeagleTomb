@@ -32,7 +32,7 @@
 #include <QtSql>
 #include <sstream>
 
-#define LOCALSYNC "/.BeagleTomb/BTlocal.db"
+#define LOCALSYNC "/.beagletomb/BTlocal.db"
 using namespace std;
 
 class localsync
