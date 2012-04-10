@@ -34,21 +34,22 @@
 #include "fileobj.h"
 using namespace std;
 class readDB {
-        radioObj play_list;
-        char *DBlocation2;
+        string DBLOCATE;
 
 public:
-        QSqlDatabase db2;
-        readDB(const char *dbLocation);
-        fileObj& SongFill(fileObj& Song);
-        fileObj& AlbumFill(fileObj& Album);
-        fileObj& ArtistFill(fileObj& Artist);
-        fileObj& VidDirFill(fileObj& VidDir);
-        fileObj& VideoFill(fileObj& Video);
-       radioObj RadioFill( int *radSize);
+     //   QSqlDatabase db2;
+        readDB();
+        fileObj& RemoteFill(fileObj& src, int type);
+        fileObj& LocalFill(fileObj& src, int type);
+        fileObj& PlaylistFill(fileObj& src, int type);
+        fileObj& RadioFill(fileObj& src);
        void OpenDB();
         void display(fileObj&Artist, fileObj& Song,fileObj& Album);
 	virtual ~readDB();
+
+        void setDB(const char *dblocation){
+            DBLOCATE = dblocation;
+        }
 };
 
 #endif /* READDB_H_ */

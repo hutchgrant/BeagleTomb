@@ -59,6 +59,7 @@ public:
     /// set initial db file in text cache
     void setInitDB();
 
+    virtual ~preferences();
     string USER, PASS, SERVER, PORT, TABLE, DBlocation, PLAYLISTDIR;
     void setUser(string strUser){
         USER = strUser;

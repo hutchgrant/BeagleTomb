@@ -403,5 +403,5 @@ int mysqlconn::connectArtMenu() {
 }
 
 mysqlconn::~mysqlconn() {
-
+    QSqlDatabase::removeDatabase("connectSQL");
 }

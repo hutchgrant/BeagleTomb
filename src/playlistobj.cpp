@@ -19,118 +19,93 @@
  */
 
 #include "playlistobj.h"
-#define MAXPLAYSIZE 1000
 playlistobj::playlistobj()
 {
-    initPL();
-    /// set temp defaults later sync from db
-    setFileName("newplaylist.pl");
-    setFileLocation("/.beagletomb/playlist/");
-    playlistOpen = false;
-    playlistCount = 0;
-    pl_obj_count = 0;
+    initPlaylist();
+    pl_mode = 0;
+    db_location = "-";
+    openDB();
 }
 
 playlistobj::~playlistobj(){
-
-
-}
-
-void playlistobj::initPL(){
-    /// re initialize playlist object
-    playlist_obj.initFile(100);
-}
-
-
-
-void playlistobj::writePLfile(){
-    ofstream myfile;
-    char *mystring;
-
-    mystring = NULL;
-    myfile.open(fullLocation.c_str());
-    for(int i=0; i<=pl_obj_count; i++){
-        mystring = new char[strlen(playlist_obj.getPath(i))+1];
-        strcpy(mystring, playlist_obj.getPath(i));
-        //// check each string for blanks, replace with underscores
-        replace(&mystring[0], &mystring[strlen(mystring)], ' ', '_');
-
-        myfile << mystring << " : "<< playlist_obj.getID(i)<< endl;
-
-        delete [] mystring;
-     }
-    myfile.close();
-
-}
-
-void playlistobj::readPLfile(string location){
-    FILE* fp = NULL;
-    initPL();
-    char *Track;
-    int TrackID;
-    int TrackCount=0;
-    int myExit = 0;
-    fullLocation = location;
-    fp = fopen(fullLocation.c_str(), "r");
-    rewind(fp);
-
-    while(!feof(fp) && !myExit){
-    Track = new char[100];
-        fscanf(fp, "%s : %d", Track, &TrackID);
-        if(strncmp(Track, "-",1)== 0){
-
-           myExit = 1;
-           pl_obj_count = TrackCount;
-         }
-        else{
-         replace(&Track[0], &Track[strlen(Track)], '_', ' ');
-        setTrackName(TrackCount, Track);
-        setTrackID(TrackID, TrackCount);
-        TrackCount++;
-        }
-        delete [] Track;
-    }
-    close();
-
 }
 
 /*
-  * remove playlist item from playlist object at integer pos
+  * Connect to sqlite database
   */
-void playlistobj::RemoveFrom(int pos){
+void playlistobj::openDB(){
+    db = QSqlDatabase::addDatabase("QSQLITE", "connection");
+    db.setDatabaseName(db_location.c_str());
+}
 
-    fileObj temp_pl;   // temp playlist object
-    int tempCount = 0;  // count the temp items
-
-    /// get everything before the position we're removing
-    for(int i = 0; i< pos; i++){
-        temp_pl.setName(tempCount, playlist_obj.getName(i));
-        temp_pl.setPath(tempCount, playlist_obj.getPath(i));
-        temp_pl.setID(tempCount, playlist_obj.getID(i));
-        temp_pl.setPar(tempCount, playlist_obj.getPar(i));
-        tempCount++;
+/*
+  * write sqlite anything
+  */
+void playlistobj::writeMe(string sQry){
+    if(db.open()){
+        QSqlQuery finQry(db);
+        finQry.prepare(sQry.c_str());
+        finQry.exec();
+        db.close();
     }
-    /// get everything after the position we're removing;
-    for(int i = pos+1; i> pos && i<=pl_obj_count; i++){
-        temp_pl.setName(tempCount, playlist_obj.getName(i));
-        temp_pl.setPath(tempCount, playlist_obj.getPath(i));
-        temp_pl.setID(tempCount, playlist_obj.getID(i));
-        temp_pl.setPar(tempCount, playlist_obj.getPar(i));
-        tempCount++;
-    }
-    pl_obj_count--;
-    playlistCount--;
-    initPL();
-    /// refill original playlist object with altered temp object
-    playlist_obj = temp_pl;
+}
+/*
+  * Initialize and allocate playlist
+  */
+void playlistobj::initPlaylist(){
+    playlist_obj.initFile(100);
+    pl_obj_count = 0;
+    playlistName = "newplaylist";
 }
 
 
-void playlistobj::AddTo(int selected, char *FinSong)
-{
+/*
+  * refill playlist list with playlist object
+  */
+QStringList playlistobj::fillPlaylist(fileObj &src){
+    QStringList curSong;
+        for(int i = 0; i< src.getSize(); i++){
+            curSong << src.getName(i);
+        }
+    return curSong;
+}
 
+
+/*
+  * create new playlist
+  */
+void playlistobj::AddNew(string name){
+    initPlaylist();
+    string newQry[2];
+    newQry[0] = "create table if none exists playlists (key INTEGER PRIMARY KEY,lcl_dir_name TEXT,lcl_dir_path TEXT,lcl_dir_id integer,lcl_dir_par integer,lcl_dir_type TEXT)";
+    newQry[1] = "create table if none exists playlist_items (key INTEGER PRIMARY KEY,lcl_dir_name TEXT,lcl_dir_path TEXT,lcl_dir_id integer,lcl_dir_par integer,lcl_dir_type TEXT)";
+    for(int i =0; i<2; i++){
+        writeMe(newQry[i]);
+    }
+    playlistName = name;
+}
+
+/*
+  * Fill new playlist
+  */
+void playlistobj::writeNew(){
+    char *qryState;
+    for(int i =0; i< pl_obj_count; i++){
+     qryState = new char[strlen(playlist_obj.getName(i))];
+     sprintf(qryState, "INSERT INTO playlists (lcl_dir_name, lcl_dir_path, lcl_dir_id, lcl_dir_par) VALUES ('%s', '%s', '%d', '%d')",
+     playlist_obj.getName(i), playlist_obj.getPath(i), playlist_obj.getID(i), playlist_obj.getPar(i));
+     writeMe(string(qryState));
+     delete [] qryState;
+    }
+}
+
+/*
+  * Add to existing playlist
+  */
+void playlistobj::AddTo(int id, int par, string name, string path, fileObj &src){
+    setPlObj(src);
     /// Add to our playlist object
-    playlist_obj.set(pl_obj_count, selected, 0, FinSong);
+    playlist_obj.set(pl_obj_count, id, par, name.c_str(), path.c_str());
     pl_obj_count++;
     if(pl_obj_count >= playlist_obj.getInit()){
         playlist_obj.REinitFile(playlist_obj.getInit(), 100);
@@ -138,90 +113,86 @@ void playlistobj::AddTo(int selected, char *FinSong)
 }
 
 /*
-  * refill playlist list with playlist object
+  * Move a playlist item
   */
-QStringList playlistobj::RefillPlaylist(){
+void playlistobj::Move(int selected, int direction){
 
-    playlistCount = 0;
-    QStringList curSong;
-// retrieve track listing and store temporairly
-    for(int i = 0; i< pl_obj_count; i++){
-        curSong << playlist_obj.getName(i);
-        playlistCount++;
+    fileObj tempPl;
+    int moving =0, moveTo = 0;
+    moving = playlist_obj.getID(selected);
+
+    if(direction == 0 && selected-1 > 0 && selected-1 < playlist_obj.getSize()){ // move down
+        moveTo = playlist_obj.getID(selected--);
+        tempPl.set(0, playlist_obj.getID(selected--), playlist_obj.getPar(selected--), playlist_obj.getName(selected--), playlist_obj.getPath(selected--));
+        tempPl.set(1, playlist_obj.getID(selected--), playlist_obj.getPar(selected--), playlist_obj.getName(selected--), playlist_obj.getPath(selected--));
+
+        playlist_obj.set(selected--, tempPl.getID(0), tempPl.getPar(0), tempPl.getName(0), tempPl.getPath(0));
+         playlist_obj.set(selected++, tempPl.getID(1), tempPl.getPar(1), tempPl.getName(1), tempPl.getPath(1));
     }
+    else if(direction == 1 && selected+1 > 0 && selected+1 < playlist_obj.getSize()){  // move up
+        moveTo = playlist_obj.getID(selected++);
+        tempPl.set(0, playlist_obj.getID(selected++), playlist_obj.getPar(selected++), playlist_obj.getName(selected++), playlist_obj.getPath(selected++));
+        playlist_obj.set(selected, tempPl.getID(0), tempPl.getPar(0), tempPl.getName(0), tempPl.getPath(0));
+        playlist_obj.set(selected++, tempPl.getID(1), tempPl.getPar(1), tempPl.getName(1), tempPl.getPath(1));
 
-    return curSong;
+    }
 }
+
+/*
+  * Remove the entire playlist or an item
+  */
+void playlistobj::RemoveFrom(int selected){
+    int removalID = 0;
+/*
+    removalID = playlist_obj.getID(selected);
+
+    QSqlQuery rem;
+    // remove playlist
+    if(type == 0){
+        if(db.open()){
+
+            rem = ""
+        }
+    }
+    else{
+
+    } */
+}
+
+/*
+  * Create new playlist entry in database
+  */
+
+void playlistobj::writeToDB(){
+/*
+    if(db.open()){
+        QSqlQuery writeDB;
+
+        while()
+    }  */
+}
+
+/*
+  * remove playlist entry from database
+  */
+void playlistobj::removeFromDB(int item){
+
+}
+
+
 playlistobj::playlistobj(const playlistobj& src){
-    fileName = src.fileName;
-    fileLocation = src.fileLocation;
-    fullLocation = src.fullLocation;
     playlist_obj = src.playlist_obj;
     pl_obj_count = src.pl_obj_count;
-    playlistCount = src.playlistCount;
-    playlistOpen = src.playlistOpen;
-    pl_folder = src.pl_folder;
-    folder_count = src.folder_count;
-    playlistOpen = src.playlistOpen;
+    playlistName = src.playlistName;
 }
 playlistobj& playlistobj::operator=(const playlistobj& src)
 {
     if(this != &src)
     {
-        fileName = src.fileName;
-        fileLocation = src.fileLocation;
-        fullLocation = src.fullLocation;
         playlist_obj = src.playlist_obj;
         pl_obj_count = src.pl_obj_count;
-        playlistCount = src.playlistCount;
-        playlistOpen = src.playlistOpen;
-        pl_folder = src.pl_folder;
-        folder_count = src.folder_count;
-        playlistOpen = src.playlistOpen;
+        playlistName = src.playlistName;
     }
     return *this;
-}
-int playlistobj::close(){
-        return 1;
-}
-
-
-void playlistobj::Move(int mode, int selected){
-    int selection2 = 0; // hold our temporary mock selection
-    int plCount = 0;   // count for temp pl item
-    if(mode == 1){   // if moving up
-        selection2 = selected + 1;
-    }
-    else if(mode == 2){  // if moving down
-        selection2 = selected -1;
-    }
-
-
-}
-
-QStringList playlistobj::listDirectories(const char *location){
-    QStringList QPLFolder;
-    QString qFold = QString(location);
-    QDir myDir(qFold);
-    int itemCount = 0;
-       folder_count = 0;
-
-    foreach(QFileInfo aItem, myDir.entryInfoList()){
-        itemCount++;
-        if(itemCount>2){
-            QPLFolder << aItem.fileName();
-        }
-    }
-    pl_folder = new string[QPLFolder.size()];
-    itemCount = 0;
-    foreach(QFileInfo aItem, myDir.entryInfoList()){
-        itemCount++;
-        if(itemCount>2){
-         pl_folder[folder_count] = aItem.fileName().toStdString();
-         folder_count++;
-        }
-    }
-    return QPLFolder;
-
 }
 

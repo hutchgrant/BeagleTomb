@@ -36,6 +36,7 @@
 #include <iostream>
 #include <fstream>
 #include <QDir>
+#include <QtSql>
 #include <QFileInfo>
 #include <QString>
 #include <QDebug>
@@ -46,91 +47,44 @@ class playlistobj
 {
    // Q_OBJECT
 public:
-    fileObj playlist_obj;
-
-    string fullLocation;
-    string fileLocation;
-    string fileName;
-    string * pl_folder;
-    int folder_count;
-    int playlistCount;
-    int pl_obj_count;
-
-    bool playlistOpen;
+    fileObj playlist_obj;   /// playlist object holds all ids, pars, names, paths of items
+    int pl_obj_count;       /// number of items in playlist
+    string playlistName;    /// name of the current playlist
+    int pl_mode;            /// boolean for browsing playlist names or items
+    string db_location;     /// database location
+    QSqlDatabase db;
 
     playlistobj();
+    void initPlaylist();
+    fileObj control();
+    void AddTo(int id, int par, string name, string path, fileObj &src);
+    void AddNew(string name);
+    void Move(int selected, int direction);
 
+    void openDB();
+    void readPlDB(fileObj &src, int type);
+    void writeToDB();
+    void removeFromDB(int item);
+    void RemoveFrom(int selected);
+    void writeMe(string sQry);
+    void writeNew();
+
+    QStringList fillPlaylist(fileObj &src);
     virtual ~playlistobj();
-
-    bool plExists(string p_locate);
-
-    bool locationExists(string p_locate);
-
-    bool fileExists(string file);
-
-   void readPLfile(string location);
-   void writePLfile();
-   void initPL();
+    playlistobj& operator=(const playlistobj& src);
+    playlistobj(const playlistobj& src);
 
 
-    void AddTo(int pos, char* FinSong);
-    void RemoveFrom(int pos);
-
-    void setTrackName(int pos, string name){
-        char *finName;
-            strcpy(finName, name.c_str());
-        playlist_obj.setName(pos, finName);
+    void setMode(int type){
+        pl_mode = type;
     }
-    void setTrackID(int id, int pos){
-        playlist_obj.setID(pos,id);
+    void setLocation(string locate){
+        db_location = locate;
     }
-    void setFileName(string name){
-        fileName = name;
+    void setPlObj(fileObj &src){
+        playlist_obj = src;
+        pl_obj_count = src.getSize();
     }
-    void setFileLocation( string name){
-        fileLocation = name;
-    }
-    void setCount(int count){
-        pl_obj_count = count;
-    }
-    void setFullLocation(string name, string location){
-        stringstream strLocate;
-        strLocate << location << "/" << name;
-        fullLocation = strLocate.str();
-    }
-
-    string getFullLocation(){
-        return fullLocation;
-    }
-
-    int getCount(){
-        return pl_obj_count;
-    }
-
-    string getTrackName(int pos){
-        return playlist_obj.getName(pos);
-    }
-    int getTrackID(int pos){
-         return playlist_obj.getID(pos);
-    }
-    string getFileName(){
-        return fileName;
-    }
-    string getFileLocation(){
-        return fileLocation;
-    }
-    string getPLFolder(int pos){
-        return pl_folder[pos];
-    }
-
-QStringList RefillPlaylist();
-FILE* open(const char filename[]);
-int close();
-void Move(int mode, int selected);
-QStringList listDirectories(const char * location);
-playlistobj(const playlistobj& src);
-playlistobj& operator=(const playlistobj& src);
-
 };
 
 #endif // PLAYLISTOBJ_H

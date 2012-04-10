@@ -32,7 +32,7 @@
 #include <QtSql>
 #include <sstream>
 
-#define LOCALSYNC "/.beagletomb/BTlocal.db"
+#define LOCALSYNC "/.beagletomb/BTmedia.db"
 using namespace std;
 
 class localsync
@@ -77,8 +77,6 @@ public:
     void scanFiles(int scanType);
     void scanDir(QString dir, int scanType);
 
-    string getDirectoryByPar(int parID, int count);
-
     void getLastIDs(int type);
     void Sync(QDir usrDir, int syncType);
     void Remove();
@@ -98,6 +96,10 @@ public:
     fileObj& readLocalDB(int type, fileObj &src);
     void setLastID(int last){
         lastID = last;
+    }
+
+    void setDB(string local){
+        db_local = local;
     }
 
     void addFile(int count, string direc, string name, int par, int type){

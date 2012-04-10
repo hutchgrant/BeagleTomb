@@ -37,7 +37,6 @@ PrefDialog::PrefDialog(QWidget *parent) :
     ui->entry_port->setText(pref.getQPort());
     ui->entry_table->setText(pref.getQTable());
     ui->entry_sql->setText(pref.getQSQL());
-    ui->entry_playlist->setText(pref.getQPLDir());
 }
 
 PrefDialog::~PrefDialog()
@@ -61,7 +60,6 @@ preferences& PrefDialog::setPreferences(preferences& pref){
     QString Q_table = ui->entry_table->text();
     QString Q_port = ui->entry_port->text();
     QString Q_sql = ui->entry_sql->text();
-    QString Q_pl = ui->entry_playlist->text();
 
     string strUser = QUser.toUtf8().constData();
     string strPass = Q_pass.toUtf8().constData();
@@ -69,7 +67,6 @@ preferences& PrefDialog::setPreferences(preferences& pref){
     string strPort = Q_port.toUtf8().constData();
     string strTable = Q_table.toUtf8().constData();
     string strSQL = Q_sql.toUtf8().constData();
-    string strPL = Q_pl.toUtf8().constData();
 
     pref.setUser(strUser);
     pref.setPass(strPass);
@@ -77,7 +74,6 @@ preferences& PrefDialog::setPreferences(preferences& pref){
     pref.setPort(strPort);
     pref.setTable(strTable);
     pref.setSQL(strSQL);
-    pref.setPlaylistDir(strPL);
 
     return pref;
 }

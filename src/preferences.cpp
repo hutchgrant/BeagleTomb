@@ -29,9 +29,7 @@ preferences::preferences(){
     TABLE = "mediatomb";
     PORT = "49154";
     string DB = "/.beagletomb/BTmedia.db";
-    string PL = "/.beagletomb/playlist/";
     DBlocation = getenv("HOME") + DB;
-    PLAYLISTDIR = getenv("HOME") + PL;
 }
 preferences::preferences(const preferences& src){
     USER = src.USER;
@@ -40,7 +38,6 @@ preferences::preferences(const preferences& src){
     PORT = src.PORT;
     TABLE = src.TABLE;
     DBlocation = src.DBlocation;
-    PLAYLISTDIR = src.PLAYLISTDIR;
 }
 
 /// construct with default sql location
@@ -107,7 +104,6 @@ void preferences::deletePrefDB() {
 
 /// create Preference database
 void preferences::createPrefDB() {
-    OpenDB();
     string finalQry;
         finalQry = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
        writeMe(finalQry);
@@ -115,13 +111,14 @@ void preferences::createPrefDB() {
 
 
 void preferences::OpenDB(){
-    db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2 = QSqlDatabase::addDatabase("QSQLITE", "connectPref");
     db2.setDatabaseName(DBlocation.c_str());
 }
 
 /// read preference table from sql
 void preferences::readDB(){
-    OpenDB();
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2.setDatabaseName(DBlocation.c_str());
     int count = 0;
     if(QFile::exists(DBlocation.c_str())){
         if(db2.open()){
@@ -154,7 +151,6 @@ void preferences::readDB(){
 
 /// write to preference table sql
 void preferences::writeDB(){
-    OpenDB();
     string str2;
     stringstream os;
     os << "INSERT INTO pref (usr, PASS, SERVER, PRT, SQLTABLE, SQL, PLAYLISTDIR) VALUES ('"
@@ -167,7 +163,8 @@ void preferences::writeDB(){
 
 //// write to output file temp qry
 void preferences::writeMe(string qry){
-
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE", "prefDBread");
+    db2.setDatabaseName(DBlocation.c_str());
     if(db2.open()){
         QSqlQuery myQry(db2);
         myQry.prepare(qry.c_str());
@@ -179,17 +176,13 @@ void preferences::writeMe(string qry){
 void preferences::createCache(){
     string main = "/.beagletomb";
     string cache = "/cache";
-    string playlist = "/playlist";
     string u_home = getenv("HOME");
     string finMain = u_home + main;
     string finCache = u_home + main + cache;
-    string finPL = u_home + main + playlist;
     QString q_main = finMain.c_str();
     QString q_cache = finCache.c_str();
-    QString q_playlist = finPL.c_str();
     QDir(q_main).mkdir(q_main);
     QDir(q_main).mkdir(q_cache);
-    QDir(q_main).mkdir(q_playlist);
 }
 
 preferences& preferences::operator=(const preferences& src){
@@ -202,8 +195,11 @@ preferences& preferences::operator=(const preferences& src){
         setPort(src.PORT);
         setTable(src.TABLE);
         setSQL(src.DBlocation);
-        setPlaylistDir(src.PLAYLISTDIR);
     }
     
     return *this;
+}
+
+preferences::~preferences(){
+QSqlDatabase::removeDatabase("prefDBread");
 }

@@ -52,15 +52,7 @@ public:
 
         syncMe(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
 
-        void videoWrite(fileObj& Video);
-
-        void vidDirWrite(fileObj& VidDir);
-
-        void songWrite(fileObj& Song);
-
-        void albumWrite(fileObj& Album);
-
-        void artistWrite(fileObj& Artist);
+        void writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, fileObj &VidDir, fileObj &Video);
 
         void writeMe(string qry);;
 

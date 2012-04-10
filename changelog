@@ -1,3 +1,10 @@
+beagletomb (0.1.7-0ubuntu3) natty; urgency=low
+
+  * Added: more manageable sql cache
+  * Updated: stripped unnecessary code and organized
+
+ -- Grant Hutchinson <h.g.utchinson@gmail.com>  Tue, 10 Apr 2012 04:39:17 -0400
+
 beagletomb (0.1.7-0ubuntu2) natty; urgency=low
 
   *Added: Dynamic audio/video library add feature. Allows user to add as many folders as they wish (Closes: #nnnn) 

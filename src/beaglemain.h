@@ -55,7 +55,7 @@ public:
      int title_selected;  /// global title selection
     int CON_MODE;
 
-
+    readDB rDB;
     About ab;
     PrefDialog prefDg;
     preferences pref, pref2;
@@ -65,7 +65,7 @@ public:
     QMPwidget widget;
     mplayCon mplay;
     localsync SyncAudioLocal, SyncVideoLocal;
-    fileObj Artist, Song, Album, VidDir, Video, DirecLocal, SongLocal, vidDirecLocal, VideoLocal;
+    fileObj Artist, Song, Album, VidDir, Video, DirecLocal, SongLocal, vidDirecLocal, VideoLocal, playlist;
     radioObj Radio;
     int artSize, albSize, songSize, vidSize, vidDirSize, radSize;
 
@@ -87,15 +87,14 @@ public:
     void updateLclVideos(int selected);
 
     void initCueID(int type, int newsize, int initial);
-    void updateAlbMenu(int select);
     void updateTitle(int select);
     void Sync(int type);
-
+    void fillRemoteFiles();
+    void fillLocalFiles(int mode);
     bool isRunning();
 
     void setMainPref(preferences pref);
-    void RefillMainPL();
-    void RefillPLFolder();
+    void RefillMainPL(int type);
     void startSong(char *FinSong, int selID);
     void startLocal(char *finSong, char *finPath);
     void PlaylistPlay(int selID);

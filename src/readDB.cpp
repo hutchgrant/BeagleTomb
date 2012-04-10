@@ -21,194 +21,148 @@
 
 #include "readDB.h"
 
-readDB::readDB(const char *dbLocation) {
-    DBlocation2 = new char[strlen(dbLocation) + 1];
-    strcpy(DBlocation2, dbLocation);
+readDB::readDB() {
+    DBLOCATE = "-";
 }
 
 void readDB::OpenDB(){
-    db2 = QSqlDatabase::addDatabase("QSQLITE");
-    db2.setDatabaseName(DBlocation2);
+
 
 }
 
-fileObj& readDB::SongFill(fileObj& Song){
+fileObj& readDB::RemoteFill(fileObj &src, int type){
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2.setDatabaseName(DBLOCATE.c_str());
     int count = 0;
-     if(db2.open()){
-       QSqlQuery query(db2);
+    if(db2.open()){
+        QSqlQuery query(db2);
 
-     query = QString("SELECT * FROM songs");
-
-     while (query.next()){
-         QString QVal1 = query.value(1).toString();
-         QString QVal2 = query.value(2).toString();
-         QString QVal3 = query.value(3).toString();
-
-         if(QVal2.toInt() != 0){
-             Song.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
-             count++;
-         }
-     }
-     db2.close();
-    }
-    return Song;
-}
-
-fileObj& readDB::AlbumFill(fileObj& Album){
-
-    int count = 0;
-     if(db2.open()){
-    QSqlQuery query(db2);
+        //// sync Remote
+        if(type == 1){
+            query = QString("SELECT * FROM artists");
+        }
+        else if(type == 2){
             query = QString("SELECT * FROM albums");
+        }
+        else if(type == 3){
+            query = QString("SELECT * FROM songs");
+        }
+        else if(type == 4){
+            query = QString("SELECT * FROM viddirs");
+        }
+        else if(type == 5){
+            query = QString("SELECT * FROM videos");
+        }
 
-            while (query.next()){
-                QString QVal1 = query.value(1).toString();
-                QString QVal2 = query.value(2).toString();
-                QString QVal3 = query.value(3).toString();
+        while(query.next()){
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
 
-                if(QVal2.toInt() != 0){
-                    Album.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
-                    count++;
-                }
+            if(QVal2.toInt() != 0){
+                src.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
+                count++;
             }
-             db2.close();
+        }
+        db2.close();
     }
-    return Album;
+ //   QSqlDatabase::removeDatabase("connectReadFiles");
+
+    return src;
+
 }
 
-fileObj& readDB::ArtistFill(fileObj& Artist){
-    OpenDB();
+fileObj& readDB::LocalFill(fileObj &src, int type){
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2.setDatabaseName(DBLOCATE.c_str());
     int count = 0;
     if(db2.open()){
-   QSqlQuery query(db2);
-              query = QString("SELECT * FROM artists");
+        QSqlQuery query(db2);
 
-            while (query.next()){
-                QString QVal1 = query.value(1).toString();
-                QString QVal2 = query.value(2).toString();
-                QString QVal3 = query.value(3).toString();
+        /// sync Local
+        if(type == 1){
+            query = QString("SELECT * FROM lcl_songdirs");
+        }
+        else if(type == 2){
+            query = QString("SELECT * FROM lcl_songs");
+        }
+        else if(type == 3){
+            query = QString("SELECT * FROM lcl_viddirs");
+        }
+        else if(type == 4){
+            query = QString("SELECT * FROM lcl_videos");
+        }
 
-                if(QVal2.toInt() != 0){
-                    Artist.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
-                    count++;
-                }
+        while(query.next()){
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
+
+            if(QVal1.toStdString() != "-"){
+                src.set(count, QVal3.toInt(), QVal4.toInt(), QVal1.toStdString().c_str(), QVal2.toStdString().c_str());
+                count++;
             }
-             db2.close();
+        }
+        db2.close();
     }
-    return Artist;
+    //    QSqlDatabase::removeDatabase("connectReadFiles");
+    return src;
 }
-fileObj& readDB::VidDirFill( fileObj& VidDir){
 
+fileObj& readDB::PlaylistFill( fileObj &src, int type){
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE", "playlistDBread");
+    db2.setDatabaseName(DBLOCATE.c_str());
     int count = 0;
     if(db2.open()){
-   QSqlQuery query(db2);
-    query = QString("SELECT * FROM viddirs");
+        QSqlQuery query(db2);
+        if(type == 1){
+            query = QString("SELECT * FROM playlists");
+        }
+        else if(type == 2){
+            query = QString("SELECT * FROM playlist_items");
+        }
 
-            while (query.next()){
-                QString QVal1 = query.value(1).toString();
-                QString QVal2 = query.value(2).toString();
-                QString QVal3 = query.value(3).toString();
+        while (query.next()){
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
 
-                if(QVal2.toInt() != 0){
-                    string QstrConvert = QVal1.toStdString();
-                    char *QVal1Convert;
-                    QVal1Convert = new char[QstrConvert.length() + 1];
-                    strcpy(QVal1Convert, QstrConvert.c_str());
-                    VidDir.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
-                    count++;
-                }
+            if(QVal1.toStdString() != "-"){
+                src.set(count, QVal3.toInt(), QVal4.toInt(), QVal1.toStdString().c_str(), QVal2.toStdString().c_str());
+                count++;
             }
-             db2.close();
+        }
+        db2.close();
     }
-    return VidDir;
+    return src;
 }
-fileObj& readDB::VideoFill( fileObj& Video){
 
+fileObj& readDB:: RadioFill(fileObj &src){
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2.setDatabaseName(DBLOCATE.c_str());
     int count = 0;
     if(db2.open()){
-   QSqlQuery query(db2);
-             query = QString("SELECT * FROM videos");
+        QSqlQuery query(db2);
+            query = QString("SELECT * FROM radio");
 
-            while (query.next()){
-                QString QVal1 = query.value(1).toString();
-                QString QVal2 = query.value(2).toString();
-                QString QVal3 = query.value(3).toString();
+        while (query.next()){
+            QString QVal1 = query.value(1).toString();
+            QString QVal2 = query.value(2).toString();
+            QString QVal3 = query.value(3).toString();
+            QString QVal4 = query.value(4).toString();
 
-                if(QVal2.toInt() != 0){
-                    string QstrConvert = QVal1.toStdString();
-                    char *QVal1Convert;
-                    QVal1Convert = new char[QstrConvert.length() + 1];
-                    strcpy(QVal1Convert, QstrConvert.c_str());
-                    Video.set(count, QVal2.toInt(), QVal3.toInt(), QVal1.toStdString().c_str());
-                    count++;
-                }
+            if(QVal1.toStdString() != "-"){
+                src.set(count, QVal3.toInt(), QVal4.toInt(), QVal1.toStdString().c_str(), QVal2.toStdString().c_str());
+                count++;
             }
-             db2.close();
+        }
+        db2.close();
     }
-    return Video;
+    return src;
 }
 
-radioObj readDB::RadioFill(int *radSize){
+readDB::~readDB(){
 
-    int count = 0;
-    if(db2.open()){
-   QSqlQuery query(db2);
-              query = QString("SELECT * FROM radio");
-
-            while (query.next()){
-                QString QVal1 = query.value(1).toString();
-                QString QVal2 = query.value(2).toString();
-
-
-                if(QVal1.toStdString() != "" && QVal1.toStdString() != "-"){
-                    string QstrConvert = QVal1.toStdString();
-                    char *QVal1Convert;
-                    QVal1Convert = new char[QstrConvert.length() + 1];
-                    strcpy(QVal1Convert, QstrConvert.c_str());
-
-                    string QstrConvert2 = QVal2.toStdString();
-                    char *QVal2Convert;
-                    QVal2Convert = new char[QstrConvert2.length() + 1];
-                    strcpy(QVal2Convert, QstrConvert2.c_str());
-                    play_list.Add(QVal1Convert, QVal2Convert);
-                    count++;
-                }
-             }
-        *radSize = count;
-         db2.close();
-    }
-    return play_list;
-
-
-}
-
-void readDB::display( fileObj&Artist, fileObj& Song,fileObj& Album ){
-    int choice = 0;
-    bool Exit = 0;
-    while(!Exit){
-        cout << endl;
-	cout << "Which do you want to display?" << endl;
-	cout << "1)Artists 2) Albums 3)Songs 4) exit" << endl;
-	cin >> choice;
-
-	if(choice == 1){
-            Artist.display();
-            cout << "total artists: " << Artist.getSize();
-	}
-	if(choice == 2){
-            Album.display();
-            cout << "Total Albums: " << Album.getSize();
-	}
-	if(choice == 3){
-            Song.display();
-            cout << "Total Songs: " << Song.getSize();
-	}
-	if(choice == 4){
-            Exit = 1;
-	}
-    }
-}
-readDB::~readDB() {
-    // TODO Auto-generated destructor stub
-    delete [] DBlocation2;
 }

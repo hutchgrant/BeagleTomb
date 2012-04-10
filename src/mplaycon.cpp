@@ -47,7 +47,7 @@ void mplayCon::run(){
             }
         }*/
 
-        selID = pl.getTrackID(pl_selected);
+    //    selID = pl.getID(pl_selected);
 
         if(widget2.state() == -1) {   // if loaded but doing nothing
             startSong(FinSong, selID);
