@@ -178,7 +178,7 @@ void BeagleMain::on_TitleList_doubleClicked(QModelIndex index)
             finSong = checkSongObjByID(selID, Video);
         }
         else{
-            selID = Song.getID(selected);
+            selID = curSongID[selected];
             finSongSize = strlen(checkSongObjByID(selID, Song));
             finSong = new char[finSongSize + 1];
             FinParentID = checkSongObjParByID(selID,Song);
@@ -396,7 +396,7 @@ void BeagleMain::updateTitle(int selected){
 
             m_Model->setStringList(curAlb);
             ui->MenuList->setModel(m_Model);
-            MenuMode = 3;
+            MenuMode = 5;
         }
         else if(MenuMode == 4){    ///  VIDEO DIR MODE
             selID = VidDir.getID(selected);
