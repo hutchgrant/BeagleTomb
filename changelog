@@ -1,3 +1,9 @@
+beagletomb (0.1.7-0ubuntu4) natty; urgency=low
+
+  * Updated: entire ui has been fixed to accomodate resizing in different resolutions
+
+ -- Grant Hutchinson <h.g.uthinson@gmail.com>  Tue, 10 Apr 2012 18:46:10 -0400
+
 beagletomb (0.1.7-0ubuntu3) natty; urgency=low
 
   * Added: more manageable sql cache
