@@ -33,8 +33,6 @@
 #include "preferences.h"
 #include "about.h"
 #include "playlistobj.h"
-#include "newplaylist.h"
-#include "openplaylist.h"
 #include "radioObj.h"
 #include "localsync.h"
 namespace Ui {
@@ -60,8 +58,6 @@ public:
     PrefDialog prefDg;
     preferences pref, pref2;
     playlistobj pl;
-    newplaylist newPL;
-    openplaylist openPL;
     QMPwidget widget;
     mplayCon mplay;
     localsync SyncAudioLocal, SyncVideoLocal;
@@ -101,7 +97,6 @@ public:
     void closeEvent(QCloseEvent *event);
 
 private slots:
-    void on_SYNC_but_clicked();
 
     void on_MODE_combo_currentIndexChanged(int index);
 
@@ -150,21 +145,23 @@ private slots:
 
     void on_actionDonate_2_triggered();
 
-    void on_ADMIN_but_clicked();
-
     void on_but_RadAdd_clicked();
 
     void on_but_RemRad_clicked();
 
-    void on_list_radio_clicked(QModelIndex index);
-
     void on_list_radio_doubleClicked(QModelIndex index);
-
-    void on_but_import_aud_clicked();
 
     void on_but_remote_tog_clicked();
 
-    void on_but_import_vid_clicked();
+    void on_actionImport_Audio_triggered();
+
+    void on_actionImport_Video_triggered();
+
+    void on_actionQuit_triggered();
+
+    void on_actionAdmin_triggered();
+
+    void on_actionSync_2_triggered();
 
 private:
     Ui::BeagleMain *ui;

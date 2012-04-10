@@ -481,13 +481,6 @@ void BeagleMain::on_VOL_dial_valueChanged(int value)
 {
 
 }
-/*
-  *When Sync Button is pressed
-  */
-void BeagleMain::on_SYNC_but_clicked()
-{
-    Sync(1);
-}
 
 /*
   *When Stop Button is pressed
@@ -686,12 +679,6 @@ void BeagleMain::on_actionDonate_2_triggered()
     QDesktopServices::openUrl(QUrl("https://flattr.com/profile/hutchgrant", QUrl::TolerantMode));
 }
 
-void BeagleMain::on_ADMIN_but_clicked()
-{
-    char mediatombAdd[100];
-    sprintf(mediatombAdd, "http://%s:%s", pref.getServ().c_str(), pref.getPort().c_str());
-    QDesktopServices::openUrl(QUrl(mediatombAdd, QUrl::TolerantMode));
-}
 
 void BeagleMain::on_but_RadAdd_clicked()
 {
@@ -715,43 +702,6 @@ void BeagleMain::on_but_RemRad_clicked()
     Radio.Remove(pl_ItemName, pos);
   //  Radio = rDB.RadioFill(&radSize);
     RefillRadioPL();
-}
-
-void BeagleMain::on_list_radio_clicked(QModelIndex index)
-{
-
-}
-
-/*
-  * Import Audio folder button
-  */
-void BeagleMain::on_but_import_aud_clicked()
-{
-    QDir usrDir = QString(getenv("HOME"));
-    usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
-    SyncAudioLocal.Sync(usrDir, 0);
-    fillLocalFiles(1);
-    fillLocalFiles(2);
-    CON_MODE = 0;
-    ui->but_remote_tog->setChecked(false);
-    ui->MODE_combo->setCurrentIndex(1);
-    updateMenu(1);
-}
-
-/*
-  * Import Video folder button
-  */
-void BeagleMain::on_but_import_vid_clicked()
-{
-    QDir usrDir = QString(getenv("HOME"));
-    usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
-    SyncVideoLocal.Sync(usrDir, 1);
-    fillLocalFiles(3);
-    fillLocalFiles(4);
-    CON_MODE = 0;
-    ui->but_remote_tog->setChecked(false);
-    ui->MODE_combo->setCurrentIndex(4);
-    updateMenu(3);
 }
 
 /*
@@ -856,4 +806,47 @@ void BeagleMain::initCueID(int type, int newsize, int inital)
 BeagleMain::~BeagleMain()
 {
     delete ui;
+}
+
+void BeagleMain::on_actionImport_Audio_triggered()
+{
+    QDir usrDir = QString(getenv("HOME"));
+    usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
+    SyncAudioLocal.Sync(usrDir, 0);
+    fillLocalFiles(1);
+    fillLocalFiles(2);
+    CON_MODE = 0;
+    ui->but_remote_tog->setChecked(false);
+    ui->MODE_combo->setCurrentIndex(1);
+    updateMenu(1);
+}
+
+void BeagleMain::on_actionImport_Video_triggered()
+{
+    QDir usrDir = QString(getenv("HOME"));
+    usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
+    SyncVideoLocal.Sync(usrDir, 1);
+    fillLocalFiles(3);
+    fillLocalFiles(4);
+    CON_MODE = 0;
+    ui->but_remote_tog->setChecked(false);
+    ui->MODE_combo->setCurrentIndex(4);
+    updateMenu(3);
+}
+
+void BeagleMain::on_actionQuit_triggered()
+{
+    exit(1);
+}
+
+void BeagleMain::on_actionAdmin_triggered()
+{
+    char mediatombAdd[100];
+    sprintf(mediatombAdd, "http://%s:%s", pref.getServ().c_str(), pref.getPort().c_str());
+    QDesktopServices::openUrl(QUrl(mediatombAdd, QUrl::TolerantMode));
+}
+
+void BeagleMain::on_actionSync_2_triggered()
+{
+    Sync(1);
 }

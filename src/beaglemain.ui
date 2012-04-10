@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>721</width>
-    <height>460</height>
+    <height>488</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -20,43 +20,11 @@
    <string>BeagleTomb v.0.1.7</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QListView" name="MenuList">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>256</width>
-      <height>271</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>256</width>
-      <height>271</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QListView" name="TitleList">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>30</y>
-      <width>256</width>
-      <height>271</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>256</width>
-      <height>271</height>
-     </size>
-    </property>
-   </widget>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>0</y>
+      <y>10</y>
       <width>181</width>
       <height>301</height>
      </rect>
@@ -71,7 +39,7 @@
      <string/>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Playlist_tab">
      <attribute name="title">
@@ -80,10 +48,10 @@
      <widget class="QListView" name="PlayList">
       <property name="geometry">
        <rect>
-        <x>1</x>
-        <y>1</y>
+        <x>0</x>
+        <y>0</y>
         <width>170</width>
-        <height>200</height>
+        <height>220</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -95,7 +63,7 @@
       <property name="minimumSize">
        <size>
         <width>170</width>
-        <height>200</height>
+        <height>220</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -115,385 +83,201 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>200</y>
+        <y>230</y>
         <width>171</width>
-        <height>72</height>
+        <height>32</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QPushButton" name="ADD_but">
-           <property name="minimumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Add</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="REMOVE_but">
-           <property name="minimumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Remove</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="SAVE_but">
-           <property name="minimumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Save</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QPushButton" name="ADD_but">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>55</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Add</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_8">
-         <item>
-          <widget class="QPushButton" name="UP_but">
-           <property name="minimumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Up</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="DOWN_but">
-           <property name="minimumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Down</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="OPEN_but">
-           <property name="minimumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>55</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Open</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QPushButton" name="REMOVE_but">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>55</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Remove</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="DOWN_but">
+         <property name="minimumSize">
+          <size>
+           <width>24</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>55</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Down</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../images/BTres.qrc">
+           <normaloff>:/images/DOWN_icon.png</normaloff>:/images/DOWN_icon.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="UP_but">
+         <property name="minimumSize">
+          <size>
+           <width>24</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>55</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Up</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../images/BTres.qrc">
+           <normaloff>:/images/UP_icon.png</normaloff>:/images/UP_icon.png</iconset>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
+     <zorder>PlayList</zorder>
+     <zorder>layoutWidget</zorder>
+     <zorder>PlayList</zorder>
     </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>Radio</string>
      </attribute>
-     <widget class="QListView" name="list_radio">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>171</width>
-        <height>171</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QWidget" name="">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>170</y>
-        <width>171</width>
-        <height>97</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <item>
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="entry_radName"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>URL     </string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="entry_radURL"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_9">
-         <item>
-          <widget class="QPushButton" name="but_RadAdd">
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>27</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Add</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="but_RemRad">
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>27</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Remove</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="Sync_tab">
-     <attribute name="title">
-      <string>Sync</string>
-     </attribute>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>30</y>
-        <width>137</width>
-        <height>85</height>
+        <y>0</y>
+        <width>181</width>
+        <height>271</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>Local Machine</string>
-         </property>
-        </widget>
+        <widget class="QListView" name="list_radio"/>
        </item>
        <item>
-        <widget class="QPushButton" name="but_import_aud">
-         <property name="text">
-          <string>Import Audio</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="but_import_vid">
-         <property name="text">
-          <string>Import Video</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>140</y>
-        <width>137</width>
-        <height>85</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Remote Mediatomb</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="SYNC_but">
-         <property name="toolTip">
-          <string>Sync from mediatomb</string>
-         </property>
-         <property name="text">
-          <string>Sync</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="ADMIN_but">
-         <property name="text">
-          <string>Admin</string>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="entry_radName"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>URL     </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="entry_radURL"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QPushButton" name="but_RadAdd">
+             <property name="minimumSize">
+              <size>
+               <width>80</width>
+               <height>27</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Add</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="but_RemRad">
+             <property name="minimumSize">
+              <size>
+               <width>80</width>
+               <height>27</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
     </widget>
    </widget>
-   <widget class="QComboBox" name="MODE_combo">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>121</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>121</width>
-      <height>29</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>121</width>
-      <height>29</height>
-     </size>
-    </property>
-    <item>
-     <property name="text">
-      <string>Mode:</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Artists</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Albums</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Songs</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Videos</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QToolButton" name="but_remote_tog">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>0</y>
-      <width>60</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>60</width>
-      <height>29</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>60</width>
-      <height>29</height>
-     </size>
-    </property>
-    <property name="text">
-     <string>Remote</string>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-    <property name="checked">
-     <bool>false</bool>
-    </property>
-   </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>11</x>
-      <y>301</y>
+      <x>10</x>
+      <y>320</y>
       <width>691</width>
-      <height>101</height>
+      <height>106</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -526,6 +310,12 @@
               <size>
                <width>160</width>
                <height>19</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>350</width>
+               <height>22</height>
               </size>
              </property>
              <property name="toolTip">
@@ -668,6 +458,35 @@
                </property>
               </widget>
              </item>
+             <item>
+              <widget class="QPushButton" name="but_loop_single">
+               <property name="minimumSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Repeat</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../images/BTres.qrc">
+                 <normaloff>:/images/RPT_icon.png</normaloff>:/images/RPT_icon.png</iconset>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -683,45 +502,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>68</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
-       <item>
-        <widget class="QRadioButton" name="rad_loopSong">
-         <property name="text">
-          <string>Loop(song)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="rad_loop">
-         <property name="text">
-          <string>Loop(all)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="rad_shuffle">
-         <property name="text">
-          <string>Shuffle</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
+         <width>208</width>
          <height>20</height>
         </size>
        </property>
@@ -796,6 +577,116 @@
      </item>
     </layout>
    </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>189</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QComboBox" name="MODE_combo">
+       <property name="minimumSize">
+        <size>
+         <width>121</width>
+         <height>29</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>121</width>
+         <height>29</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>Mode:</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Artists</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Albums</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Songs</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Videos</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="but_remote_tog">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>29</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>29</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Remote</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>520</width>
+      <height>273</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QListView" name="MenuList">
+       <property name="minimumSize">
+        <size>
+         <width>256</width>
+         <height>271</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="TitleList">
+       <property name="minimumSize">
+        <size>
+         <width>256</width>
+         <height>271</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -811,7 +702,9 @@
      <string>File</string>
     </property>
     <addaction name="actionPreferences_2"/>
-    <addaction name="actionSync"/>
+    <addaction name="actionImport_Audio"/>
+    <addaction name="actionImport_Video"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -820,7 +713,24 @@
     <addaction name="actionAbout"/>
     <addaction name="actionDonate_2"/>
    </widget>
+   <widget class="QMenu" name="menuMediatomb">
+    <property name="title">
+     <string>Mediatomb</string>
+    </property>
+    <addaction name="actionSync_2"/>
+    <addaction name="actionAdmin"/>
+   </widget>
+   <widget class="QMenu" name="menuPlaylist">
+    <property name="title">
+     <string>Playlist</string>
+    </property>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_2"/>
+    <addaction name="actionOpen"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuMediatomb"/>
+   <addaction name="menuPlaylist"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -875,6 +785,46 @@
   <action name="actionDonate_2">
    <property name="text">
     <string>Donate</string>
+   </property>
+  </action>
+  <action name="actionAdmin">
+   <property name="text">
+    <string>Admin</string>
+   </property>
+  </action>
+  <action name="actionSync_2">
+   <property name="text">
+    <string>Sync</string>
+   </property>
+  </action>
+  <action name="actionImport_Audio">
+   <property name="text">
+    <string>Import Audio</string>
+   </property>
+  </action>
+  <action name="actionImport_Video">
+   <property name="text">
+    <string>Import Video</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionSave_2">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
    </property>
   </action>
  </widget>

@@ -22,9 +22,7 @@ SOURCES += src/main.cpp\
     src/mysqlconn.cpp \
     src/mplaycon.cpp \
     src/about.cpp \
-    src/newplaylist.cpp \
     src/playlistobj.cpp \
-    src/openplaylist.cpp \
     src/radioObj.cpp \
     src/fileobj.cpp \
     src/localsync.cpp
@@ -39,7 +37,6 @@ HEADERS  += src/beaglemain.h \
     src/mysqlconn.h \
     src/mplaycon.h \
     src/about.h \
-    src/newplaylist.h \
     src/playlistobj.h \
     src/sync.h \
     src/readDB.h \
@@ -48,12 +45,10 @@ HEADERS  += src/beaglemain.h \
     src/preferences.h \
     src/prefdialog.h \
     src/playlistobj.h \
-    src/newplaylist.h \
     src/mysqlconn.h \
     src/mplaycon.h \
     src/beaglemain.h \
     src/about.h \
-    src/openplaylist.h \
     src/radioObj.h \
     src/fileobj.h \
     src/localsync.h
@@ -61,9 +56,7 @@ HEADERS  += src/beaglemain.h \
 FORMS    += \
     src/prefdialog.ui \
     src/about.ui \
-    src/newplaylist.ui \
-    src/beaglemain.ui \
-    src/openplaylist.ui
+    src/beaglemain.ui
 
 RESOURCES += \
     images/BTres.qrc
