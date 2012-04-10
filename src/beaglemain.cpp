@@ -235,7 +235,6 @@ void BeagleMain::on_MenuList_clicked(QModelIndex index)
         else{
             updateTitle(selected);
         }
-
     }
     else if(MenuMode == 4){
         if(CON_MODE == 1){ //  REMOTE MODE
@@ -379,7 +378,7 @@ void BeagleMain::updateTitle(int selected){
                 }
             }
         }
-        else if(MenuMode == 2){
+        else if(MenuMode == 2){ // specific album mode
             albCount = 0;
             int selID = 0;
             QStringList curAlb;
@@ -397,6 +396,7 @@ void BeagleMain::updateTitle(int selected){
 
             m_Model->setStringList(curAlb);
             ui->MenuList->setModel(m_Model);
+            MenuMode = 3;
         }
         else if(MenuMode == 4){    ///  VIDEO DIR MODE
             selID = VidDir.getID(selected);
