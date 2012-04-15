@@ -151,7 +151,7 @@ public:
         else{
             if(VidDirCount == 0){
                 lclDirPar[count] = 0;      /// parent to root
-                lclDirID[count] = VidDirCount+VidFolderCount+1;
+                lclDirID[count] = VidDirCount+VidFolderCount+5;
 
                 parentID = VidDirCount+VidFolderCount+1;
                 VidDirCount++;
