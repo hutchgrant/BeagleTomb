@@ -25,7 +25,8 @@ SOURCES += src/main.cpp\
     src/playlistobj.cpp \
     src/radioObj.cpp \
     src/fileobj.cpp \
-    src/localsync.cpp
+    src/localsync.cpp \
+    src/newplaylist.cpp
 
 HEADERS  += src/beaglemain.h \
     src/sync.h \
@@ -51,12 +52,14 @@ HEADERS  += src/beaglemain.h \
     src/about.h \
     src/radioObj.h \
     src/fileobj.h \
-    src/localsync.h
+    src/localsync.h \
+    src/newplaylist.h
 
 FORMS    += \
     src/prefdialog.ui \
     src/about.ui \
-    src/beaglemain.ui
+    src/beaglemain.ui \
+    src/newplaylist.ui
 
 RESOURCES += \
     images/BTres.qrc

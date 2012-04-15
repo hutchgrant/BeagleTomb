@@ -17,7 +17,7 @@ public:
     QString plName;
 
     explicit newplaylist(QWidget *parent = 0);
-    ~newplaylist();
+    virtual ~newplaylist();
 
 
     QString getName(){
