@@ -64,7 +64,6 @@ class localsync
     int AudioCount;      // counter for overall audio file imports i.e. last file ID
     int VideoCount;      // counter for overall video file imports i.e. last file ID
 
-    QSqlDatabase db;
     string home, db_local;
 
 public:
@@ -77,11 +76,11 @@ public:
     void scanFiles(int scanType);
     void scanDir(QString dir, int scanType);
 
-    void getLastIDs(int type);
+    void getLastIDs();
     void Sync(QDir usrDir, int syncType);
     void Remove();
 
-    void openLocalDB();
+    QSqlDatabase openLocalDB();
     void openLocalDB2();
 
     void createLocalDB();
@@ -130,6 +129,7 @@ public:
     void addFolder(int count, string dir, string name, int type){
         lclDir[count] = dir;       /// full path
         lclDirName[count] = name;  /// folder name
+        getLastIDs();
         if(type == 0){
             if(AudDirCount == 0){          /// initial import folder
                 lclDirPar[count] = 0;      /// parent to root

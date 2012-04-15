@@ -48,7 +48,7 @@ QSqlDatabase syncMe::OpenDB(){
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(pref.getQSQL());
     if(!db.open()){
-        cout << "unable to connect with " << pref.getServ() << endl;
+        cout << "unable to connect with " << pref.getSQL() << endl;
     }
     return db;
 }
@@ -183,13 +183,7 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
                 }
                 str2 = os.str();
              //   cout << str2 << endl;
-                QSqlDatabase db = OpenDB();
-
-                if(db.open()){
-                    QSqlQuery myQry(db);
-                    myQry.prepare(str2.c_str());
-                    myQry.exec();
-                }
+                writeMe(str2);
 
                 closeDB();
                 posMax += counter;
@@ -208,7 +202,7 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
 void syncMe::writeMe(string qry){
     QSqlDatabase db = OpenDB();
     if(db.open()){
-        QSqlQuery dbqry(db);
+        QSqlQuery dbqry;
         dbqry.prepare(qry.c_str());
         dbqry.exec();
     }

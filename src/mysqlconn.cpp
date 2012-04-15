@@ -65,7 +65,7 @@ fileObj& mysqlconn::connectAlbum(fileObj& Artist, fileObj& Album){
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d", curID );
 
         if(db.open()){
-            QSqlQuery query(db);
+            QSqlQuery query;
             query = QString(myQry);
             while(query.next()){
                 QString QVal = query.value(0).toString();
@@ -159,7 +159,7 @@ fileObj& mysqlconn::connectArtist(int artMenu, fileObj& Artist){
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d", artMenu );
         QSqlDatabase db = connectMySQL();
         if(db.open()){
-            QSqlQuery query(db);
+            QSqlQuery query;
             query = QString(myQry);
 
             while(query.next()){
@@ -203,7 +203,7 @@ fileObj& mysqlconn::connectVideo(fileObj& VidDir, fileObj& Video){
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d", curID );
 
         if(db.open()){
-            QSqlQuery query(db);
+            QSqlQuery query;
             query = QString(myQry);
 
             while(query.next()){
@@ -250,7 +250,7 @@ fileObj& mysqlconn::connectVidDir(int vidMenu, fileObj& VidDir){
 
         QSqlDatabase db = connectMySQL();
         if(db.open()){
-            QSqlQuery query(db);
+            QSqlQuery query;
             query = QString(myQry);
 
             while(query.next()){

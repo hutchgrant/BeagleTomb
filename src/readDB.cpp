@@ -45,7 +45,7 @@ fileObj& readDB::RemoteFill(fileObj &src, int type){
     QSqlDatabase db2 = OpenDB();
     int count = 0;
     if(db2.open()){
-        QSqlQuery query(db2);
+        QSqlQuery query;
 
         //// sync Remote
         if(type == 1){
@@ -83,9 +83,10 @@ fileObj& readDB::RemoteFill(fileObj &src, int type){
 
 fileObj& readDB::LocalFill(fileObj &src, int type){
     QSqlDatabase db = OpenDB();
+    src.setSize(0);
     int count = 0;
     if(db.open()){
-        QSqlQuery query(db2);
+        QSqlQuery query;
 
         /// sync Local
         if(type == 1){
