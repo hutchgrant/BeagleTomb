@@ -52,7 +52,7 @@ public:
     string playlistName;    /// name of the current playlist
     int pl_mode;            /// boolean for browsing playlist names or items
     string db_location;     /// database location
-    QSqlDatabase db;
+    int playlistCount;     ///   number of total playlists available
 
     playlistobj();
     void initPlaylist();
@@ -61,13 +61,12 @@ public:
     void AddNew(string name);
     void Move(int selected, int direction);
 
-    void openDB();
     void readPlDB(fileObj &src, int type);
     void writeToDB();
     void removeFromDB(int item);
     void RemoveFrom(int selected);
     void writeMe(string sQry);
-    void writeNew();
+    void writeNew(int readmode);
 
     QStringList fillPlaylist(fileObj &src);
     virtual ~playlistobj();
@@ -81,9 +80,19 @@ public:
     void setLocation(string locate){
         db_location = locate;
     }
+    void setFolderCount(int count){
+        playlistCount = count;
+    }
+    int getFolderCount(){
+        return playlistCount;
+    }
+
     void setPlObj(fileObj &src){
         playlist_obj = src;
         pl_obj_count = src.getSize();
+    }
+    fileObj& getPlObj(){
+        return playlist_obj;
     }
 };
 

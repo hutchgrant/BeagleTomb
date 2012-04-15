@@ -24,30 +24,25 @@ playlistobj::playlistobj()
     initPlaylist();
     pl_mode = 0;
     db_location = "-";
-    openDB();
+    playlistCount = 0;
 }
 
 playlistobj::~playlistobj(){
 }
 
 /*
-  * Connect to sqlite database
-  */
-void playlistobj::openDB(){
-    db = QSqlDatabase::addDatabase("QSQLITE", "connection");
-    db.setDatabaseName(db_location.c_str());
-}
-
-/*
   * write sqlite anything
   */
 void playlistobj::writeMe(string sQry){
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(db_location.c_str());
     if(db.open()){
         QSqlQuery finQry(db);
         finQry.prepare(sQry.c_str());
         finQry.exec();
         db.close();
     }
+    db.removeDatabase(db_location.c_str());
 }
 /*
   * Initialize and allocate playlist
@@ -55,6 +50,7 @@ void playlistobj::writeMe(string sQry){
 void playlistobj::initPlaylist(){
     playlist_obj.initFile(100);
     pl_obj_count = 0;
+    playlistCount = 0;
     playlistName = "newplaylist";
 }
 
@@ -77,27 +73,41 @@ QStringList playlistobj::fillPlaylist(fileObj &src){
 void playlistobj::AddNew(string name){
     initPlaylist();
     string newQry[2];
-    newQry[0] = "create table if none exists playlists (key INTEGER PRIMARY KEY,lcl_dir_name TEXT,lcl_dir_path TEXT,lcl_dir_id integer,lcl_dir_par integer,lcl_dir_type TEXT)";
-    newQry[1] = "create table if none exists playlist_items (key INTEGER PRIMARY KEY,lcl_dir_name TEXT,lcl_dir_path TEXT,lcl_dir_id integer,lcl_dir_par integer,lcl_dir_type TEXT)";
+    newQry[0] = "create table playlists (key INTEGER PRIMARY KEY,lcl_dir_name TEXT,lcl_dir_path TEXT,lcl_dir_id integer,lcl_dir_par integer,lcl_dir_type TEXT)";
+    newQry[1] = "create table playlist_items (key INTEGER PRIMARY KEY,lcl_dir_name TEXT,lcl_dir_path TEXT,lcl_dir_id integer,lcl_dir_par integer,lcl_dir_type TEXT)";
     for(int i =0; i<2; i++){
         writeMe(newQry[i]);
     }
+    playlistCount++;
     playlistName = name;
 }
 
 /*
   * Fill new playlist
   */
-void playlistobj::writeNew(){
+void playlistobj::writeNew(int writemode){
+
     char *qryState;
-    for(int i =0; i< pl_obj_count; i++){
-     qryState = new char[strlen(playlist_obj.getName(i))];
-     sprintf(qryState, "INSERT INTO playlists (lcl_dir_name, lcl_dir_path, lcl_dir_id, lcl_dir_par) VALUES ('%s', '%s', '%d', '%d')",
-     playlist_obj.getName(i), playlist_obj.getPath(i), playlist_obj.getID(i), playlist_obj.getPar(i));
+     if(writemode == 1){
+
+         for(int i =0; i< playlistCount; i++){
+            qryState = new char[strlen(playlistName.c_str())+250];
+            sprintf(qryState, "INSERT INTO playlists (lcl_dir_name, lcl_dir_path, lcl_dir_id, lcl_dir_par, lcl_dir_type) VALUES ('%s', '%s', '%d', '%d', '%s')",
+            playlistName.c_str(), "-", playlistCount, 0, 0, "playlist");
+         }
+     }
+     else if(writemode == 2){
+
+         for(int i =0; i< pl_obj_count; i++){
+            qryState = new char[strlen(playlist_obj.getName(i))+strlen(playlist_obj.getPath(i))+250];
+            sprintf(qryState, "INSERT INTO playlist_items (lcl_dir_name, lcl_dir_path, lcl_dir_id, lcl_dir_par, lcl_dir_type) VALUES ('%s', '%s', '%d', '%d', '%s')",
+            playlist_obj.getName(i), playlist_obj.getPath(i), playlist_obj.getID(i), playlistCount, "song");
+         }
+     }
+
      writeMe(string(qryState));
      delete [] qryState;
     }
-}
 
 /*
   * Add to existing playlist
@@ -159,18 +169,6 @@ void playlistobj::RemoveFrom(int selected){
     } */
 }
 
-/*
-  * Create new playlist entry in database
-  */
-
-void playlistobj::writeToDB(){
-/*
-    if(db.open()){
-        QSqlQuery writeDB;
-
-        while()
-    }  */
-}
 
 /*
   * remove playlist entry from database

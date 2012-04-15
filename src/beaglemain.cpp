@@ -64,10 +64,9 @@ void BeagleMain::Sync(int type){
                 pref.setInitDB();
             }
         }
-        else{
             fillRemoteFiles();
             fillLocalFiles(0);
-        }
+
         /// init playlist
         plMode= 0; // set playlist mode to browse
         pl.setLocation(pref.getSQL());
@@ -76,7 +75,7 @@ void BeagleMain::Sync(int type){
     else if(type == 1){
         cout << "syncing.... " << pref.getServ() << "\t" << pref.getPort()<<  endl;
         /// read from remote mysql write to local sqlite
-        syncMe sy(pref.getServ().c_str(), pref.getUser().c_str(), pref.getPass().c_str(), pref.getTable().c_str(), pref.getSQL().c_str());
+        syncMe sy(pref);
         fillRemoteFiles();
          cout << "Database synced!" << endl;
     }
@@ -101,25 +100,11 @@ void BeagleMain::fillRemoteFiles(){
   * Mode: 0 ALL 1 song Dirs, 2 songs, 3 vid dirs, 4, videos
   */
 void BeagleMain::fillLocalFiles(int mode){
-    if(mode == 0){
         DirecLocal = rDB.LocalFill(DirecLocal, 1);
         SongLocal = rDB.LocalFill(SongLocal, 2);
         vidDirecLocal = rDB.LocalFill(vidDirecLocal, 3);
         VideoLocal = rDB.LocalFill(VideoLocal, 4);
     }
-    else if(mode == 1){
-         DirecLocal = rDB.LocalFill(DirecLocal, 1);
-    }
-    else if(mode == 2){
-        SongLocal = rDB.LocalFill(SongLocal, 2);
-    }
-    else if(mode == 3){
-        vidDirecLocal = rDB.LocalFill(vidDirecLocal, 3);
-    }
-    else if(mode == 4){
-        VideoLocal = rDB.LocalFill(VideoLocal, 4);
-    }
-}
 
 
 /*
@@ -261,7 +246,7 @@ void BeagleMain::on_PlayList_doubleClicked(QModelIndex index)
 
     if(plMode == 1){   // folder mode
         pl.setMode(1);
-        RefillMainPL(0);
+        RefillMainPL(1);
         plMode = 2;
     }
     else{   // item mode
@@ -456,7 +441,12 @@ void BeagleMain::updateTitle(int selected){
     */
 void BeagleMain::RefillMainPL(int type){
     QStringList updatedList;
-    playlist = rDB.PlaylistFill(playlist, type);
+    if( type != 3){  // we're checking the db first
+        playlist = rDB.PlaylistFill(playlist, type);
+    }
+    else{
+        playlist = pl.getPlObj();
+    }
     t_Model = new QStringListModel(this);
     updatedList = pl.fillPlaylist(playlist);
     t_Model->setStringList(updatedList);
@@ -586,8 +576,8 @@ void BeagleMain::on_ADD_but_clicked()
 {
     int selID = 0, iPar = 0;
     int selected = 0;
-    char * strBuffer, *strPathBuffer;
-    strBuffer= new char[100];
+    char *finName, *finPath;
+    string strBuffer, strPathBuffer;
     selected = ui->TitleList->currentIndex().row();
 
     if(MenuMode == 1 || MenuMode == 2 || MenuMode == 3){
@@ -595,12 +585,19 @@ void BeagleMain::on_ADD_but_clicked()
         if(CON_MODE == 1){
             strBuffer=checkSongObjByID(selID, Song);
             iPar = checkSongObjParByID(selID, Song);
-
+            finName = new char[strlen(strBuffer.c_str())+1];
+            strcpy(finName, strBuffer.c_str());
+            finPath = new char[10];
+            finPath = "-";
         }
         else{
             strBuffer=checkSongObjByID(selID, SongLocal);
+            strPathBuffer=checkSongObjPathByID(selID,SongLocal);
             iPar = checkSongObjParByID(selID, SongLocal);
-
+            finName = new char[strlen(strBuffer.c_str())+1];
+            strcpy(finName, strBuffer.c_str());
+            finPath = new char[strlen(strPathBuffer.c_str())+1];
+            strcpy(finPath, strPathBuffer.c_str());
         }
     }
     else if(MenuMode == 3 || MenuMode == 4){
@@ -609,14 +606,20 @@ void BeagleMain::on_ADD_but_clicked()
         if(CON_MODE == 1){
             strBuffer=checkSongObjByID(selID, Video);
             strPathBuffer=checkSongObjPathByID(selID,Video);
-
             iPar = checkSongObjParByID(selID,Video);
-
+            finName = new char[strlen(strBuffer.c_str())+1];
+            strcpy(finName, strBuffer.c_str());
+            finPath = new char[10];
+            finPath = "-";
         }
         else{
             strBuffer=checkSongObjByID(selID, VideoLocal);
             strPathBuffer=checkSongObjPathByID(selID,VideoLocal);
             iPar = checkSongObjParByID(selID,VideoLocal);
+            finName = new char[strlen(strBuffer.c_str())+1];
+            strcpy(finName, strBuffer.c_str());
+            finPath = new char[strlen(strPathBuffer.c_str())+1];
+            strcpy(finPath, strPathBuffer.c_str());
         }
     }
     else{
@@ -624,11 +627,16 @@ void BeagleMain::on_ADD_but_clicked()
         strBuffer=checkSongObjByID(selID, Song);
         strPathBuffer=checkSongObjPathByID(selID,Song);
         iPar = checkSongObjParByID(selID, Song);
+        finName = new char[strlen(strBuffer.c_str())+1];
+        strcpy(finName, strBuffer.c_str());
+        finPath = new char[strlen(strPathBuffer.c_str())+1];
+        strcpy(finPath, strPathBuffer.c_str());
 
     }
     pl.AddTo(selID, iPar, strBuffer, strPathBuffer, playlist);
     pl.setMode(1);
-    RefillMainPL(1);
+    pl.writeNew(2);
+    RefillMainPL(3);
 }
 
 /*
@@ -640,20 +648,6 @@ void BeagleMain::on_REMOVE_but_clicked()
     pl.RemoveFrom(pl_selected);
     RefillMainPL(1);
 }
-
-void BeagleMain::on_SAVE_but_clicked()
-{
-    pl.writeToDB();
-}
-
-void BeagleMain::on_OPEN_but_clicked()
-{
-    plMode = 0;
-    pl.setMode(0);
-    /// list playlists
-    RefillMainPL(0);
-}
-
 
 void BeagleMain::on_UP_but_clicked()
 {
@@ -813,9 +807,10 @@ void BeagleMain::on_actionImport_Audio_triggered()
     QDir usrDir = QString(getenv("HOME"));
     usrDir = QFileDialog::getExistingDirectory(this, tr("Import a directory"), QDir::currentPath());  // get folder import directory
     SyncAudioLocal.Sync(usrDir, 0);
+
+    CON_MODE = 0;
     fillLocalFiles(1);
     fillLocalFiles(2);
-    CON_MODE = 0;
     ui->but_remote_tog->setChecked(false);
     ui->MODE_combo->setCurrentIndex(1);
     updateMenu(1);
@@ -849,4 +844,28 @@ void BeagleMain::on_actionAdmin_triggered()
 void BeagleMain::on_actionSync_2_triggered()
 {
     Sync(1);
+}
+
+void BeagleMain::on_actionNewPl_triggered()
+{
+    newpl.show();
+    if(newpl.exec()==QDialog::Accepted){
+        cout << "creating new playlist " << newpl.getName().toStdString() << endl;
+        pl.AddNew(newpl.getName().toStdString());
+        pl.writeNew(1);
+    }
+    RefillMainPL(3);
+}
+
+void BeagleMain::on_actionOpenPl_triggered()
+{
+    plMode = 1;
+    pl.setMode(0);
+    RefillMainPL(1);
+
+}
+
+void BeagleMain::on_actionSavePl_triggered()
+{
+   /// pl.writeNew(2, playlist.getSize());
 }

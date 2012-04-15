@@ -31,19 +31,22 @@
 #include <iostream>
 #include <cstring>
 #include <QtSql>
+#
 #include "fileobj.h"
 using namespace std;
 class readDB {
         string DBLOCATE;
 
+
 public:
-     //   QSqlDatabase db2;
+       QSqlDatabase db2;
         readDB();
         fileObj& RemoteFill(fileObj& src, int type);
         fileObj& LocalFill(fileObj& src, int type);
         fileObj& PlaylistFill(fileObj& src, int type);
         fileObj& RadioFill(fileObj& src);
-       void OpenDB();
+       QSqlDatabase OpenDB();
+       void closeDB();
         void display(fileObj&Artist, fileObj& Song,fileObj& Album);
 	virtual ~readDB();
 

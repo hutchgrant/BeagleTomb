@@ -21,17 +21,17 @@
 
 #include "sync.h"
 using namespace std;
-syncMe::syncMe(const char *server, const char *user, const char *pass,
-               const char *table, const char *dbLocation) {
+syncMe::syncMe(preferences &src) {
 
-    if(control(server, user, pass, table, dbLocation)==0){
-        // future error popup
+    if(control(src) == 0){
+
     }
 
 }
 
+
 /// remove All File databases
-void syncMe::deleteDB(const char *location) {
+void syncMe::deleteDB() {
     string finalRMPrefqry[5];
     finalRMPrefqry[0] =  "drop table if exists artists";
     finalRMPrefqry[1] =  "drop table if exists albums";
@@ -44,16 +44,21 @@ void syncMe::deleteDB(const char *location) {
         }
 }
 
-void syncMe::OpenDB(){
-    string home = getenv("HOME");
-    string temp_pref = home + TEMPSYNCPREF;
-    db = QSqlDatabase::addDatabase("QSQLITE", "connectREMfiles");
-    db.setDatabaseName(temp_pref.c_str());
+QSqlDatabase syncMe::OpenDB(){
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(pref.getQSQL());
+    if(!db.open()){
+        cout << "unable to connect with " << pref.getServ() << endl;
+    }
+    return db;
 }
 
-void syncMe::createDB(const char *dbLocation) {
+void syncMe::closeDB(){
+    QSqlDatabase::removeDatabase("QSQLITE");
+}
+
+void syncMe::createDB() {
     string finalQry[5];
-    if(QFile::exists(dbLocation)){
     finalQry[0] = "create table Artists(key INTEGER PRIMARY KEY,Artist TEXT,ArtistID integer, ArtistPar integer) ";
     finalQry[1] = "create table Albums(key INTEGER PRIMARY KEY,Album TEXT,AlbumID integer, AlbumPar integer)";
     finalQry[2] = "create table Songs(key INTEGER PRIMARY KEY,Song TEXT,SongID integer, SongPar integer)";
@@ -62,12 +67,11 @@ void syncMe::createDB(const char *dbLocation) {
     for(int i=0; i<=4; i++){
         writeMe(finalQry[i]);
     }
-    }
 }
 
-int syncMe::control(const char *server, const char *user, const char *pass,
-                    const char *table, const char *dbLocation) {
-    DBLocation = dbLocation;
+int syncMe::control(preferences &src) {
+    DBLocation = src.getQSQL();
+    pref = src;
     int artMenu, vidDirMenu; /// main Artist Menu ID
     int artSize, albSize, songSize, vidSize, vidDirSize; /// sizes of each Object array
 
@@ -76,15 +80,14 @@ int syncMe::control(const char *server, const char *user, const char *pass,
 
     /// init Objects
     fileObj Artist, Album, Song, VidDir, Video;
-    //attempt to delete previous DB
-    deleteDB(dbLocation);
 
-    //create new DB
-    createDB(dbLocation);
+    deleteDB();
+    createDB();
+
+    // connect to new db
 
     /// init mysqlObject
-    mysqlconn ms(server, user, pass, table);
-
+    mysqlconn ms(src);
     // get main artist menu
     artMenu = ms.connectArtMenu();
     vidDirMenu = ms.connectVidMenu();
@@ -106,6 +109,8 @@ int syncMe::control(const char *server, const char *user, const char *pass,
         return 1;
     }
 }
+
+
 /*
   * Write All Remote Medaitomb objects
   */
@@ -117,7 +122,6 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
     string str2;
     string insertStr, col1, col2, col3;
     fileObj src;
-
     while(TotalWrites<=5){
         TotalWrites++;
         if(TotalWrites == 1){
@@ -178,7 +182,16 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
                     }
                 }
                 str2 = os.str();
-                writeMe(str2);
+             //   cout << str2 << endl;
+                QSqlDatabase db = OpenDB();
+
+                if(db.open()){
+                    QSqlQuery myQry(db);
+                    myQry.prepare(str2.c_str());
+                    myQry.exec();
+                }
+
+                closeDB();
                 posMax += counter;
                 pos += counter;
 
@@ -193,17 +206,15 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
 }
 
 void syncMe::writeMe(string qry){
-    string home = getenv("HOME");
-    string temp_pref = home + TEMPSYNCPREF;
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "connectREMfiles");
-    db.setDatabaseName(temp_pref.c_str());
+    QSqlDatabase db = OpenDB();
     if(db.open()){
-        QSqlQuery myQry(db);
-        myQry.prepare(qry.c_str());
-        myQry.exec();
-        db.close();
+        QSqlQuery dbqry(db);
+        dbqry.prepare(qry.c_str());
+        dbqry.exec();
     }
-    QSqlDatabase::removeDatabase("connectREMfiles");
+    closeDB();
+
+
 
 }
 
@@ -226,6 +237,5 @@ int syncMe::getMaxPos(int count) {
 }
 
 syncMe::~syncMe() {
-    // db.close();
-    QSqlDatabase::removeDatabase("connectREMfiles");
+    closeDB();
 }

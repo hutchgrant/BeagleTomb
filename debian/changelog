@@ -1,3 +1,9 @@
+beagletomb (0.1.7-0ubuntu5) natty; urgency=low
+
+  * Updated: Refined source code layout and simplified database connections
+
+ -- skynet <skynet@skynet-desktop>  Sat, 14 Apr 2012 20:25:53 -0400
+
 beagletomb (0.1.7-0ubuntu4) natty; urgency=low
 
   * Updated: entire ui has been fixed to accomodate resizing in different resolutions

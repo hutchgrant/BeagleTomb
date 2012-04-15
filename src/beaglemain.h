@@ -35,6 +35,7 @@
 #include "playlistobj.h"
 #include "radioObj.h"
 #include "localsync.h"
+#include "newplaylist.h"
 namespace Ui {
 class BeagleMain;
 }
@@ -53,6 +54,7 @@ public:
      int title_selected;  /// global title selection
     int CON_MODE;
 
+    newplaylist newpl;
     readDB rDB;
     About ab;
     PrefDialog prefDg;
@@ -129,10 +131,6 @@ private slots:
 
     void on_REMOVE_but_clicked();
 
-    void on_SAVE_but_clicked();
-
-    void on_OPEN_but_clicked();
-
     void on_FFWD_but_clicked();
 
     void on_RRWD_but_clicked();
@@ -162,6 +160,12 @@ private slots:
     void on_actionAdmin_triggered();
 
     void on_actionSync_2_triggered();
+
+    void on_actionNewPl_triggered();
+
+    void on_actionOpenPl_triggered();
+
+    void on_actionSavePl_triggered();
 
 private:
     Ui::BeagleMain *ui;

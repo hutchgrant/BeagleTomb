@@ -111,16 +111,15 @@ void preferences::createPrefDB() {
 
 
 void preferences::OpenDB(){
-    db2 = QSqlDatabase::addDatabase("QSQLITE", "connectPref");
-    db2.setDatabaseName(DBlocation.c_str());
+
 }
 
 /// read preference table from sql
 void preferences::readDB(){
-    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
-    db2.setDatabaseName(DBlocation.c_str());
-    int count = 0;
+
     if(QFile::exists(DBlocation.c_str())){
+        QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+        db2.setDatabaseName(DBlocation.c_str());
         if(db2.open()){
             QSqlQuery query(db2);
 
@@ -144,9 +143,11 @@ void preferences::readDB(){
                 setSQL(QVal6.toStdString());
                 setPlaylistDir(QVal7.toStdString());
             }
-            db2.close();
         }
+
+        db2.removeDatabase("QSQLITE");
     }
+
 }
 
 /// write to preference table sql
@@ -163,7 +164,7 @@ void preferences::writeDB(){
 
 //// write to output file temp qry
 void preferences::writeMe(string qry){
-    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE", "prefDBread");
+    db2 = QSqlDatabase::addDatabase("QSQLITE");
     db2.setDatabaseName(DBlocation.c_str());
     if(db2.open()){
         QSqlQuery myQry(db2);
@@ -171,6 +172,7 @@ void preferences::writeMe(string qry){
         myQry.exec();
         db2.close();
     }
+    db2.removeDatabase(DBlocation.c_str());
 }
 
 void preferences::createCache(){
@@ -201,5 +203,5 @@ preferences& preferences::operator=(const preferences& src){
 }
 
 preferences::~preferences(){
-QSqlDatabase::removeDatabase("prefDBread");
+
 }

@@ -292,12 +292,7 @@
              </layout>
             </item>
            </layout>
-           <zorder>PlayList</zorder>
-           <zorder>layoutWidget</zorder>
-           <zorder>verticalSpacer</zorder>
-           <zorder>widget</zorder>
            <zorder></zorder>
-           <zorder>layoutWidget</zorder>
           </widget>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -752,9 +747,9 @@
     <property name="title">
      <string>Playlist</string>
     </property>
-    <addaction name="actionSave"/>
-    <addaction name="actionSave_2"/>
-    <addaction name="actionOpen"/>
+    <addaction name="actionNewPl"/>
+    <addaction name="actionSavePl"/>
+    <addaction name="actionOpenPl"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuMediatomb"/>
@@ -840,17 +835,17 @@
     <string>Quit</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="actionNewPl">
    <property name="text">
     <string>New</string>
    </property>
   </action>
-  <action name="actionSave_2">
+  <action name="actionSavePl">
    <property name="text">
     <string>Save</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="actionOpenPl">
    <property name="text">
     <string>Open</string>
    </property>
@@ -868,12 +863,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>365</x>
-     <y>355</y>
+     <x>309</x>
+     <y>570</y>
     </hint>
     <hint type="destinationlabel">
-     <x>423</x>
-     <y>316</y>
+     <x>310</x>
+     <y>544</y>
     </hint>
    </hints>
   </connection>
@@ -884,12 +879,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>567</x>
-     <y>350</y>
+     <x>662</x>
+     <y>586</y>
     </hint>
     <hint type="destinationlabel">
-     <x>676</x>
-     <y>353</y>
+     <x>760</x>
+     <y>603</y>
     </hint>
    </hints>
   </connection>

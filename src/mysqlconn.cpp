@@ -22,14 +22,28 @@
 #include "mysqlconn.h"
 using namespace std;
 
-mysqlconn::mysqlconn(const char *server, const char* user, const char *pass, const char *table) {
+mysqlconn::mysqlconn(preferences &src) {
 
-    // connect to the database with the details attached.
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName(server);
-    db.setDatabaseName(table);
-    db.setUserName(user);
-    db.setPassword(pass);
+   pref = src;
+}
+
+QSqlDatabase mysqlconn::connectMySQL(){
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(pref.getQServer());
+    db.setDatabaseName(pref.getQTable());
+    db.setUserName(pref.getQUser());
+    db.setPassword(pref.getQPass());
+    if(!db.open()){
+        cout << "unable to connect with " << pref.getServ() << endl;
+    }
+    return db;
+}
+
+void mysqlconn::OpenDB(){
+}
+
+void mysqlconn::closeDB(){
+    QSqlDatabase::removeDatabase("QMYSQL");
 }
 
 fileObj& mysqlconn::connectAlbum(fileObj& Artist, fileObj& Album){
@@ -39,7 +53,7 @@ fileObj& mysqlconn::connectAlbum(fileObj& Artist, fileObj& Album){
     char *myQry = NULL;     /// string for final query
     int albCount = 0;      /// counter for number of album items
     int qryCount = 0;      /// counter for number of queries
-
+    QSqlDatabase db = connectMySQL();
     while(!Exit){
         if(!myQry){
             myQry = new char[MAXQRY];
@@ -73,7 +87,6 @@ fileObj& mysqlconn::connectAlbum(fileObj& Artist, fileObj& Album){
             if (qryCount == Artist.getSize()-1) {
                 Exit = true;
             }
-            db.close();
         }
         else{
             cout << "error couldn't connect to mysql" << endl;
@@ -91,6 +104,7 @@ fileObj& mysqlconn::connectSong(fileObj& Album, fileObj& Song){
     char *myQry = NULL;     /// string for final query
     int songCount = 0;      /// counter for number of album items
     int qryCount = 0;      /// count for number of queries
+    QSqlDatabase db = connectMySQL();
 
     while(!Exit){
         if(!myQry){
@@ -101,7 +115,6 @@ fileObj& mysqlconn::connectSong(fileObj& Album, fileObj& Song){
             Exit = 1;
         }
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d", curID );
-
         if(db.open()){
             QSqlQuery query(db);
             query = QString(myQry);
@@ -124,7 +137,6 @@ fileObj& mysqlconn::connectSong(fileObj& Album, fileObj& Song){
             if (qryCount == Album.getSize()-1) {
                 Exit = true;
             }
-            db.close();
         }
         else{
             cout << "error couldn't connect to mysql" << endl;
@@ -145,7 +157,7 @@ fileObj& mysqlconn::connectArtist(int artMenu, fileObj& Artist){
         }
 
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d", artMenu );
-
+        QSqlDatabase db = connectMySQL();
         if(db.open()){
             QSqlQuery query(db);
             query = QString(myQry);
@@ -164,7 +176,6 @@ fileObj& mysqlconn::connectArtist(int artMenu, fileObj& Artist){
                 }
 
             }
-           db.close();
         }
         else{
             cout << "error couldn't connect to mysql" << endl;
@@ -179,7 +190,7 @@ fileObj& mysqlconn::connectVideo(fileObj& VidDir, fileObj& Video){
     char *myQry = NULL;     /// string for final query
     int VidCount = 0;      /// counter for number of video items
     int qryCount = 0;      /// count for number of queries
-
+     QSqlDatabase db = connectMySQL();
     while(!Exit){
 
         if(!myQry){
@@ -215,7 +226,6 @@ fileObj& mysqlconn::connectVideo(fileObj& VidDir, fileObj& Video){
             if (qryCount == VidDir.getSize()-1) {
                 Exit = true;
             }
-            db.close();
         }
         else{
             cout << "error couldn't connect to mysql" << endl;
@@ -238,6 +248,7 @@ fileObj& mysqlconn::connectVidDir(int vidMenu, fileObj& VidDir){
 
         sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d", vidMenu );
 
+        QSqlDatabase db = connectMySQL();
         if(db.open()){
             QSqlQuery query(db);
             query = QString(myQry);
@@ -258,7 +269,6 @@ fileObj& mysqlconn::connectVidDir(int vidMenu, fileObj& VidDir){
 
             }
 
-            db.close();
         }
         else{
             cout << "error couldn't connect to mysql" << endl;
@@ -277,6 +287,7 @@ int mysqlconn::connectVidMenu(){
     int rowCount = 0;
     char *myQry = NULL;
 
+    QSqlDatabase db = connectMySQL();
 
     while (Myexit != true) {
 
@@ -295,9 +306,8 @@ int mysqlconn::connectVidMenu(){
             sprintf(myQry, "SELECT * FROM mt_cds_object WHERE parent_id = %d",
                     vidMenuID);
         }
-
         if(db.open()){
-            QSqlQuery query(db);
+            QSqlQuery query;
             query = QString(myQry);
             rowCount = 0;
             while (query.next()){
@@ -323,8 +333,6 @@ int mysqlconn::connectVidMenu(){
             if (QryCount > 2) { // + albCount
                 Myexit = true;
             }
-            db.close();
-
         }
         else{
             cout << "error couldn't connect to vid menu in mysql" << endl;
@@ -342,6 +350,7 @@ int mysqlconn::connectArtMenu() {
 
     char *myQry = NULL;
 
+    QSqlDatabase db = connectMySQL();
     while (Myexit != true) {
 
         if (!myQry) {
@@ -360,7 +369,7 @@ int mysqlconn::connectArtMenu() {
                     audMenuID);
         }
         if(db.open()){
-            QSqlQuery query(db);
+            QSqlQuery query;
             query = QString(myQry);
             while (query.next()){
 
@@ -392,16 +401,16 @@ int mysqlconn::connectArtMenu() {
             if (QryCount > 3) { // + albCount
                 Myexit = true;
             }
-            db.close();
         }
         else{
             cout << "error couldn't connect to mysql" << endl;
             Myexit = true;
         }
     }
+
     return artMenuID;
 }
 
 mysqlconn::~mysqlconn() {
-    QSqlDatabase::removeDatabase("connectSQL");
+    closeDB();
 }

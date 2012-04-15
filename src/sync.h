@@ -39,6 +39,7 @@
 #include "radioObj.h"
 #include "mysqlconn.h"
 #include "fileobj.h"
+#include "preferences.h"
 
 #define TEMPSYNCPREF "/.beagletomb/BTmedia.db"
 
@@ -47,22 +48,23 @@ using namespace std;
 class syncMe {
 
 public:
-        string DBLocation;
-        QSqlDatabase db;
-
-        syncMe(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
+        QString DBLocation;
+   //     QSqlDatabase db;
+        preferences pref;
+        syncMe(preferences &pref);
+        QSqlDatabase OpenDB();
 
         void writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, fileObj &VidDir, fileObj &Video);
 
-        void writeMe(string qry);;
+        void writeMe(string qry);
 
         int getMaxPos(int count);
         void sendToShell();
         void RemoveTMP();
-	void deleteDB(const char *dbLocation);
-	void createDB(const char *dbLocation);
-        void OpenDB();
-        int control(const char *server, const char *user, const char *pass, const char *table, const char *dbLocation);
+        void deleteDB();
+        void createDB();
+        void closeDB();
+        int control(preferences &src);
 
 	virtual ~syncMe();
 };

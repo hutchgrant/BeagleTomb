@@ -23,16 +23,26 @@
 
 readDB::readDB() {
     DBLOCATE = "-";
+
 }
 
-void readDB::OpenDB(){
+QSqlDatabase readDB::OpenDB(){
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(DBLOCATE.c_str());
+    if(!db.open()){
+        cout << "unable to connect with " << DBLOCATE.c_str() << endl;
+    }
+    return db;
+}
 
+void readDB::closeDB(){
+
+    QSqlDatabase::removeDatabase(DBLOCATE.c_str());
 
 }
 
 fileObj& readDB::RemoteFill(fileObj &src, int type){
-    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
-    db2.setDatabaseName(DBLOCATE.c_str());
+    QSqlDatabase db2 = OpenDB();
     int count = 0;
     if(db2.open()){
         QSqlQuery query(db2);
@@ -64,19 +74,17 @@ fileObj& readDB::RemoteFill(fileObj &src, int type){
                 count++;
             }
         }
-        db2.close();
+     //   db2.close();
     }
- //   QSqlDatabase::removeDatabase("connectReadFiles");
-
+  //  closeDB();
     return src;
 
 }
 
 fileObj& readDB::LocalFill(fileObj &src, int type){
-    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
-    db2.setDatabaseName(DBLOCATE.c_str());
+    QSqlDatabase db = OpenDB();
     int count = 0;
-    if(db2.open()){
+    if(db.open()){
         QSqlQuery query(db2);
 
         /// sync Local
@@ -104,15 +112,17 @@ fileObj& readDB::LocalFill(fileObj &src, int type){
                 count++;
             }
         }
-        db2.close();
+   //     db.close();
     }
-    //    QSqlDatabase::removeDatabase("connectReadFiles");
+  //  closeDB();
     return src;
 }
 
 fileObj& readDB::PlaylistFill( fileObj &src, int type){
-    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE", "playlistDBread");
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
     db2.setDatabaseName(DBLOCATE.c_str());
+    src.initFile(100);
+    src.setSize(0);
     int count = 0;
     if(db2.open()){
         QSqlQuery query(db2);
@@ -136,6 +146,7 @@ fileObj& readDB::PlaylistFill( fileObj &src, int type){
         }
         db2.close();
     }
+    db2.removeDatabase(DBLOCATE.c_str());
     return src;
 }
 
@@ -160,6 +171,7 @@ fileObj& readDB:: RadioFill(fileObj &src){
         }
         db2.close();
     }
+    db2.removeDatabase(DBLOCATE.c_str());
     return src;
 }
 
