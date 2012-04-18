@@ -39,7 +39,6 @@ class readDB {
 
 
 public:
-       QSqlDatabase db2;
         readDB();
         fileObj& RemoteFill(fileObj& src, int type);
         fileObj& LocalFill(fileObj& src, int type);

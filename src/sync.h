@@ -49,8 +49,9 @@ class syncMe {
 
 public:
         QString DBLocation;
-   //     QSqlDatabase db;
+        QSqlDatabase db;
         preferences pref;
+
         syncMe(preferences &pref);
         QSqlDatabase OpenDB();
 
@@ -64,7 +65,7 @@ public:
         void deleteDB();
         void createDB();
         void closeDB();
-        int control(preferences &src);
+        int control();
 
 	virtual ~syncMe();
 };

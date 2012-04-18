@@ -55,17 +55,6 @@ void playlistobj::initPlaylist(){
 }
 
 
-/*
-  * refill playlist list with playlist object
-  */
-QStringList playlistobj::fillPlaylist(fileObj &src){
-    QStringList curSong;
-        for(int i = 0; i< src.getSize(); i++){
-            curSong << src.getName(i);
-        }
-    return curSong;
-}
-
 
 /*
   * create new playlist

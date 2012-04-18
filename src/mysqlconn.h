@@ -42,12 +42,7 @@ public:
         QSqlDatabase connectMySQL();
 
         preferences pref;
-
-        fileObj& connectArtist(int artMenu, fileObj& Artist);
-        fileObj& connectAlbum(fileObj& Artist, fileObj& Album);
-        fileObj& connectSong(fileObj& Album, fileObj& Song);
-        fileObj& connectVidDir(int vidMenu, fileObj& VidDir);
-        fileObj& connectVideo(fileObj& VidDir, fileObj& Video);
+        fileObj& connectTracks(fileObj& folders, fileObj& src, int lookID, int mode);
 
         void OpenDB();
         void closeDB();

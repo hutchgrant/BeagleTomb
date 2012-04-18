@@ -22,11 +22,28 @@
 #include "sync.h"
 using namespace std;
 syncMe::syncMe(preferences &src) {
+    pref = src;
 
-    if(control(src) == 0){
+     db = OpenDB();
+    if(control() == 0){
 
     }
 
+}
+QSqlDatabase syncMe::OpenDB(){
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(pref.getQSQL());
+    if(!db.open()){
+        cout << "unable to connect with " << pref.getServ() << endl;
+    }
+    else{
+        cout << "syncing remote.... to  " << pref.getServ() << endl;
+    }
+    return db;
+}
+
+void syncMe::closeDB(){
+    QSqlDatabase::removeDatabase("QSQLITE");
 }
 
 
@@ -44,19 +61,6 @@ void syncMe::deleteDB() {
         }
 }
 
-QSqlDatabase syncMe::OpenDB(){
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(pref.getQSQL());
-    if(!db.open()){
-        cout << "unable to connect with " << pref.getSQL() << endl;
-    }
-    return db;
-}
-
-void syncMe::closeDB(){
-    QSqlDatabase::removeDatabase("QSQLITE");
-}
-
 void syncMe::createDB() {
     string finalQry[5];
     finalQry[0] = "create table Artists(key INTEGER PRIMARY KEY,Artist TEXT,ArtistID integer, ArtistPar integer) ";
@@ -69,9 +73,8 @@ void syncMe::createDB() {
     }
 }
 
-int syncMe::control(preferences &src) {
-    DBLocation = src.getQSQL();
-    pref = src;
+int syncMe::control() {
+
     int artMenu, vidDirMenu; /// main Artist Menu ID
     int artSize, albSize, songSize, vidSize, vidDirSize; /// sizes of each Object array
 
@@ -87,18 +90,15 @@ int syncMe::control(preferences &src) {
     // connect to new db
 
     /// init mysqlObject
-    mysqlconn ms(src);
+    mysqlconn ms(pref);
     // get main artist menu
     artMenu = ms.connectArtMenu();
     vidDirMenu = ms.connectVidMenu();
-    // query mysql each artist,album,song,vidDir,video - store and return objects
-    Artist = ms.connectArtist(artMenu, Artist);
-    Album = ms.connectAlbum(Artist, Album);
-    //  Album.display();
-    Song = ms.connectSong(Album,Song);
-    VidDir = ms.connectVidDir(vidDirMenu,VidDir);
-    Video = ms.connectVideo(VidDir,Video);
-
+    ms.connectTracks(Artist, Artist, artMenu, 1);
+    ms.connectTracks(Artist, Album, 0, 2);
+    ms.connectTracks(Album,Song, 0, 3);
+    ms.connectTracks(VidDir,VidDir,vidDirMenu, 1);
+    ms.connectTracks(VidDir,Video, 0, 3);
     if(artMenu ==0){
         cout << "empty database or invalid login" << endl;
         return 0;
@@ -116,12 +116,13 @@ int syncMe::control(preferences &src) {
   */
 void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, fileObj &VidDir, fileObj &Video){
     int pos = 0, posMax = 0, countRemind = 0, counter = 0;   /// counter for individual files within each file object
-
     int objSize = 0;   // size of each object
     int TotalWrites = 0;    /// counter for number of objects looped
     string str2;
     string insertStr, col1, col2, col3;
     fileObj src;
+
+    db = OpenDB();
     while(TotalWrites<=5){
         TotalWrites++;
         if(TotalWrites == 1){
@@ -131,13 +132,13 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
             col1 = "Artist"; col2 = "ArtistID"; col3 = "ArtistPar";
         }
         else if(TotalWrites == 2){
-            objSize = Album.getSize();
+            objSize = Album.getSize()-1;
             src = Album;
             insertStr =  " INSERT INTO albums (Album,AlbumID,AlbumPar) ";
             col1 = "Album"; col2 = "AlbumID"; col3 = "AlbumPar";
         }
         else if(TotalWrites == 3){
-            objSize = Song.getSize();
+            objSize = Song.getSize()-1;
             src = Song;
             insertStr =  " INSERT INTO songs (Song,SongID,SongPar) ";
             col1 = "Song"; col2 = "SongID"; col3 = "SongPar";
@@ -149,7 +150,7 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
             col1 = "VidDir"; col2 = "VidDirID"; col3 = "VidDirPar";
         }
         else if(TotalWrites == 5){
-            objSize = Video.getSize();
+            objSize = Video.getSize()-1;
             src = Video;
             insertStr =  " INSERT INTO videos (Video,VideoID,VideoPar) ";
             col1 = "Video"; col2 = "VideoID"; col3 = "VideoPar";
@@ -184,8 +185,6 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
                 str2 = os.str();
              //   cout << str2 << endl;
                 writeMe(str2);
-
-                closeDB();
                 posMax += counter;
                 pos += counter;
 
@@ -200,16 +199,11 @@ void syncMe::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, file
 }
 
 void syncMe::writeMe(string qry){
-    QSqlDatabase db = OpenDB();
-    if(db.open()){
+
         QSqlQuery dbqry;
         dbqry.prepare(qry.c_str());
         dbqry.exec();
-    }
-    closeDB();
-
-
-
+        closeDB();
 }
 
 
@@ -231,5 +225,4 @@ int syncMe::getMaxPos(int count) {
 }
 
 syncMe::~syncMe() {
-    closeDB();
 }

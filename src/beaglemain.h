@@ -47,8 +47,8 @@ class BeagleMain : public QMainWindow
 public:
 
     int MenuMode, TitleMode;
-    int albCount, songCount, vidCount, vidDirCount, radCount; ///  count of each item in the list
-    int *curAlbID, *curSongID, *curVidID, *curVidDirID;       ///  unique identifier for current file
+    int albCount, songCount, vidCount, vidDirCount, radCount, playCount; ///  count of each item in the list
+    int *curAlbID, *curSongID, *curVidID, *curVidDirID, *curPlaylistID;       ///  unique identifier for current file
     int plMode;        /// playlist mode : 1 playlist browsing and 2: browsing tracks within playlist
     int pl_selected;  /// global playlist selection
      int title_selected;  /// global title selection
@@ -63,7 +63,7 @@ public:
     QMPwidget widget;
     mplayCon mplay;
     localsync SyncAudioLocal, SyncVideoLocal;
-    fileObj Artist, Song, Album, VidDir, Video, DirecLocal, SongLocal, vidDirecLocal, VideoLocal, playlist;
+    fileObj Artist, Song, Album, VidDir, Video, DirecLocal, SongLocal, vidDirecLocal, VideoLocal, playlist, playlist_items;
     radioObj Radio;
     int artSize, albSize, songSize, vidSize, vidDirSize, radSize;
 
@@ -83,19 +83,23 @@ public:
     void updateLclVidDirs();
     void updateLclVideos();
     void updateLclVideos(int selected);
+    void updatePlaylist(fileObj &p, fileObj &playlist, int type, int selected);
 
+    void initCache();
     void initCueID(int type, int newsize, int initial);
     void updateTitle(int select);
     void Sync(int type);
+
     void fillRemoteFiles();
     void fillLocalFiles(int mode);
-    bool isRunning();
+    void fillPlaylistItems();
 
     void setMainPref(preferences pref);
-    void RefillMainPL(int type);
+    void RefillMainPL(int type, int selected);
     void startSong(char *FinSong, int selID);
     void startLocal(char *finSong, char *finPath);
     void PlaylistPlay(int selID);
+
     void closeEvent(QCloseEvent *event);
 
 private slots:
@@ -169,9 +173,10 @@ private slots:
 
 private:
     Ui::BeagleMain *ui;
-    QStringListModel *t_Model;
-    QStringListModel *m_Model;
-    QStringListModel *r_Model;
+    QStringListModel *t_Model;   // title
+    QStringListModel *m_Model;   // Menu
+    QStringListModel *p_Model;   // playlist
+    QStringListModel *r_Model;   // radio
 };
 
 #endif // BEAGLEMAIN_H

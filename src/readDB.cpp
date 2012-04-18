@@ -23,16 +23,15 @@
 
 readDB::readDB() {
     DBLOCATE = "-";
-
 }
 
 QSqlDatabase readDB::OpenDB(){
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(DBLOCATE.c_str());
-    if(!db.open()){
+    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+    db2.setDatabaseName(DBLOCATE.c_str());
+    if(!db2.open()){
         cout << "unable to connect with " << DBLOCATE.c_str() << endl;
     }
-    return db;
+    return db2;
 }
 
 void readDB::closeDB(){
@@ -42,9 +41,10 @@ void readDB::closeDB(){
 }
 
 fileObj& readDB::RemoteFill(fileObj &src, int type){
-    QSqlDatabase db2 = OpenDB();
+    src.initFile(100);
+    QSqlDatabase db = OpenDB();
     int count = 0;
-    if(db2.open()){
+    if(db.open()){
         QSqlQuery query;
 
         //// sync Remote
@@ -74,16 +74,15 @@ fileObj& readDB::RemoteFill(fileObj &src, int type){
                 count++;
             }
         }
-     //   db2.close();
     }
-  //  closeDB();
+    closeDB();
     return src;
 
 }
 
 fileObj& readDB::LocalFill(fileObj &src, int type){
+    src.initFile(100);
     QSqlDatabase db = OpenDB();
-    src.setSize(0);
     int count = 0;
     if(db.open()){
         QSqlQuery query;
@@ -113,24 +112,21 @@ fileObj& readDB::LocalFill(fileObj &src, int type){
                 count++;
             }
         }
-   //     db.close();
     }
-  //  closeDB();
+    closeDB();
     return src;
 }
 
 fileObj& readDB::PlaylistFill( fileObj &src, int type){
-    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
-    db2.setDatabaseName(DBLOCATE.c_str());
     src.initFile(100);
-    src.setSize(0);
+    QSqlDatabase db = OpenDB();
     int count = 0;
-    if(db2.open()){
-        QSqlQuery query(db2);
+    if(db.open()){
+        QSqlQuery query;
         if(type == 1){
             query = QString("SELECT * FROM playlists");
         }
-        else if(type == 2){
+        else if(type == 2 || type == 3){
             query = QString("SELECT * FROM playlist_items");
         }
 
@@ -145,18 +141,16 @@ fileObj& readDB::PlaylistFill( fileObj &src, int type){
                 count++;
             }
         }
-        db2.close();
     }
-    db2.removeDatabase(DBLOCATE.c_str());
+ closeDB();
     return src;
 }
 
 fileObj& readDB:: RadioFill(fileObj &src){
-    QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
-    db2.setDatabaseName(DBLOCATE.c_str());
     int count = 0;
-    if(db2.open()){
-        QSqlQuery query(db2);
+    QSqlDatabase db = OpenDB();
+    if(db.open()){
+        QSqlQuery query;
             query = QString("SELECT * FROM radio");
 
         while (query.next()){
@@ -170,12 +164,11 @@ fileObj& readDB:: RadioFill(fileObj &src){
                 count++;
             }
         }
-        db2.close();
     }
-    db2.removeDatabase(DBLOCATE.c_str());
+    closeDB();
     return src;
 }
 
 readDB::~readDB(){
-
+    closeDB();
 }

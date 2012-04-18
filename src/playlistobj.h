@@ -68,7 +68,6 @@ public:
     void writeMe(string sQry);
     void writeNew(int readmode);
 
-    QStringList fillPlaylist(fileObj &src);
     virtual ~playlistobj();
     playlistobj& operator=(const playlistobj& src);
     playlistobj(const playlistobj& src);
