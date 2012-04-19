@@ -50,7 +50,6 @@ void playlistobj::writeMe(string sQry){
 void playlistobj::initPlaylist(){
     playlist_obj.initFile(100);
     pl_obj_count = 0;
-   playlistCount = 0;
     playlistName = "newplaylist";
 }
 
@@ -77,26 +76,26 @@ void playlistobj::AddNew(string name){
 void playlistobj::writeNew(int writemode){
 
     char *qryState;
-     if(writemode == 1){
+    if(writemode == 1){
 
-         for(int i =0; i< playlistCount; i++){
+        for(int i =0; i< playlistCount; i++){
             qryState = new char[strlen(playlistName.c_str())+250];
             sprintf(qryState, "INSERT INTO playlists (lcl_dir_name, lcl_dir_path, lcl_dir_id, lcl_dir_par, lcl_dir_type) VALUES ('%s', '%s', '%d', '%d', '%s')",
-            playlistName.c_str(), "-", playlistCount, 0, 0, "playlist");
-         }
-     }
-     else if(writemode == 2){
+                    playlistName.c_str(), "-", playlistCount, 0, 0, "playlist");
+        }
+    }
+    else if(writemode == 2){
 
-         for(int i =0; i< pl_obj_count; i++){
+        for(int i =0; i< pl_obj_count; i++){
             qryState = new char[strlen(playlist_obj.getName(i))+strlen(playlist_obj.getPath(i))+250];
             sprintf(qryState, "INSERT INTO playlist_items (lcl_dir_name, lcl_dir_path, lcl_dir_id, lcl_dir_par, lcl_dir_type) VALUES ('%s', '%s', '%d', '%d', '%s')",
-            playlist_obj.getName(i), playlist_obj.getPath(i), playlist_obj.getID(i), playlistCount, "song");
-         }
-     }
-
-     writeMe(string(qryState));
-     delete [] qryState;
+                    playlist_obj.getName(i), playlist_obj.getPath(i), playlist_obj.getID(i), playlistCount, "song");
+        }
     }
+
+    writeMe(string(qryState));
+    delete [] qryState;
+}
 
 /*
   * Add to existing playlist
@@ -127,7 +126,7 @@ void playlistobj::Move(int selected, int direction){
         tempPl.set(1, playlist_obj.getID(selected--), playlist_obj.getPar(selected--), playlist_obj.getName(selected--), playlist_obj.getPath(selected--));
 
         playlist_obj.set(selected--, tempPl.getID(0), tempPl.getPar(0), tempPl.getName(0), tempPl.getPath(0));
-         playlist_obj.set(selected++, tempPl.getID(1), tempPl.getPar(1), tempPl.getName(1), tempPl.getPath(1));
+        playlist_obj.set(selected++, tempPl.getID(1), tempPl.getPar(1), tempPl.getName(1), tempPl.getPath(1));
     }
     else if(direction == 1 && selected+1 > 0 && selected+1 < playlist_obj.getSize()){  // move up
         moveTo = playlist_obj.getID(selected++);
@@ -143,7 +142,7 @@ void playlistobj::Move(int selected, int direction){
   */
 void playlistobj::RemoveFrom(int selected){
     int removalID = 0;
-/*
+    /*
     removalID = playlist_obj.getID(selected);
 
     QSqlQuery rem;
@@ -158,6 +157,7 @@ void playlistobj::RemoveFrom(int selected){
 
     } */
 }
+
 
 
 /*

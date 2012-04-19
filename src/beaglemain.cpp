@@ -95,7 +95,7 @@ void BeagleMain::fillLocalFiles(int mode){
 
         rDB.LocalFill(DirecLocal, 1);
         rDB.LocalFill(SongLocal, 2);
-         rDB.LocalFill(vidDirecLocal, 3);
+        rDB.LocalFill(vidDirecLocal, 3);
         rDB.LocalFill(VideoLocal, 4);
     }
 /*
@@ -104,7 +104,9 @@ void BeagleMain::fillLocalFiles(int mode){
 void BeagleMain::fillPlaylistItems(){
 
     rDB.PlaylistFill(playlist, 1);
+    pl.setFolderCount(playlist.getSize());
     rDB.PlaylistFill(playlist_items, 2);
+    pl.setItemCount(playlist_items.getSize());
 }
 
 
@@ -245,7 +247,7 @@ void BeagleMain::on_PlayList_doubleClicked(QModelIndex index)
     int selID = 0;
 
     if(plMode == 1){   // folder mode
-        RefillMainPL(2, selected);
+        RefillMainPL(2);
     }
     else{              // item mode
         selID = curPlaylistID[selected];
@@ -480,7 +482,7 @@ void BeagleMain::updatePlaylist(fileObj &playlist, fileObj &playlist_items, int 
   * refill playlist list with playlist model from playlist object
   *  type: 0 fill with playlists, 1 fill with playlist items
     */
-void BeagleMain::RefillMainPL(int type, int selected){
+void BeagleMain::RefillMainPL(int type){
 
     if( type == 1){  //displaying folders
         plMode = 1;
@@ -492,8 +494,9 @@ void BeagleMain::RefillMainPL(int type, int selected){
     }
     else{     // displaying songs after new or open playlist
         plMode = 3;
-       rDB.PlaylistFill(playlist_items, type);
     }
+    int selected = 0;
+    selected = ui->PlayList->currentIndex().row();
     updatePlaylist(playlist, playlist_items, type, selected);
 
 }
@@ -683,7 +686,7 @@ void BeagleMain::on_ADD_but_clicked()
     }
     pl.AddTo(selID, iPar, strBuffer, strPathBuffer, playlist);
     pl.writeNew(2);
-    RefillMainPL(3, 0);
+    RefillMainPL(3);
 }
 
 /*
@@ -693,21 +696,21 @@ void BeagleMain::on_REMOVE_but_clicked()
 {
     int selected = 0;
     pl.RemoveFrom(pl_selected);
-    RefillMainPL(3, 0);
+    RefillMainPL(3);
 }
 
 void BeagleMain::on_UP_but_clicked()
 {
     pl.Move(2, pl_selected);
     pl_selected--;
-    RefillMainPL(3, 0);
+    RefillMainPL(3);
 }
 
 void BeagleMain::on_DOWN_but_clicked()
 {
     pl.Move(1, pl_selected);
     pl_selected++;
-    RefillMainPL(3, 0);
+    RefillMainPL(3);
 }
 
 void BeagleMain::closeEvent(QCloseEvent *event)
@@ -791,13 +794,13 @@ void BeagleMain::startLocal(char *finSong, char *finPath){
   */
 void BeagleMain::PlaylistPlay(int selID){
     char* FinSong, *FinPath;
-    for(int i = 0; i<= playlist.getSize(); i++){
-        if(playlist.getID(i) == selID){
-            FinSong = new char[strlen(playlist.getName(i))+1];
-            FinPath = new char[strlen(playlist.getPath(i))+1];
-            strcpy(FinSong,playlist.getName(i));
+    for(int i = 0; i<= playlist_items.getSize(); i++){
+        if(playlist_items.getID(i) == selID){
+            FinSong = new char[strlen(playlist_items.getName(i))+1];
+            FinPath = new char[strlen(playlist_items.getPath(i))+1];
+            strcpy(FinSong,playlist_items.getName(i));
             cout << FinSong << endl;
-            strcpy(FinPath,playlist.getPath(i));
+            strcpy(FinPath,playlist_items.getPath(i));
             cout << FinPath << endl;
         }
     }
@@ -934,13 +937,13 @@ void BeagleMain::on_actionNewPl_triggered()
         pl.writeNew(1);
     }
     plMode = 3;
-    RefillMainPL(3, 0);
+    RefillMainPL(3);
 }
 
 void BeagleMain::on_actionOpenPl_triggered()
 {
     plMode = 1;
-    RefillMainPL(1, 0);
+    RefillMainPL(1);
 
 }
 

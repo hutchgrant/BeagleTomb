@@ -82,6 +82,13 @@ public:
     void setFolderCount(int count){
         playlistCount = count;
     }
+    void setItemCount(int count){
+        pl_obj_count = count;
+    }
+    int getItemCount(){
+        return pl_obj_count;
+    }
+
     int getFolderCount(){
         return playlistCount;
     }

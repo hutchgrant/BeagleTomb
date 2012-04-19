@@ -52,7 +52,7 @@ void mysqlconn::closeDB(){
   * connectArtist
   * Mode : 1) Artists 2) Albums 3) songs
   */
-fileObj& mysqlconn::connectTracks(fileObj &folder, fileObj &src, int lookID, int mode){
+void mysqlconn::connectTracks(fileObj &folder, fileObj &src, int lookID, int mode){
     char *myQry = NULL;     /// string for final query
 
     if(mode == 1){  // ARTISTS
@@ -127,7 +127,6 @@ fileObj& mysqlconn::connectTracks(fileObj &folder, fileObj &src, int lookID, int
             }
         }
     }
-        return src;
     }
 
 

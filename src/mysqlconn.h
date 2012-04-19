@@ -42,7 +42,7 @@ public:
         QSqlDatabase connectMySQL();
 
         preferences pref;
-        fileObj& connectTracks(fileObj& folders, fileObj& src, int lookID, int mode);
+        void connectTracks(fileObj& folders, fileObj& src, int lookID, int mode);
 
         void OpenDB();
         void closeDB();

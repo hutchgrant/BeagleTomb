@@ -96,7 +96,7 @@ public:
     void fillPlaylistItems();
 
     void setMainPref(preferences pref);
-    void RefillMainPL(int type, int selected);
+    void RefillMainPL(int type);
     void startSong(char *FinSong, int selID);
     void startLocal(char *finSong, char *finPath);
     void PlaylistPlay(int selID);

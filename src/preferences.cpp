@@ -102,9 +102,9 @@ void preferences::deletePrefDB() {
 /// create Preference database
 void preferences::createPrefDB() {
     string finalQry;
-        finalQry = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
-       writeMe(finalQry);
-       writeDB();
+    finalQry = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
+    writeMe(finalQry);
+    writeDB();
 }
 
 

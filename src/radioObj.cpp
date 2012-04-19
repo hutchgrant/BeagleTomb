@@ -69,8 +69,8 @@ void radioObj::ReInitPL(){
   */
 void radioObj::Remove(string name, int pos){
     char qryState[200];
-        sprintf(qryState, "DELETE from radio WHERE name = '%s'", name.c_str());
-        sendToShell(qryState);
+    sprintf(qryState, "DELETE from radio WHERE name = '%s'", name.c_str());
+    sendToShell(qryState);
 }
 
 
@@ -78,7 +78,7 @@ void radioObj::Add(string name, string url)
 {
     // allocate
     ReInitPL();
-     /// Add to our playlist object
+    /// Add to our playlist object
     setName(name,radioCount);
     setUrl(url,radioCount);
     radioCount++;
@@ -92,30 +92,30 @@ QStringList radioObj::RefillPlaylist(){
     r_ItemCount = 0;
     QStringList RadioItem;
     string str;
-        for(int i = 0; i<= radioCount-1; i++){
-            str = getName(i);
-            if(str.compare("-") != 0)
-                RadioItem << str.c_str();
-                r_ItemCount++;
-        }
+    for(int i = 0; i<= radioCount-1; i++){
+        str = getName(i);
+        if(str.compare("-") != 0)
+            RadioItem << str.c_str();
+        r_ItemCount++;
+    }
     return RadioItem;
 }
 
 void radioObj::writeDB(){
     char qryState[200];
-     int count = radioCount - 1;
-        sprintf(qryState, "INSERT INTO radio (id, name, url) VALUES (null, '%s', '%s')", getName(count).c_str(), getUrl(count).c_str());
-        sendToShell(qryState);
+    int count = radioCount - 1;
+    sprintf(qryState, "INSERT INTO radio (id, name, url) VALUES (null, '%s', '%s')", getName(count).c_str(), getUrl(count).c_str());
+    sendToShell(qryState);
 }
 
 void radioObj::writeDBFill(){
 
     char *qryState;
-     for(int count = 0; count <= radioCount-1; count++){
-         qryState = new char[200];
+    for(int count = 0; count <= radioCount-1; count++){
+        qryState = new char[200];
         sprintf(qryState, "INSERT INTO radio (id, name, url) VALUES (null, '%s', '%s')", getName(count).c_str(), getUrl(count).c_str());
         sendToShell(qryState);
-     }
+    }
 }
 radioObj::radioObj(const radioObj &src){
     if(this != &src){
@@ -151,13 +151,13 @@ void radioObj::sendToShell(string qry){
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "Connection");
     db.setDatabaseName(DBlocation.c_str());
 
-     if(!db.open()){
-         cout << "couldn't connect to database";
-     }
-     else{
-         QSqlQuery myQry(db);
-         myQry.prepare(qry.c_str());
-         myQry.exec();
-         db.close();
-     }
+    if(!db.open()){
+        cout << "couldn't connect to database";
+    }
+    else{
+        QSqlQuery myQry(db);
+        myQry.prepare(qry.c_str());
+        myQry.exec();
+        db.close();
+    }
 }
