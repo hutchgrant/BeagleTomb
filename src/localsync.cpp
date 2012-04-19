@@ -50,7 +50,6 @@ void localsync::initLocalObj(){
 
     initDirs(0,5, 5);
     initFiles(0, 5, 5);
-
 }
 
 /*

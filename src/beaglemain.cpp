@@ -67,11 +67,11 @@ void BeagleMain::fillRemoteFiles(){
     rDB.setDB(pref.getSQL().c_str());
     cout << pref.getSQL() << endl;
     //// read from sql and fill songObjs
-    Artist = rDB.RemoteFill(Artist, 1);
-    Album = rDB.RemoteFill(Album, 2);
-    Song = rDB.RemoteFill(Song, 3);
-    VidDir = rDB.RemoteFill(VidDir, 4);
-    Video = rDB.RemoteFill(Video, 5);
+   rDB.RemoteFill(Artist, 1);
+   rDB.RemoteFill(Album, 2);
+   rDB.RemoteFill(Song, 3);
+   rDB.RemoteFill(VidDir, 4);
+   rDB.RemoteFill(Video, 5);
 }
 
 void BeagleMain::fillDBlocates(){
@@ -93,18 +93,18 @@ void BeagleMain::fillDBlocates(){
 void BeagleMain::fillLocalFiles(int mode){
     /// set the default db location from preference cache
 
-        DirecLocal = rDB.LocalFill(DirecLocal, 1);
-        SongLocal = rDB.LocalFill(SongLocal, 2);
-        vidDirecLocal = rDB.LocalFill(vidDirecLocal, 3);
-        VideoLocal = rDB.LocalFill(VideoLocal, 4);
+        rDB.LocalFill(DirecLocal, 1);
+        rDB.LocalFill(SongLocal, 2);
+         rDB.LocalFill(vidDirecLocal, 3);
+        rDB.LocalFill(VideoLocal, 4);
     }
 /*
   * Fill All Playlists and playlist items
   */
 void BeagleMain::fillPlaylistItems(){
 
-    playlist = rDB.PlaylistFill(playlist, 1);
-    playlist_items = rDB.PlaylistFill(playlist_items, 2);
+    rDB.PlaylistFill(playlist, 1);
+    rDB.PlaylistFill(playlist_items, 2);
 }
 
 
@@ -484,16 +484,15 @@ void BeagleMain::RefillMainPL(int type, int selected){
 
     if( type == 1){  //displaying folders
         plMode = 1;
-        playlist = rDB.PlaylistFill(playlist, type);
-
+        rDB.PlaylistFill(playlist, type);
     }
     else if(type == 2) { // displaying files from folders
         plMode = 2;
-        playlist = rDB.PlaylistFill(playlist_items, type);
+       rDB.PlaylistFill(playlist_items, type);
     }
     else{     // displaying songs after new or open playlist
         plMode = 3;
-        playlist_items = rDB.PlaylistFill(playlist_items, type);
+       rDB.PlaylistFill(playlist_items, type);
     }
     updatePlaylist(playlist, playlist_items, type, selected);
 

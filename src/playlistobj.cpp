@@ -50,7 +50,7 @@ void playlistobj::writeMe(string sQry){
 void playlistobj::initPlaylist(){
     playlist_obj.initFile(100);
     pl_obj_count = 0;
- ///   playlistCount = 0;
+   playlistCount = 0;
     playlistName = "newplaylist";
 }
 

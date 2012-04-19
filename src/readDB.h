@@ -40,10 +40,10 @@ class readDB {
 
 public:
         readDB();
-        fileObj& RemoteFill(fileObj& src, int type);
-        fileObj& LocalFill(fileObj& src, int type);
-        fileObj& PlaylistFill(fileObj& src, int type);
-        fileObj& RadioFill(fileObj& src);
+        void RemoteFill(fileObj& src, int type);
+        void LocalFill(fileObj& src, int type);
+        void PlaylistFill(fileObj& src, int type);
+        void RadioFill(fileObj& src);
        QSqlDatabase OpenDB();
        void closeDB();
         void display(fileObj&Artist, fileObj& Song,fileObj& Album);

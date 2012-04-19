@@ -40,7 +40,7 @@ void readDB::closeDB(){
 
 }
 
-fileObj& readDB::RemoteFill(fileObj &src, int type){
+void readDB::RemoteFill(fileObj &src, int type){
     src.initFile(100);
     QSqlDatabase db = OpenDB();
     int count = 0;
@@ -76,11 +76,9 @@ fileObj& readDB::RemoteFill(fileObj &src, int type){
         }
     }
     closeDB();
-    return src;
-
 }
 
-fileObj& readDB::LocalFill(fileObj &src, int type){
+void readDB::LocalFill(fileObj &src, int type){
     src.initFile(100);
     QSqlDatabase db = OpenDB();
     int count = 0;
@@ -114,10 +112,8 @@ fileObj& readDB::LocalFill(fileObj &src, int type){
         }
     }
     closeDB();
-    return src;
 }
-
-fileObj& readDB::PlaylistFill( fileObj &src, int type){
+void readDB::PlaylistFill( fileObj &src, int type){
     src.initFile(100);
     QSqlDatabase db = OpenDB();
     int count = 0;
@@ -143,10 +139,9 @@ fileObj& readDB::PlaylistFill( fileObj &src, int type){
         }
     }
  closeDB();
-    return src;
 }
 
-fileObj& readDB:: RadioFill(fileObj &src){
+void readDB:: RadioFill(fileObj &src){
     int count = 0;
     QSqlDatabase db = OpenDB();
     if(db.open()){
@@ -166,7 +161,6 @@ fileObj& readDB:: RadioFill(fileObj &src){
         }
     }
     closeDB();
-    return src;
 }
 
 readDB::~readDB(){
