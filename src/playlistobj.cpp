@@ -50,7 +50,7 @@ void playlistobj::writeMe(string sQry){
 void playlistobj::initPlaylist(){
     playlist_obj.initFile(100);
     pl_obj_count = 0;
-    playlistCount = 0;
+ ///   playlistCount = 0;
     playlistName = "newplaylist";
 }
 
@@ -67,7 +67,7 @@ void playlistobj::AddNew(string name){
     for(int i =0; i<2; i++){
         writeMe(newQry[i]);
     }
-    playlistCount++;
+    playlistCount++;  // number of playlists
     playlistName = name;
 }
 
@@ -103,6 +103,7 @@ void playlistobj::writeNew(int writemode){
   */
 void playlistobj::AddTo(int id, int par, string name, string path, fileObj &src){
     setPlObj(src);
+    playlist_obj.setInit(100);
     /// Add to our playlist object
     playlist_obj.set(pl_obj_count, id, par, name.c_str(), path.c_str());
     pl_obj_count++;

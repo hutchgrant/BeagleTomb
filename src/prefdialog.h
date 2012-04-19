@@ -38,8 +38,9 @@ class PrefDialog : public QDialog
 public:
     preferences pref;
     explicit PrefDialog(QWidget *parent = 0);
-    preferences& setPreferences(preferences& pref2);
+    void setPreferences();
     void setPref(preferences& my_pref);
+    void setLabels();
     bool exists(const char *str);
     preferences getPref();
     virtual ~PrefDialog();

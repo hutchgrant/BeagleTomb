@@ -77,21 +77,16 @@ int syncMe::control() {
 
     int artMenu, vidDirMenu; /// main Artist Menu ID
     int artSize, albSize, songSize, vidSize, vidDirSize; /// sizes of each Object array
-
     artMenu = 0, artSize = 0, albSize = 0 ,songSize = 0;
     vidSize = 0, vidDirSize = 0;
 
-    /// init Objects
     fileObj Artist, Album, Song, VidDir, Video;
 
     deleteDB();
     createDB();
 
-    // connect to new db
-
-    /// init mysqlObject
     mysqlconn ms(pref);
-    // get main artist menu
+
     artMenu = ms.connectArtMenu();
     vidDirMenu = ms.connectVidMenu();
     ms.connectTracks(Artist, Artist, artMenu, 1);
@@ -99,6 +94,7 @@ int syncMe::control() {
     ms.connectTracks(Album,Song, 0, 3);
     ms.connectTracks(VidDir,VidDir,vidDirMenu, 1);
     ms.connectTracks(VidDir,Video, 0, 3);
+
     if(artMenu ==0){
         cout << "empty database or invalid login" << endl;
         return 0;

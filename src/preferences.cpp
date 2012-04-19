@@ -61,7 +61,6 @@ bool preferences::initDB(){
         while(!feof(fp)){
             fscanf(fp, "%s", &PrefIn);
             found = true;
-
         }
     }
     else{
@@ -82,14 +81,12 @@ bool preferences::initDB(){
 
 /// set initial db file in text cache
 void preferences::setInitDB(){
-
-    ofstream myfile;
     string tempcache = TEMPCACHE;
+    ofstream myfile;
     string cache = getenv("HOME") + tempcache;
     myfile.open (cache.c_str());
     myfile << DBlocation.c_str();
     myfile.close();
-
 }
 
 
@@ -107,6 +104,7 @@ void preferences::createPrefDB() {
     string finalQry;
         finalQry = "create table pref(key INTEGER PRIMARY KEY,usr TEXT,PASS TEXT,SERVER TEXT,PRT TEXT,SQLTABLE TEXT,SQL TEXT,PLAYLISTDIR TEXT)";
        writeMe(finalQry);
+       writeDB();
 }
 
 
@@ -118,7 +116,7 @@ void preferences::OpenDB(){
 void preferences::readDB(){
 
     if(QFile::exists(DBlocation.c_str())){
-        QSqlDatabase db2 = QSqlDatabase::addDatabase("QSQLITE");
+        db2 = QSqlDatabase::addDatabase("QSQLITE");
         db2.setDatabaseName(DBlocation.c_str());
         if(db2.open()){
             QSqlQuery query(db2);
@@ -132,7 +130,6 @@ void preferences::readDB(){
                 QString QVal4 = query.value(4).toString();
                 QString QVal5 = query.value(5).toString();
                 QString QVal6 = query.value(6).toString();
-                QString QVal7 = query.value(7).toString();
 
 
                 setUser(QVal1.toStdString());
@@ -141,7 +138,6 @@ void preferences::readDB(){
                 setPort(QVal4.toStdString());
                 setTable(QVal5.toStdString());
                 setSQL(QVal6.toStdString());
-                setPlaylistDir(QVal7.toStdString());
             }
         }
 
@@ -158,7 +154,6 @@ void preferences::writeDB(){
        << USER << "','" << PASS << "','" << SERVER << "','" << PORT  << "','" << TABLE  << "','" << DBlocation << "','" << PLAYLISTDIR << "')";
 
     str2 = os.str();
-    //    cout << str2 << endl;
     writeMe(str2);
 }
 
@@ -198,7 +193,6 @@ preferences& preferences::operator=(const preferences& src){
         setTable(src.TABLE);
         setSQL(src.DBlocation);
     }
-    
     return *this;
 }
 

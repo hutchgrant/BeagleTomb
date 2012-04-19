@@ -76,7 +76,7 @@ public:
     void setMode(int type){
         pl_mode = type;
     }
-    void setLocation(string locate){
+    void setDB(string locate){
         db_location = locate;
     }
     void setFolderCount(int count){

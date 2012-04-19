@@ -42,11 +42,10 @@ BeagleMain::BeagleMain(QWidget *parent) :
   */
 void BeagleMain::Sync(int type){
     initCueID(4,100,0); // initialize all temp ID model arrays
-    plMode= 0; // set playlist mode to browse
+    plMode= 1; // set playlist mode to browse
 
     if(type == 0){
-            initCache();   // check if the first load of beagletomb
-            pl.setLocation(pref.getSQL());  // set the playlist
+            initCache();
             fillRemoteFiles();
             fillLocalFiles(0);
             fillPlaylistItems();
@@ -74,11 +73,24 @@ void BeagleMain::fillRemoteFiles(){
     Video = rDB.RemoteFill(Video, 5);
 }
 
+void BeagleMain::fillDBlocates(){
+    /// read db pref settings
+    rDB.setDB(pref.getSQL().c_str());
+    // local sync write pref settings
+    SyncAudioLocal.setDB(pref.getSQL());
+    SyncVideoLocal.setDB(pref.getSQL());
+    // playlist write pref settings
+    pl.setDB(pref.getSQL());
+
+}
+
 /*
   * Fill All local files from sqlite
   * Mode: 0 ALL 1 song Dirs, 2 songs, 3 vid dirs, 4, videos
   */
 void BeagleMain::fillLocalFiles(int mode){
+    /// set the default db location from preference cache
+
         DirecLocal = rDB.LocalFill(DirecLocal, 1);
         SongLocal = rDB.LocalFill(SongLocal, 2);
         vidDirecLocal = rDB.LocalFill(vidDirecLocal, 3);
@@ -230,10 +242,10 @@ void BeagleMain::on_PlayList_doubleClicked(QModelIndex index)
     selected = ui->PlayList->currentIndex().row();
     int selID = 0;
 
-    if(plMode == 0){   // folder mode
-        RefillMainPL(1, selected);
+    if(plMode == 1){   // folder mode
+        RefillMainPL(2, selected);
     }
-    else{   // item mode
+    else{              // item mode
         selID = curPlaylistID[selected];
         PlaylistPlay(selID);
     }
@@ -437,14 +449,14 @@ void BeagleMain::updatePlaylist(fileObj &playlist, fileObj &playlist_items, int 
     }
     else if(type == 2){    /// from a specific folder
         selID = curPlaylistID[selected];
+        cout << "selection ID = " << selID << endl;
         initCueID(3, playlist_items.getSize(), 1);
         for(int i = 0; i< playlist_items.getSize(); i++){
-            if(playlist_items.getPar(i) == selID && type == 2){
+            if(playlist_items.getPar(i) == selID ){
                 curList << playlist_items.getName(i);
                 curPlaylistID[playCount] = playlist_items.getID(i);
                 playCount++;
             }
-
         }
     }
     else if(type == 3){   /// a new playlist
@@ -469,12 +481,16 @@ void BeagleMain::updatePlaylist(fileObj &playlist, fileObj &playlist_items, int 
 void BeagleMain::RefillMainPL(int type, int selected){
 
     if( type == 1){  //displaying folders
-        plMode = 0;
+        plMode = 1;
         playlist = rDB.PlaylistFill(playlist, type);
 
     }
+    else if(type == 2) { // displaying files from folders
+        plMode = 2;
+        playlist = rDB.PlaylistFill(playlist_items, type);
+    }
     else{     // displaying songs after new or open playlist
-        plMode = 1;
+        plMode = 3;
         playlist_items = rDB.PlaylistFill(playlist_items, type);
     }
     updatePlaylist(playlist, playlist_items, type, selected);
@@ -562,17 +578,20 @@ void BeagleMain::on_PAUSE_but_clicked()
   */
 void BeagleMain::on_actionPreferences_2_activated()
 {
-    pref.readDB();
+    pref.initDB();
     prefDg.setPref(pref);
     prefDg.show();
     if (prefDg.exec()==QDialog::Accepted) {
         pref = prefDg.getPref();
+        /// create cache folder
+        pref.createCache();
+        /// set initial cache file
+        pref.setInitDB();
         //delete custom sql db
         pref.deletePrefDB();
-        //create custom sql db
+        //create and fill pref db
         pref.createPrefDB();
-        /// write preferences to sql db
-        pref.writeDB();
+        fillDBlocates();
     }
 }
 
@@ -795,18 +814,21 @@ void BeagleMain::PlaylistPlay(int selID){
   */
 void BeagleMain::initCache(){
     if(pref.initDB() == false){
+        prefDg.setPref(pref);
         prefDg.show();
         if (prefDg.exec()==QDialog::Accepted) {
             //create cache directory
-            pref.createCache();
             pref = prefDg.getPref();
-            //create custom sql db
-            pref.createPrefDB();
-            /// write preferences to sql db
-            pref.writeDB();
+            /// create cache folder
+            pref.createCache();
+            /// set inital cache file
             pref.setInitDB();
+            //create and fill pref db
+            pref.createPrefDB();
         }
     }
+
+    fillDBlocates();
 }
 
 /*
@@ -910,11 +932,13 @@ void BeagleMain::on_actionNewPl_triggered()
         pl.AddNew(newpl.getName().toStdString());
         pl.writeNew(1);
     }
-    RefillMainPL(2, 0);
+    plMode = 3;
+    RefillMainPL(3, 0);
 }
 
 void BeagleMain::on_actionOpenPl_triggered()
 {
+    plMode = 1;
     RefillMainPL(1, 0);
 
 }

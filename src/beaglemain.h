@@ -90,6 +90,7 @@ public:
     void updateTitle(int select);
     void Sync(int type);
 
+    void fillDBlocates();
     void fillRemoteFiles();
     void fillLocalFiles(int mode);
     void fillPlaylistItems();

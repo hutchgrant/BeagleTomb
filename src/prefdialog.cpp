@@ -29,8 +29,12 @@ PrefDialog::PrefDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PrefDialog)
 {
-    pref.readDB();
+
     ui->setupUi(this);
+
+}
+
+void PrefDialog::setLabels(){
     ui->entry_user->setText(pref.getQUser());
     ui->entry_pass->setText(pref.getQPass());
     ui->entry_serv->setText(pref.getQServer());
@@ -46,13 +50,16 @@ PrefDialog::~PrefDialog()
 
 void PrefDialog::on_buttonBox_accepted()
 {
-    pref = setPreferences(pref);
+    setPreferences();
 }
 void PrefDialog::setPref(preferences& my_pref){
     pref = my_pref;
+    setLabels();
+    cout << pref.getSQL() << endl;
+
 }
 
-preferences& PrefDialog::setPreferences(preferences& pref){
+void PrefDialog::setPreferences(){
 
     QString QUser = ui->entry_user->text();
     QString Q_pass = ui->entry_pass->text();
@@ -74,8 +81,6 @@ preferences& PrefDialog::setPreferences(preferences& pref){
     pref.setPort(strPort);
     pref.setTable(strTable);
     pref.setSQL(strSQL);
-
-    return pref;
 }
 preferences PrefDialog::getPref(){
     return pref;
