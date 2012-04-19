@@ -31,8 +31,8 @@
 #include "fileobj.h"
 #include <QtSql>
 #include <sstream>
+#define TEMPSYNCPREF "/.beagletomb/BTmedia.db"
 
-#define LOCALSYNC "/.beagletomb/BTmedia.db"
 using namespace std;
 
 class localsync

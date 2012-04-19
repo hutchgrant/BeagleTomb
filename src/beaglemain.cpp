@@ -65,6 +65,7 @@ void BeagleMain::Sync(int type){
 void BeagleMain::fillRemoteFiles(){
     /// set the default db location from preference cache
     rDB.setDB(pref.getSQL().c_str());
+    cout << pref.getSQL() << endl;
     //// read from sql and fill songObjs
     Artist = rDB.RemoteFill(Artist, 1);
     Album = rDB.RemoteFill(Album, 2);
@@ -78,6 +79,7 @@ void BeagleMain::fillDBlocates(){
     rDB.setDB(pref.getSQL().c_str());
     // local sync write pref settings
     SyncAudioLocal.setDB(pref.getSQL());
+    cout << "local db " << pref.getSQL() << endl;
     SyncVideoLocal.setDB(pref.getSQL());
     // playlist write pref settings
     pl.setDB(pref.getSQL());

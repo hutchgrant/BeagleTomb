@@ -41,7 +41,6 @@
 #include "fileobj.h"
 #include "preferences.h"
 
-#define TEMPSYNCPREF "/.beagletomb/BTmedia.db"
 
 using namespace std;
 

@@ -23,6 +23,9 @@
 localsync::localsync()
 {
     initLocalObj();
+
+    home = getenv("HOME");
+    db_local = home + TEMPSYNCPREF;
 }
 
 /*
@@ -47,8 +50,7 @@ void localsync::initLocalObj(){
 
     initDirs(0,5, 5);
     initFiles(0, 5, 5);
-    home = getenv("HOME");
-    db_local = home + LOCALSYNC;
+
 }
 
 /*
