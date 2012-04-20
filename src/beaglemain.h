@@ -65,7 +65,7 @@ public:
     localsync SyncAudioLocal, SyncVideoLocal;
     fileObj Artist, Song, Album, VidDir, Video, DirecLocal, SongLocal, vidDirecLocal, VideoLocal, playlist, playlist_items;
     radioObj Radio;
-    int artSize, albSize, songSize, vidSize, vidDirSize, radSize;
+    int artSize, albSize, songSize, vidSize, vidDirSize, radSize, currentPlaylistID;
 
     bool playlistOpen;
 
@@ -83,7 +83,7 @@ public:
     void updateLclVidDirs();
     void updateLclVideos();
     void updateLclVideos(int selected);
-    void updatePlaylist(fileObj &p, fileObj &playlist, int type, int selected);
+    void updatePlaylist(int type);
 
     void initCache();
     void initCueID(int type, int newsize, int initial);

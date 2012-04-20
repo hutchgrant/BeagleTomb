@@ -65,7 +65,7 @@ void fileObj::REinitFile(int oldsize, int newsize){
     int *idCopy, *parCopy;
     nameCopy = new string[objSize+1];
     parCopy = new int[objSize+1];
-   idCopy = new int[objSize+1];
+    idCopy = new int[objSize+1];
     pathCopy = new string[objSize+1];
 
     for(int i=0; i< objSize; i++){
@@ -84,13 +84,13 @@ void fileObj::REinitFile(int oldsize, int newsize){
     delete [] fileName;
     delete [] fileID;
     delete [] filePar;
-   delete [] filePath;
+    delete [] filePath;
 
     tempObjSize = objSize;
-      initFile(InitSize);
-   /// refill array fileName fileID filePar array
+    initFile(InitSize);
+    /// refill array fileName fileID filePar array
 
-   for(int i=0; i< tempObjSize; i++){
+    for(int i=0; i< tempObjSize; i++){
         set(i,idCopy[i], parCopy[i], nameCopy[i].c_str(), pathCopy[i].c_str());
     }
 
@@ -98,10 +98,10 @@ void fileObj::REinitFile(int oldsize, int newsize){
 
 
 fileObj::~fileObj(){
-        delete [] fileName;
-        delete [] fileID;
-        delete [] filePar;
-        delete [] filePath;
+    delete [] fileName;
+    delete [] fileID;
+    delete [] filePar;
+    delete [] filePath;
 }
 
 void fileObj::display(){
@@ -134,7 +134,7 @@ fileObj& fileObj::operator=(const fileObj& src){
             InitSize = src.InitSize;
         }
     }
-     return *this;
+    return *this;
 
 }
 

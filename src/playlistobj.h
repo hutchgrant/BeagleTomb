@@ -47,7 +47,6 @@ class playlistobj
 {
    // Q_OBJECT
 public:
-    fileObj playlist_obj;   /// playlist object holds all ids, pars, names, paths of items
     int pl_obj_count;       /// number of items in playlist
     string playlistName;    /// name of the current playlist
     int pl_mode;            /// boolean for browsing playlist names or items
@@ -59,14 +58,15 @@ public:
     fileObj control();
     void AddTo(int id, int par, string name, string path, fileObj &src);
     void AddNew(string name);
-    void Move(int selected, int direction);
+    void Move(int selected, int direction, fileObj &src);
 
     void readPlDB(fileObj &src, int type);
     void writeToDB();
     void removeFromDB(int item);
     void RemoveFrom(int selected);
     void writeMe(string sQry);
-    void writeNew(int readmode);
+    void writeNew();
+    void writeNew(fileObj &src);
 
     virtual ~playlistobj();
     playlistobj& operator=(const playlistobj& src);
@@ -94,11 +94,7 @@ public:
     }
 
     void setPlObj(fileObj &src){
-        playlist_obj = src;
         pl_obj_count = src.getSize();
-    }
-    fileObj& getPlObj(){
-        return playlist_obj;
     }
 };
 
