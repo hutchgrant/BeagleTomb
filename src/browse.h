@@ -26,7 +26,6 @@
 #include "fileobj.h"
 #include "localsync.h"
 #include "dbconnect.h"
-#include "mysqlconn.h"
 #include "remotesync.h"
 #include "prefobj.h"
 
