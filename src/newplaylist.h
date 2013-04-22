@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-
+using namespace std;
 namespace Ui{
     class newplaylist;
 }
@@ -14,13 +14,13 @@ class newplaylist : public QDialog
 public:
 
 
-    QString plName;
+    string plName;
 
     explicit newplaylist(QWidget *parent = 0);
     virtual ~newplaylist();
 
 
-    QString getName(){
+    string getName(){
         return plName;
     }
 

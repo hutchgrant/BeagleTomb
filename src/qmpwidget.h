@@ -121,6 +121,7 @@ class QMPwidget : public QWidget
 		void stop();
 		bool seek(int offset, int whence = AbsoluteSeek);
 		bool seek(double offset, int whence = AbsoluteSeek);
+        void setVolume(int volume);
 
 		void toggleFullScreen();
 
@@ -135,7 +136,6 @@ class QMPwidget : public QWidget
 		void updateWidgetSize();
 
 	private slots:
-		void setVolume(int volume);
 
 		void mpStateChanged(int state);
 		void mpStreamPositionChanged(double position);

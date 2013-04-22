@@ -26,8 +26,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
-#include <QtGui/QMainWindow>
-
 using namespace std;
 class fileObj
 {
@@ -47,6 +45,7 @@ public:
 
     void initFile(int initSZ);
     void REinitFile(int oldsize, int newsize);
+    void REzeroFile(int initSZ);
     void display();
     virtual ~fileObj();
 
@@ -114,8 +113,14 @@ public:
     }
     char *getName(int item){
         char *final;
-        final = new char[fileName[item].length()+1];
-        strcpy(final, fileName[item].c_str());
+        if(item <= objSize){
+            final = new char[fileName[item].length()+1];
+            strcpy(final, fileName[item].c_str());
+        }else{
+            string name = "-";
+            final = new char[name.length()+1];
+            strcpy(final, name.c_str());
+        }
         return final;
     }
     char *getPath(int item){

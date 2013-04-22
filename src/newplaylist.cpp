@@ -17,5 +17,5 @@ newplaylist::~newplaylist()
 
 void newplaylist::on_playlist_accept_accepted()
 {
-    plName = ui->playlist_entry->text();
+    plName = ui->playlist_entry->text().toStdString();
 }

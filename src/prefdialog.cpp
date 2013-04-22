@@ -21,72 +21,46 @@
 
 #include "prefdialog.h"
 #include "ui_prefdialog.h"
-#include <iostream>
-#include "preferences.h"
+
 using namespace std;
 
 PrefDialog::PrefDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PrefDialog)
 {
-
     ui->setupUi(this);
-
+    setLabels();
 }
 
 void PrefDialog::setLabels(){
-    ui->entry_user->setText(pref.getQUser());
-    ui->entry_pass->setText(pref.getQPass());
-    ui->entry_serv->setText(pref.getQServer());
-    ui->entry_port->setText(pref.getQPort());
-    ui->entry_table->setText(pref.getQTable());
-    ui->entry_sql->setText(pref.getQSQL());
+    dbconnect dbCon;
+    dbCon.readPref(preferences);
+    ui->entry_sqlPath->setText(QString(TEMPDB));
+    ui->entry_remUser->setText(preferences.getQUser());
+    ui->entry_remPass->setText(preferences.getQPass());
+    ui->entry_remIP->setText(preferences.getQHOSTIP());
+    ui->entry_remPort->setText(preferences.getQHOSTPORT());
+    ui->entry_remTable->setText(preferences.getQTable());
 }
 
 PrefDialog::~PrefDialog()
 {
     delete ui;
 }
-
 void PrefDialog::on_buttonBox_accepted()
 {
     setPreferences();
 }
-void PrefDialog::setPref(preferences& my_pref){
-    pref = my_pref;
-    setLabels();
-    cout << pref.getSQL() << endl;
-
-}
-
 void PrefDialog::setPreferences(){
 
-    QString QUser = ui->entry_user->text();
-    QString Q_pass = ui->entry_pass->text();
-    QString Q_server = ui->entry_serv->text();
-    QString Q_table = ui->entry_table->text();
-    QString Q_port = ui->entry_port->text();
-    QString Q_sql = ui->entry_sql->text();
+    QString Q_sqlPath = ui->entry_sqlPath->text();
+    QString Q_remoteUser = ui->entry_remUser->text();
+    QString Q_remotePass = ui->entry_remPass->text();
+    QString Q_remoteIP = ui->entry_remIP->text();
+    QString Q_remotePort = ui->entry_remPort->text();
+     QString Q_remoteTable = ui->entry_remTable->text();
 
-    string strUser = QUser.toUtf8().constData();
-    string strPass = Q_pass.toUtf8().constData();
-    string strServer = Q_server.toUtf8().constData();
-    string strPort = Q_port.toUtf8().constData();
-    string strTable = Q_table.toUtf8().constData();
-    string strSQL = Q_sql.toUtf8().constData();
 
-    pref.setUser(strUser);
-    pref.setPass(strPass);
-    pref.setServ(strServer);
-    pref.setPort(strPort);
-    pref.setTable(strTable);
-    pref.setSQL(strSQL);
-}
-preferences PrefDialog::getPref(){
-    return pref;
-}
+   preferences.setPref( Q_remoteUser.toStdString(), Q_remotePass.toStdString(), Q_remoteIP.toStdString(), Q_remotePort.toStdString(), Q_remoteTable.toStdString(), Q_sqlPath.toStdString());
 
-bool PrefDialog::exists(const char *str){
-    ifstream file(str);
-    return true;
 }

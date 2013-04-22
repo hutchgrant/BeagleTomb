@@ -19,39 +19,36 @@
  */
 
 
+#ifndef VOLUME_H
+#define VOLUME_H
 
+#include <QWidget>
+#include <QPainter>
+namespace Ui {
+class volume;
+}
 
-
-#ifndef READDB_H_
-#define READDB_H_
-#define MAX 10000
-#include "radioObj.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-#include <cstring>
-#include <QtSql>
-#
-#include "fileobj.h"
-using namespace std;
-class readDB {
-        string DBLOCATE;
-
-
+class volume : public QWidget
+{
+    Q_OBJECT
+    
 public:
-        readDB();
-        void RemoteFill(fileObj& src, int type);
-        void LocalFill(fileObj& src, int type);
-        void PlaylistFill(fileObj& src, int type);
-        void RadioFill(fileObj& src);
-       QSqlDatabase OpenDB();
-       void closeDB();
-        void display(fileObj&Artist, fileObj& Song,fileObj& Album);
-	virtual ~readDB();
+    explicit volume(QWidget *parent = 0);
+    ~volume();
+    
+private slots:
+    void on_volSlider_sliderMoved(int position);
 
-        void setDB(const char *dblocation){
-            DBLOCATE = dblocation;
-        }
+signals:
+    void volChanged(int);
+protected:
+    void paintEvent(QPaintEvent * /* Event */ );
+
+private:
+    Ui::volume *ui;
+
+    int curVol;
+
 };
 
-#endif /* READDB_H_ */
+#endif // VOLUME_H

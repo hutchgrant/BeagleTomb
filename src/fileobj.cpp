@@ -47,14 +47,20 @@ fileObj::fileObj(const fileObj &src){
 
 void fileObj::initFile(int initSZ){
     objSize = 0;
+    InitSize = 0;
     fileName = new string[initSZ];
     fileID = new int[initSZ];
     filePar = new int[initSZ];
     filePath = new string[initSZ];
-    InitSize = 0;
     for(int i=0; i< initSZ; i++){
         setInit(i, 0, 0, "-", "-");
     }
+}
+
+void fileObj::REzeroFile(int initSZ){
+    delete [] fileName;
+    delete [] filePath;
+    initFile(initSZ);
 }
 
 void fileObj::REinitFile(int oldsize, int newsize){
@@ -85,7 +91,6 @@ void fileObj::REinitFile(int oldsize, int newsize){
     delete [] fileID;
     delete [] filePar;
     delete [] filePath;
-
     tempObjSize = objSize;
     initFile(InitSize);
     /// refill array fileName fileID filePar array
