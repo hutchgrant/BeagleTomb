@@ -54,9 +54,6 @@ void remotesync::closeDB(){
   */
 void remotesync::Fill(fileObj &Artist, fileObj &Album, fileObj &Song, fileObj &VidDir, fileObj &Video){
     int artMenu, vidDirMenu; /// main Artist Menu ID
-    int artSize, albSize, songSize, vidSize, vidDirSize; /// sizes of each Object array
-    artMenu = 0, artSize = 0, albSize = 0 ,songSize = 0;
-    vidSize = 0, vidDirSize = 0;
 
      artMenu = getAudioMenu();
     cout << "connected to artist menu" << endl;
