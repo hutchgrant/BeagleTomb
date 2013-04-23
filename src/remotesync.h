@@ -47,7 +47,7 @@ public:
     int getVideoMenu();
 
     void connectTracks(fileObj &folder, fileObj &src, int lookID, int mode);
-
+    void connectTracks(fileObj &folder, int lookID, int mode);
     virtual ~remotesync();
 
 };

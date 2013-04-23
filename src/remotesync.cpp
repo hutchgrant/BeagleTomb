@@ -56,16 +56,16 @@ void remotesync::Fill(fileObj &Artist, fileObj &Album, fileObj &Song, fileObj &V
     int artMenu, vidDirMenu; /// main Artist Menu ID
 
      artMenu = getAudioMenu();
-    cout << "connected to artist menu" << endl;
+    cout << "connected to artist menu " << endl;
      vidDirMenu = getVideoMenu();
-     cout << "connected to video menu" << endl;
-     connectTracks(Artist, Artist, artMenu, 1);
-     cout << "received Artists from artMenu: " << artMenu << endl;
+     cout << "connected to video menu " << endl;
+     connectTracks(Artist, artMenu, 1);
+     cout << "received Artists from artMenu" << endl;
      connectTracks(Artist, Album, 0, 2);
-     cout << "received Albums" << endl;
+     cout << "received Albums from artists" << endl;
      connectTracks(Album, Song, 0, 3);
      cout << "received songs from albums"  << endl;
-     connectTracks(VidDir,VidDir,vidDirMenu, 1);
+     connectTracks(VidDir, vidDirMenu, 1);
      cout << "received VidDirs from VidDirMenu: " << vidDirMenu  << endl;
      connectTracks(VidDir,Video, 0, 3);
      cout << "all videos received" << endl;
@@ -149,12 +149,10 @@ int remotesync::getAudioMenu(){
   * get mediatomb Video menu
   */
 int remotesync::getVideoMenu(){
- int vidMenu = 0;
- int vidDirMenuID = 0;
+ int vidMenu = 0, vidDirMenuID = 0, vidDir = 0;
 
  bool Myexit = false; // exit variable
- int QryCount = 0;
- int rowCount = 0;
+ int QryCount = 0, rowCount = 0;
  char *myQry = NULL;
 
  if(db.open()){
@@ -177,10 +175,10 @@ int remotesync::getVideoMenu(){
                  vidMenu);
      }
 
+         rowCount = 0;
 
          QSqlQuery query;
          query = QString(myQry);
-         rowCount = 0;
          while (query.next()){
 
              QString QVal = query.value(0).toString();
@@ -190,18 +188,18 @@ int remotesync::getVideoMenu(){
              QString QVal4 = query.value(4).toString();
              QString QVal5 = query.value(5).toString();
 
-             if (QVal2.toInt() == 0 && rowCount == 3){
+             if (QVal2.toInt() == 0 && rowCount == 3 && QryCount == 0){
                  vidMenu = QVal.toInt();
              }
 
-             if(QVal2.toInt() == vidMenu && rowCount == 1){
+             if(QVal2.toInt() == vidMenu && rowCount == 1 && QryCount == 1){
                  vidDirMenuID = QVal.toInt();
              }
              rowCount++;
 
          }
          QryCount++;
-         if (QryCount > 2) { // + albCount
+         if (QryCount > 1) {
              Myexit = true;
          }
      }
@@ -209,13 +207,14 @@ int remotesync::getVideoMenu(){
          cout << "error couldn't connect to vid menu in mysql" << endl;
          Myexit = true;
 }
-return vidMenu;
+return vidDirMenuID;
 }
+
 
 /*
   * connect objects with mysql
   */
-void remotesync::connectTracks(fileObj &folder, fileObj &src, int lookID, int mode){
+void remotesync::connectTracks(fileObj &folder, int lookID, int mode){
     char *myQry = NULL;     /// string for final query
 
     if(mode == 1){  // ARTISTS
@@ -237,14 +236,24 @@ void remotesync::connectTracks(fileObj &folder, fileObj &src, int lookID, int mo
 
                 ///////*****  Query for Songs
                 if (QVal2.toInt() == lookID) {
-                    src.set(artCount, QVal.toInt(), QVal2.toInt(), QVal5.toStdString().c_str());
+                    folder.set(artCount, QVal.toInt(), QVal2.toInt(), QVal5.toStdString().c_str());
+                    folder.display();
                     artCount++;
                 }
 
             }
         }
     }
-    else if(mode == 2 || mode == 3){  // ALBUMS // SONGS
+
+}
+
+/*
+  * connect objects with mysql
+  */
+void remotesync::connectTracks(fileObj &folder, fileObj &src, int lookID, int mode){
+    char *myQry = NULL;     /// string for final query
+
+    if(mode == 2 || mode == 3){  // ALBUMS // SONGS
         int albCount = 0;
         int songCount = 0;
         int qryCount = 0;

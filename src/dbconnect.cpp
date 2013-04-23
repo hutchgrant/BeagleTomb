@@ -236,7 +236,7 @@ void dbconnect::writeAllRemote(fileObj &Artist, fileObj &Album, fileObj &Song, f
                     }
                 }
                 str2 = os.str();
-             //   cout << str2 << endl;
+                // cout << str2 << endl;
                 writeMe(str2);
                 posMax += counter;
                 pos += counter;
@@ -474,9 +474,9 @@ int dbconnect::getMaxPos(int count) {
         posMax = 100;
     } else if (count < 100 && count > 20) {
         posMax = 10;
-    } else if (count < 20) {
-        posMax = 5;
     } else if (count < 20 && count > 10) {
+        posMax = 5;
+    } else if (count < 10) {
         posMax = 1;
     } else {
         posMax = 200;
