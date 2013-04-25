@@ -29,7 +29,7 @@ dbconnect::dbconnect()
 
 void dbconnect::OpenDB(){
     if(!initDB()){
-        control(1);
+        control(0);
     }
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(getSQL().c_str());
@@ -360,9 +360,7 @@ void dbconnect::readPref(prefObj &src){
 /// controls inital functions at once
 void dbconnect::control(int INIT){
     PrefDialog prefDg;
-    if(INIT == 1){
-        prefDg.init = 1;
-    }
+    prefDg.setLabels(INIT);
     prefObj pref;
     if(prefDg.exec()==QDialog::Accepted){
         pref = prefDg.getPref();

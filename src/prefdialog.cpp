@@ -28,12 +28,10 @@ PrefDialog::PrefDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PrefDialog)
 {
-    init = 0;
     ui->setupUi(this);
-    setLabels();
 }
 
-void PrefDialog::setLabels(){
+void PrefDialog::setLabels(int init){
     if(init == 1){    /// if db initialized
         dbconnect dbCon;
         dbCon.readPref(preferences);

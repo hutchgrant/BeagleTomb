@@ -85,7 +85,7 @@ void beaglemain::on_actionQuit_triggered()
 
 void beaglemain::on_actionPreferences_triggered()
 {
-    brow->dbCon.control(0);
+    brow->dbCon.control(1);
     brow->getPref();
 }
 

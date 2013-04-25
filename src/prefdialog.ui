@@ -33,7 +33,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -150,7 +150,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="entry_remIP"/>
+       <widget class="QLineEdit" name="entry_remIP">
+        <property name="text">
+         <string>192.168.2.10</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

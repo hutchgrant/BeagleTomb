@@ -43,11 +43,10 @@ class PrefDialog : public QDialog
 public:
     string DBlocation;
     prefObj preferences;
-    int init;
 
     explicit PrefDialog(QWidget *parent = 0);
     void setPreferences();
-    void setLabels();
+    void setLabels(int INIT);
     virtual ~PrefDialog();
     prefObj getPref(){
         return preferences;
