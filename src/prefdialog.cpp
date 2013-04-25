@@ -28,19 +28,25 @@ PrefDialog::PrefDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PrefDialog)
 {
+    init = 0;
     ui->setupUi(this);
     setLabels();
 }
 
 void PrefDialog::setLabels(){
-    dbconnect dbCon;
-    dbCon.readPref(preferences);
-    ui->entry_sqlPath->setText(QString(TEMPDB));
-    ui->entry_remUser->setText(preferences.getQUser());
-    ui->entry_remPass->setText(preferences.getQPass());
-    ui->entry_remIP->setText(preferences.getQHOSTIP());
-    ui->entry_remPort->setText(preferences.getQHOSTPORT());
-    ui->entry_remTable->setText(preferences.getQTable());
+    if(init == 1){    /// if db initialized
+        dbconnect dbCon;
+        dbCon.readPref(preferences);
+        ui->entry_sqlPath->setText(preferences.getQLocalDB());
+        ui->entry_remUser->setText(preferences.getQUser());
+        ui->entry_remPass->setText(preferences.getQPass());
+        ui->entry_remIP->setText(preferences.getQHOSTIP());
+        ui->entry_remPort->setText(preferences.getQHOSTPORT());
+        ui->entry_remTable->setText(preferences.getQTable());
+    }
+    else{
+        ui->entry_sqlPath->setText(QString(TEMPDB));
+    }
 }
 
 PrefDialog::~PrefDialog()

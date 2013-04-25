@@ -1,3 +1,11 @@
+beagletomb (0.1.9-0ubuntu) precise; urgency=high
+
+  * Update: merged with beagleplayer, now capable of remote connections
+  * Update: fixed various mysql bugs
+  * Update: fixed interface setup
+
+ -- skynet <skynet@skynet-desktop>  Thu, 25 Apr 2013 00:34:11 -0400
+
 beagletomb (0.1.8-0ubuntu) natty; urgency=low
 
   * Update: Basic add / append playlist functions

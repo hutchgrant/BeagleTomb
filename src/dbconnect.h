@@ -42,7 +42,7 @@ public:
     dbconnect& operator=(const dbconnect& src);
     virtual ~dbconnect();
 
-    void control();
+    void control(int init);
     void createLocalDB();
     void createCache();
     void setInitDB();
